@@ -59,7 +59,7 @@ public class MinecraftMMO extends JavaPlugin {
 	private static MinecraftMMO instance;
 	
 	// CustomMobs {Level} | {Name} | {Health}
-	// Test
+	// Test 2
 	public void onEnable() {
 		instance = this;
 		if(!getDataFolder().exists()) getDataFolder().mkdir();
