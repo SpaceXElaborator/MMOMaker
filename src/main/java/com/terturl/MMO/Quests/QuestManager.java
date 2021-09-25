@@ -23,6 +23,7 @@ public class QuestManager {
 		
 		for(File f : questDir.listFiles()) {
 			if(f.getName().endsWith(".json")) {
+				Object q = null;
 				JsonFileInterpretter config = new JsonFileInterpretter(f);
 				String name = config.contains("Name") ? config.getString("Name") : null;
 				String descString = config.contains("Description") ? config.getString("Description") : null;
@@ -34,22 +35,17 @@ public class QuestManager {
 				if(name == null || descString == null) continue;
 				
 				if(type.equalsIgnoreCase("location")) {
-					LocationQuest lq = new LocationQuest(name, LocationUtils.locationDeSerializer(config.getString("Location")));
-					lq.setDescString(descString);
-					lq.setAcceptString(acceptString);
-					lq.setDenyString(denyString);
-					lq.setPresentString(presentString);
-					lq.setParentQuests(parentQuests);
-					allQuests.add(lq);
+					q = new LocationQuest(name, LocationUtils.locationDeSerializer(config.getString("Location")));
 				} else {
-					Quest q = new BasicQuest(name);
-					q.setDescString(descString);
-					q.setAcceptString(acceptString);
-					q.setDenyString(denyString);
-					q.setPresentString(presentString);
-					q.setParentQuests(parentQuests);
-					allQuests.add(q);
+					q = new BasicQuest(name);
 				}
+				
+				((Quest) q).setDescString(descString);
+				((Quest) q).setAcceptString(acceptString);
+				((Quest) q).setDenyString(denyString);
+				((Quest) q).setPresentString(presentString);
+				((Quest) q).setParentQuests(parentQuests);
+				allQuests.add((Quest) q);
 			}
 		}
 	}
