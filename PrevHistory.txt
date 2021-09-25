@@ -1,0 +1,174 @@
+V0.1.0 - The Beginning
+* Added command generator API usage for later
+* Added basic NPC's with changeable names
+* Added the API for MMO Classes
+* Debug command: mmo-test
+* Debug subcommands: spawnclass {name} removeclass {name} Will spawn and despawn NPCs
+------------------------------------------------------------------------------------------------------------------------------------------------------
+V0.1.1 - Player Spawn Update
+* Added it so that players will ALWAYS spawn back at the tutorial spawn if they haven't finished it. Causing them to have to finish it and select a class before they'll be able to move anywhere else in the server
+* Added Player Files. Which will eventually store all players information (Until I move it to MySQL)
+* Added a configuration file that will allow us to configure certain information. Also how you change the TutorialSpawn
++ Fixed spawnclass and removeclass throwing errors in console but still doing the command
++ Fixed configuration file not creating if the parent folder doesn't exist (whoops)
+------------------------------------------------------------------------------------------------------------------------------------------------------
+V0.1.2 - ITEMS
+* Added the ability to load items using Yaml
+* Added the ability to give random values through a range using Yaml
+* Added Armor/Weapons/Items subclasses that each get their own folder
+* Added basic Dev framework for me to for location (serializing and deserializing location values to and from strings) and string utils that will help with creating "box" lore frames, neat and tidy item presentation
+------------------------------------------------------------------------------------------------------------------------------------------------------
+V0.1.3 - Item Fixes
+* If an item can't be loaded, there will be a warnings.txt file that will describe the condition that caused it to fail
+* OPs can do /mmo-items warnings to view all warnings
+* Fixed an issue where range was throwing errors
+* Modifiers will now add Health and Damage to their hits
+------------------------------------------------------------------------------------------------------------------------------------------------------
+V0.1.4 - PermaNPC's
+* Made it so that NPC's can be added using Npcs folder in the plugin directory.
+* NPCs require a name and a location, but they can also take a quest list, and a skin UUID that you can obtain from online when searching for players. 
+* NPCs can carry quests (Sorta kind, don't try it though. The whole server will crash. Not just the plugin. Not a clue why)
+------------------------------------------------------------------------------------------------------------------------------------------------------
+Figured out issue with NPC's not being interactable and crashing Server. All mobs in minecraft have a pipeline that they go through to spawn into the world and be seen by the client AND server. My NPCs are being spawned so that only the CLIENT knows about it. The server is entirely unaware of the NPC. Working on a fix now
+------------------------------------------------------------------------------------------------------------------------------------------------------
+V0.1.5 - I Became God
+* I literally found out how to have full control of both the client and server side packets. I have become god. Just gotta figure out how to use it effectively
++ NPCs no longer have an issue when they have quests and you right click them to get their dialog
+------------------------From now on all versions are going up in the middle number not the last number. That was my bad--------------------------------------------
+V0.5.0 - I became God ^^^
+------------------------------------------------------------------------------------------------------------------------------------------------------
+V0.5.1 - Duplication Bug
++ NPC's no longer interact with 4 times, but instead only once.
+------------------------------------------------------------------------------------------------------------------------------------------------------
+V0.6.0 - Class NPCs
+* Class NPCs will spawn on their location as determined in "config.yml" in the main plugin directory
+* Class NPCs will tell the player their class description when right clicked
+* Class NPCs will spawn with their start items on them
+* When moving near the Class NPCs, they will look at the player
+* Other NPCs will only look at the player if they right click them
+------------------------------------------------------------------------------------------------------------------------------------------------------
+V0.7.0 - NPC Events
+* Added some framework for me to be able to detect the clicking of NPCs
+------------------------------------------------------------------------------------------------------------------------------------------------------
+V0.7.1 - Oops
++ Fixed an issue with server crashing again because of an Asynchronous call to a synchronous method when I developed the framework for the detection of clicking an NPC
+------------------------------------------------------------------------------------------------------------------------------------------------------
+V0.8.0 - Give me Head
+* Added framework to allow me to get custom skins to set for skull blocks.
++ Working on custom quests to show the custom skull block in the picture above an NPC that has a quest for you
++ Fixed issue with skins not showing up on custom NPCs using skin UUIDs
+------------------------------------------------------------------------------------------------------------------------------------------------------
+V0.9.0 - Give Me Quests or Give Me Blood
+* Quests are beginning to see an appearance
+* Players can now right click a class npc to gain that class (No saving is done yet because of testing purposes)
+* Players gain the class items as well as a quest book that they can use to see active quests.
+------------------------------------------------------------------------------------------------------------------------------------------------------
+V0.9.1 - NPC HOTFIX
++ NPCS NO LONGER CRASH THE SERVER!!!!
+------------------------------------------------------------------------------------------------------------------------------------------------------
+V0.10.0 - Quest Collecting
+* NPCs will now ONLY show a question mark for the player if they HAVE a quest available from them.
+------------------------------------------------------------------------------------------------------------------------------------------------------
+V0.11.0 - JSON
++ All Configuration except for config.yml have been updated to JSON files
+
+This will allow for use to have some compatibility between our projects, but as well as some finer control that Yaml files can't allow. Such as custom clickable text, better control of configuration for individual elements, and more to come
+------------------------------------------------------------------------------------------------------------------------------------------------------
+V0.11.1 - JSON Extended
++ Custom NPCs converted to JSON
++ Quests converted to JSON
+------------------------------------------------------------------------------------------------------------------------------------------------------
+V0.12.0 - Quests Collecting V2
++ Quests will now update and remove the Quest Notification ™️ from the NPC upon collecting a quest and not having any more quests to collect
+------------------------------------------------------------------------------------------------------------------------------------------------------
+V0.12.1 - Goodbye Stickman
++ Fixed an issue with armor stands not being invisible, this was due to not sending the MetaData packet along with the SpawnEntity and SetEquipment packets
+------------------------------------------------------------------------------------------------------------------------------------------------------
+V0.13.0 - Basic Quest Tracker
+* Clicking on a quest in your inventory (If it is completed) will point the compass back to the NPC that gave you the quest.
+Some more updates will follow with the compass pointing location, but as of right now, it will only do the above
+------------------------------------------------------------------------------------------------------------------------------------------------------
+V0.14.0 - Quest Completing/Class Fixes
+* Quests can now be completed!
+* Quests have a completed message
+* NPCs will now have a golden question mark when you can turn in the quest
++ Fixed a major issue with classes causing players to share the same class object. Meaning, if Hill and I was an Archer. He will have all quests I have. All quests I have completed. This has been fixed by implementing a clone() method to create a new instance of the BLANK Class object to now be used for that player
+------------------------------------------------------------------------------------------------------------------------------------------------------
+V0.15.0 - CUSTOM MOBS
+* Added the ability to have custom mobs in Minecraft
++ Fixed rotation issues when them
+------------------------------------------------------------------------------------------------------------------------------------------------------
+V0.16.0 - Brian, The Liquid Rock Man
+* Overhaul to how Custom ArmorStand Mobs are spawned
+* Beginning framework for attempting to create animations on the fly
++ Fixed huge issue where Brian wasn't rotating parts correctly
+------------------------------------------------------------------------------------------------------------------------------------------------------
+V0.17.0 - Effects!
+* Adding some particle effects for the use of abilities coming up
++ Fix heads not resetting to their correct location when the ArmorStand mob rotates
+------------------------------------------------------------------------------------------------------------------------------------------------------
+V0.18.0 - Ability Framework
+* A ROBUST Ability framework has been implemented!
+------------------------------------------------------------------------------------------------------------------------------------------------------
+V0.19.0 - Cloneablility
+* Java has a really good garbage collector. Basically, instead of objects being stored in memory, Java will store objects on the Heap with a reference count to that object. Once the reference count hits 0, the item is sent to the garbage collector and can now be used for memory. So, I have fully configured the plugin to only create a single object for quests, abilities, effects, and items. The object will then be cloned and the clone will be edited. This will save a lot of space, help with efficiency, and will allow for items to be safely discarded once they are done being used.
++ Fixed some issues with damage not being correctly applied to an entity when you have effects that deal damage
+------------------------------------------------------------------------------------------------------------------------------------------------------
+V0.19.1 - Quest Work
++ Fixed issue with quests, quests now have a new framework that will allow me to be able to get the givable quests of an NPC and make sure the player is not given quests they have completed, are currently working on, OR they have not completed the parent quests of. Giving us the ability to create some accurate quest trees with NPCs
+------------------------------------------------------------------------------------------------------------------------------------------------------
+V0.20.0 - Beginning Combat System
+* Players can now be detected if they are in combat or not
+* Players will start combat phase if they are damaged in any way.
+* Players can assign three slots (3rd, 4th, and 5th) to be quick casting spells. These spells can only be quick casted IF they player is in combat. Scrolling to or Pressing the buttons 3,4,5 will automatically cast the spell and return the player back to their main hand weapon. If the player is not in combat, they can use the spells are normal by scrolling to it. This gives players the ability to quick assign 3 and 5 allowing for quick scroll casting. Or, having an optional spell for certain situations in the middle. Allowing them to click 4 to cast it.
+* InCombat will stay in affect for 60 seconds. If they take damage in that time frame, it will restart the Combat phase.
+* While in combat, teleport is disabled. No one can teleport to you, and you can't teleport to someone.
+------------------------------------------------------------------------------------------------------------------------------------------------------
+V0.20.1 - Combat Looks
+* Added a bassbar to indicate the players current time left for combat.
+* BossBar will reset itself if damage is taken
+* BossBar visibility is configurable for players
+------------------------------------------------------------------------------------------------------------------------------------------------------
+V0.21.0 - Ability Upgrades
+* Added Line as an effect that can be used to create a particle of lines from one location (Player) to another location (Where the player is looking. Either BLOCKAT for getting the block location, or POINT for getting the location of the cross-hair of the player)
+* Added Range that can be used for detecting how far a certain effect like Line can go
+* Added Penetrate that can be used for either stopping or not stopping an effect when hitting an entity
+* Added Damage that can be used to set how much damage an entity will take on effect interacting with them. The entity can only be hit once by the effect so far. Will work on things like continuous effects at a later time.
+------------------------------------------------------------------------------------------------------------------------------------------------------
+V0.22.0 - Sound Addons
+* Sounds can now be played for EACH effect. Allowing for multiple effects to have different sounds instead of the same sound. You can also control the Pitch and Volume. Giving you a lot of freedom for different sounds
+------------------------------------------------------------------------------------------------------------------------------------------------------
+V0.23.0 - Player Information
+* Added Saving Players on leave/server shutdown/change class
+* Added Loading Players on join
+------------------------------------------------------------------------------------------------------------------------------------------------------
+V0.23.1 - Quest Issue
++ Fixed an issue where you would start having duplicate quests causing an issue with updating NPC's to show if they have quests for you or not. Had to make sure to remove the MMOPlayer Object (That stores all of the MMOClasses [That stores all of the quests])) from memory when the player left and to make a new one when the player rejoins. Just to make sure that you don't get duplicate quests since every quest will have it's own name.
++ Made sure that when the player joins, there is a 5 tick (1/4) second delay before it updates the player's quest. This is to make sure everything is loaded before hand
+------------------------------------------------------------------------------------------------------------------------------------------------------
+V0.24.0 - New Effects
+* Added A LIMIT EffectType. It will run every Every ticks (20 ticks = 1 second) Limit number of times. So a limit of 3 every 10 ticks will mean fire this effect 3 times spaced out 1/2 seconds from each other.
+* Added Projectile effect. It can fire any projectile under https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/Projectile.html In the All Known Subinterfaces It IS CASE SENSITIVE
++ Fixed structure of Effect package and subsequent sub-packages to help with code viewing
++ Fixed bug with RepeatingEffect type running forever
+------------------------------------------------------------------------------------------------------------------------------------------------------
+V0.24.1 - ProjectileEffect Damage + MMOPlayer Console Errors
+* Added ability for ProjectileEffect to deal a custom damage amount
++ To help with Console Errors being creating, players will be kicked from the server on reload or quit. This will cause the player to be saved and removed from the server. Making them have to rejoin which will reload their MMOPlayer data. I'm doing this instead of resetting players MMOPlayer data on reload as that can be risky and can cause errors. So, for the time being, taking the lazy way out of it.
+------------------------------------------------------------------------------------------------------------------------------------------------------
+V0.24.1 - BUG FOUND
+An issue was found with the ability to have multiple of the same effects. After a bug was realized in the Cone effect. I was able to then find it in the Main Activates tag of the JSON file. So, I will need to rewrite the entire system for how effects are loaded into the ability.
+------------------------------------------------------------------------------------------------------------------------------------------------------
+V0.24.2 - Ability Loading Rework
++ Fixed issue with loading multiple of the SAME effect. The error was that HashMaps only store one value. This was causing the HashMap to store only one instance of an ability (The last one only) as it was overriding the first one. By changing it to an Array instead, I'm now able to hold multiple instances of the same ability
+------------------------------------------------------------------------------------------------------------------------------------------------------
+V0.24.3 - Fixed EffectInformation Cloning
++ EffectInformation wasn't cloning all available data when it was being clone. This was causing some issues with the Cone effect and not being able to get an arc around the player.
+------------------------------------------------------------------------------------------------------------------------------------------------------
+V0.24.3 - BUG FOUND
+Sounds are not playing anymore due to the change in EffectInformation cloning or how they are being loaded in now with the new rewrite of loading Abilities. Will look into shortly
+------------------------------------------------------------------------------------------------------------------------------------------------------
+V0.25.0 - Class Picker
++ Players now spawn in the Class Picker Location of the config.yml first where they must select an NPC
++ When Players Click on the NPC, it will give them all their equipment, items, and set their location back to where they were
++ Quests will get updated to reveal all quests to the player again
