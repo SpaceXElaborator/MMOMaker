@@ -68,7 +68,9 @@ public class EffectInformation  {
 	public EffectInformation clone() {
 		EffectInformation ei = new EffectInformation();
 		ei.getDamaged().clear();
-		ei.setSounds(ei.getSounds());
+		List<SoundInformation> sounds = new ArrayList<>();
+		sounds.addAll(getSounds());
+		ei.setSounds(sounds);
 		ei.setLocType(getLocType());
 		ei.setType(getType());
 		ei.setDelay(getDelay());

@@ -89,15 +89,16 @@ public class AbilityManager {
 				ei.setRange((effect.containsKey("Range") ? Double.parseDouble(effect.get("Range").toString()) : 10.0));
 				
 				if(effect.containsKey("Sounds")) {
-					JSONObject sounds = (JSONObject) effect.get("Sounds");
-					sounds.forEach((s1, s2) -> {
-						JSONObject sound = (JSONObject) sounds.get(s1.toString());
+					JSONArray sounds = (JSONArray) effect.get("Sounds");
+					
+					for(int x = 0; x < sounds.size(); x++) {
+						JSONObject sound = (JSONObject) sounds.get(x);
 						SoundInformation si = new SoundInformation();
 						si.setSound((sound.containsKey("Sound") ? Sound.valueOf(sound.get("Sound").toString()) : Sound.BLOCK_GLASS_HIT));
 						si.setVolume((sound.containsKey("Volume") ? Float.valueOf(sound.get("Volume").toString()) : 1.0f));
 						si.setPitch((sound.containsKey("Pitch") ? Float.valueOf(sound.get("Pitch").toString()) : 1.0f));
 						ei.getSounds().add(si);
-					});
+					}
 				}
 				
 				// Check for location offset
