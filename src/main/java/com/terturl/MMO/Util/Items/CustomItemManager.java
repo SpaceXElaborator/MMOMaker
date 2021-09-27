@@ -289,7 +289,7 @@ public class CustomItemManager {
 			} else {
 				if(!isArmor) {
 					SlotType st = SlotType.valueOf(s);
-					if(st == SlotType.TRINKET || st == SlotType.OFF_HAND) {} else {
+					if(st == SlotType.BOOTS || st == SlotType.CHEST || st == SlotType.LEGS || st == SlotType.HELMET || st == SlotType.MAIN_HAND) {
 						wbw.write("[" + f.getName() + "] Slot Type for generic items must be either Trinket or Off-hand!");
 						wbw.newLine();
 						load = false;

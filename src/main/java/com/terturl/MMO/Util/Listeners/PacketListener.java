@@ -84,7 +84,7 @@ public class PacketListener {
 												}
 											}
 										}
-									}, 1l);
+									}, 1L);
 								} else if(MinecraftMMO.getInstance().getNpcHandler().isClassNpc(id)) {
 									Future<ClickClassNPCEvent> temp = Bukkit.getScheduler().callSyncMethod(MinecraftMMO.getInstance(), new Callable<ClickClassNPCEvent>() {
 										@Override
@@ -106,7 +106,7 @@ public class PacketListener {
 												}
 											}
 										}
-									}, 1l);
+									}, 1L);
 								} else if(MinecraftMMO.getInstance().getPlayerHandler().isPlayerClassNPC(p, id)) {
 									Future<ClickPlayerClassNPCEvent> temp = Bukkit.getScheduler().callSyncMethod(MinecraftMMO.getInstance(), new Callable<ClickPlayerClassNPCEvent>() {
 										@Override
@@ -128,7 +128,7 @@ public class PacketListener {
 												}
 											}
 										}
-									}, 1l);
+									}, 1L);
 								}else {
 									return;
 								}

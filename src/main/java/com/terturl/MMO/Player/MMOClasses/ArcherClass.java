@@ -35,8 +35,7 @@ public class ArcherClass extends MMOClass {
 
 	@Override
 	public ItemStack startOffHand() {
-		// TODO Auto-generated method stub
-		return null;
+		return new ItemStack(Material.AIR);
 	}
 	
 }

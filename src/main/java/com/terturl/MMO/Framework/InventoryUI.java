@@ -55,6 +55,14 @@ public class InventoryUI implements Listener {
 		p.openInventory(inv);
 	}
 	
+	public void open(Iterable<Player> pls) {
+		for(Player p : pls) open(p);
+	}
+	
+	public void close(Iterable<Player> pls) {
+		for(Player p : pls) close(p);
+	}
+	
 	public void close(Player p) {
 		if(!players.contains(p.getUniqueId())) return;
 		players.remove(p.getUniqueId());
@@ -64,14 +72,6 @@ public class InventoryUI implements Listener {
 		}
 		p.closeInventory();
 		onClose(p);
-	}
-	
-	public void open(Iterable<Player> pls) {
-		for(Player p : pls) open(p);
-	}
-	
-	public void close(Iterable<Player> pls) {
-		for(Player p : pls) close(p);
 	}
 	
 	public Set<UUID> getCurrentPlayers() {
