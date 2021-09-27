@@ -441,20 +441,20 @@ public class NPC {
         this.setASyncSkinByUsername(plugin, player, username, null);
     }
 
-    public void setASyncSkinByUUID(Plugin plugin, Collection<Player> players, UUID uuid) {
-        this.setASyncSkinByUUID(plugin, players, uuid, null);
-    }
-
-    public void setASyncSkinByUUID(Plugin plugin, Player player, UUID uuid) {
-        this.setASyncSkinByUUID(plugin, player, uuid, null);
-    }
-
     public void setASyncSkinByUsername(Plugin plugin, Player player, String username, BiConsumer<Boolean, NPC> callback) {
         SkinTextures.getByUsername(plugin, username, (success, skin)->setASyncSkin(success, skin, player, callback));
     }
 
     public void setASyncSkinByUsername(Plugin plugin, Collection<Player> players, String username, BiConsumer<Boolean, NPC> callback) {
         SkinTextures.getByUsername(plugin, username, (success, skin)->setASyncSkin(success, skin, players, callback));
+    }
+    
+    public void setASyncSkinByUUID(Plugin plugin, Collection<Player> players, UUID uuid) {
+        this.setASyncSkinByUUID(plugin, players, uuid, null);
+    }
+
+    public void setASyncSkinByUUID(Plugin plugin, Player player, UUID uuid) {
+        this.setASyncSkinByUUID(plugin, player, uuid, null);
     }
 
     public void setASyncSkinByUUID(Plugin plugin, Player player, UUID uuid, BiConsumer<Boolean, NPC> callback) {
@@ -1111,6 +1111,38 @@ public class NPC {
             }.runTaskAsynchronously(plugin);
         }
 
+        @SuppressWarnings("unchecked")
+		public static CompletableFuture<SkinTextures> getByUsername(String username) {
+            return CompletableFuture.supplyAsync(()->{
+                JSONArray array = new JSONArray();
+                array.add(username);
+                UUID result = null;
+                try {
+                    HttpRequest request = HttpRequest.newBuilder(new URI(UUID_URL))
+                            .setHeader("Content-Type", "application/json")
+                            .POST(HttpRequest.BodyPublishers.ofString(array.toString()))
+                            .timeout(Duration.ofSeconds(5))
+                            .build();
+
+                    HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+                    if (response.statusCode() == HttpURLConnection.HTTP_OK) {
+                        JSONArray uuidArray = (JSONArray) new JSONParser().parse(response.body());
+                        if (uuidArray.size() > 0) {
+                            String uuidStr = (String) ((JSONObject) uuidArray.get(0)).get("id");
+                            result = UUID.fromString(uuidStr.replaceAll("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})", "$1-$2-$3-$4-$5"));
+                        }
+                    }
+                } catch (URISyntaxException | InterruptedException | IOException | ParseException e) {
+                    e.printStackTrace();
+                }
+                if(result == null)
+                    throw new IllegalArgumentException("SkinTextures not found by username");
+                else {
+                    return getByUUID(result).join();
+                }
+            });
+        }
+
         public static void getByUUID(Plugin plugin, UUID uuid, BiConsumer<Boolean, SkinTextures> callback) {
             new BukkitRunnable(){
                 @Override
@@ -1154,39 +1186,7 @@ public class NPC {
                 }
             }.runTaskAsynchronously(plugin);
         }
-
-        @SuppressWarnings("unchecked")
-		public static CompletableFuture<SkinTextures> getByUsername(String username) {
-            return CompletableFuture.supplyAsync(()->{
-                JSONArray array = new JSONArray();
-                array.add(username);
-                UUID result = null;
-                try {
-                    HttpRequest request = HttpRequest.newBuilder(new URI(UUID_URL))
-                            .setHeader("Content-Type", "application/json")
-                            .POST(HttpRequest.BodyPublishers.ofString(array.toString()))
-                            .timeout(Duration.ofSeconds(5))
-                            .build();
-
-                    HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
-                    if (response.statusCode() == HttpURLConnection.HTTP_OK) {
-                        JSONArray uuidArray = (JSONArray) new JSONParser().parse(response.body());
-                        if (uuidArray.size() > 0) {
-                            String uuidStr = (String) ((JSONObject) uuidArray.get(0)).get("id");
-                            result = UUID.fromString(uuidStr.replaceAll("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})", "$1-$2-$3-$4-$5"));
-                        }
-                    }
-                } catch (URISyntaxException | InterruptedException | IOException | ParseException e) {
-                    e.printStackTrace();
-                }
-                if(result == null)
-                    throw new IllegalArgumentException("SkinTextures not found by username");
-                else {
-                    return getByUUID(result).join();
-                }
-            });
-        }
-
+        
         public static CompletableFuture<SkinTextures> getByUUID(UUID uuid) {
             return CompletableFuture.supplyAsync(()->{
                 SkinTextures result = null;
