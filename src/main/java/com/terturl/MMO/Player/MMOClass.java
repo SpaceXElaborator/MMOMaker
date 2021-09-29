@@ -32,6 +32,9 @@ public abstract class MMOClass implements Cloneable {
 	@Getter
 	private String name;
 
+	@Getter @Setter
+	private ItemStack helmet, chest, legs, boots, mainH, offH;
+	
 	public MMOClass(String name) {
 		this.name = name;
 	}

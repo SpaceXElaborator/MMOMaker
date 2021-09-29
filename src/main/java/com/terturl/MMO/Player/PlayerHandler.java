@@ -26,9 +26,11 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.terturl.MMO.MinecraftMMO;
 import com.terturl.MMO.Quests.Quest;
+import com.terturl.MMO.Util.ItemUtils;
 import com.terturl.MMO.Util.JsonFileInterpretter;
 import com.terturl.MMO.Util.LocationUtils;
 import com.terturl.MMO.Util.NPC;
+import com.terturl.MMO.Util.NPC.ItemSlot;
 
 import lombok.Getter;
 
@@ -77,7 +79,14 @@ public class PlayerHandler {
 	public void pickClass(Player p, Integer i) {
 		MMOPlayer mp = getPlayer(p);
 		mp.setCurrentCharacter(i);
-		mp.getPlayer().teleport(mp.getMmoClasses().get(mp.getCurrentCharacter()).getClassLocation());
+		MMOClass mc = mp.getMmoClasses().get(mp.getCurrentCharacter());
+		p.getInventory().setHelmet(mc.getHelmet());
+		p.getInventory().setChestplate(mc.getChest());
+		p.getInventory().setLeggings(mc.getLegs());
+		p.getInventory().setBoots(mc.getBoots());
+		p.getInventory().setItem(0, mc.getMainH());
+		p.getInventory().setItem(1, mc.getOffH());
+		mp.getPlayer().teleport(mc.getClassLocation());
 		Bukkit.getScheduler().runTaskLater(MinecraftMMO.getInstance(), new Runnable() {
 			public void run() {
 				mp.updateNPCQuests();
@@ -87,6 +96,8 @@ public class PlayerHandler {
 	
 	@SuppressWarnings("unchecked")
 	public void loadPlayer(Player p) {
+		p.getInventory().clear();
+		p.updateInventory();
 		File f = new File(playersFolder, p.getUniqueId() + ".json");
 		MMOPlayer mp = new MMOPlayer(p);
 		JsonFileInterpretter config = new JsonFileInterpretter(f);
@@ -113,6 +124,15 @@ public class PlayerHandler {
 				if(mc.getCompletedQuests().contains(e.toString())) return;
 				mc.getCompletedQuests().add(e.toString());
 			});
+			JSONObject inv = (JSONObject) clazz.get("Inventory");
+			
+			mc.setHelmet(ItemUtils.JSONToItem((JSONObject) inv.get("Helmet")));
+			mc.setChest(ItemUtils.JSONToItem((JSONObject) inv.get("Chestplate")));
+			mc.setLegs(ItemUtils.JSONToItem((JSONObject) inv.get("Leggings")));
+			mc.setBoots(ItemUtils.JSONToItem((JSONObject) inv.get("Boots")));
+			mc.setMainH(ItemUtils.JSONToItem((JSONObject) inv.get("MainHand")));
+			mc.setOffH(ItemUtils.JSONToItem((JSONObject) inv.get("OffHand")));
+			
 			mp.getMmoClasses().add(mc);
 		});
 		
@@ -122,6 +142,12 @@ public class PlayerHandler {
 			NPC npc = new NPC(MinecraftMMO.getInstance().getMmoConfiguration().getClassSpawnLocations().get(i), "Character " + String.valueOf(i));
 			npc.spawnNPC(p);
 			npc.setHeldClass(mc);
+			npc.setEquipment(p, ItemSlot.HELMET, mc.getHelmet());
+			npc.setEquipment(p, ItemSlot.CHESTPLATE, mc.getChest());
+			npc.setEquipment(p, ItemSlot.LEGGINGS, mc.getLegs());
+			npc.setEquipment(p, ItemSlot.BOOTS, mc.getBoots());
+			npc.setEquipment(p, ItemSlot.MAIN_HAND, mc.getMainH());
+			npc.setEquipment(p, ItemSlot.OFF_HAND, mc.getOffH());
 			playerOnlyNPCs.add(npc);
 			i++;
 		}
@@ -171,6 +197,7 @@ public class PlayerHandler {
 		JSONObject jo = new JSONObject();
 		JSONObject classes = new JSONObject();
 		int i = 1;
+		// TODO: Fix this on a per class basis. Since right now all classes with have the exact same item all the time
 		for(MMOClass mc : mp.getMmoClasses()) {
 			JSONObject clazz = new JSONObject();
 			String s = mc.getName();
@@ -197,6 +224,16 @@ public class PlayerHandler {
 			clazz.put("Completed", completed);
 			clazz.put("Completable", completable);
 			clazz.put("Active", inProg);
+			
+			JSONObject inv = new JSONObject();
+			inv.put("Helmet", ItemUtils.itemToJSON(p.getInventory().getHelmet()));
+			inv.put("Chestplate", ItemUtils.itemToJSON(p.getInventory().getChestplate()));
+			inv.put("Leggings", ItemUtils.itemToJSON(p.getInventory().getLeggings()));
+			inv.put("Boots", ItemUtils.itemToJSON(p.getInventory().getBoots()));
+			inv.put("MainHand", ItemUtils.itemToJSON(p.getInventory().getItem(0)));
+			inv.put("OffHand", ItemUtils.itemToJSON(p.getInventory().getItem(1)));
+			clazz.put("Inventory", inv);
+			
 			classes.put("Class" + String.valueOf(i), clazz);
 			i++;
 		}
