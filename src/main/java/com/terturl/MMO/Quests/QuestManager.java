@@ -31,6 +31,10 @@ public class QuestManager {
 				String denyString = config.contains("Deny") ? config.getString("Deny") : "That's Very Sad Traveller";
 				String acceptString = config.contains("Accept") ? config.getString("Accept") : "Thank you Traveller!";
 				String type = config.contains("Type") ? config.getString("Type") : "Basic";
+				Double money = config.contains("Money") ? config.getDouble("Money") : 0.0;
+				Double xp = config.contains("XP") ? config.getDouble("XP") : 0.0;
+				List<String> customItems = config.contains("Items") ? config.getStringList("Items") : new ArrayList<>();
+				List<String> questRewards = config.contains("RewardQuests") ? config.getStringList("RewardQuests") : new ArrayList<>();
 				List<String> parentQuests = config.contains("Parents") ? config.getStringList("Parents") : new ArrayList<>();
 				if(name == null || descString == null) continue;
 				
@@ -45,6 +49,10 @@ public class QuestManager {
 				((Quest) q).setDenyString(denyString);
 				((Quest) q).setPresentString(presentString);
 				((Quest) q).setParentQuests(parentQuests);
+				((Quest) q).setXp(xp);
+				((Quest) q).setMoney(money);
+				((Quest) q).setItems(customItems);
+				((Quest) q).setChildQuests(questRewards);
 				allQuests.add((Quest) q);
 			}
 		}
