@@ -21,6 +21,7 @@ public class LocationQuest extends Quest {
 
 	public void completeQuest(Player p) {
 		p.sendMessage("You have completed the quest");
+		giveRewards(p);
 	}
 
 	public boolean hasComplete(Player p) {

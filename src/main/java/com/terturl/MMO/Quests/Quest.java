@@ -5,6 +5,11 @@ import java.util.List;
 
 import org.bukkit.entity.Player;
 
+import com.terturl.MMO.MinecraftMMO;
+import com.terturl.MMO.Player.MMOClass;
+import com.terturl.MMO.Player.MMOPlayer;
+import com.terturl.MMO.Util.Items.CustomItem;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,10 +27,17 @@ public abstract class Quest implements Cloneable {
 	private List<String> parentQuests = new ArrayList<>();
 	
 	@Getter @Setter
-	private Quest childQuest = null;
+	private QuestType type;
+	
+	// Rewards
+	@Getter @Setter
+	private List<String> childQuests = new ArrayList<>();
 	
 	@Getter @Setter
-	private QuestType type;
+	private Double money, xp = 0.0;
+	
+	@Getter @Setter
+	private List<String> items = new ArrayList<>();
 	
 	public Quest(String name) {
 		setName(name);
@@ -42,6 +54,26 @@ public abstract class Quest implements Cloneable {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public void giveRewards(Player p) {
+		MMOPlayer mp = MinecraftMMO.getInstance().getPlayerHandler().getPlayer(p);
+		MMOClass mc = mp.getMmoClasses().get(mp.getCurrentCharacter());
+		if(money != 0) mc.setMoney(mc.getMoney() + money);
+		if(xp != 0) mc.setXp(mc.getXp() + xp);
+		if(childQuests.size() != 0) {
+			for(String s : childQuests) {
+				Quest q = MinecraftMMO.getInstance().getQuestManager().getQuest(s);
+				mc.getActiveQuests().add(q);
+			}
+		}
+		if(items.size() != 0) {
+			for(String s : items) {
+				CustomItem ci = MinecraftMMO.getInstance().getItemManager().getItem(s);
+				p.getInventory().addItem(ci.makeItem());
+				p.updateInventory();
+			}
+		}
 	}
 	
 	public abstract boolean hasComplete(Player p);

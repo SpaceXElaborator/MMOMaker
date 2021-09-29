@@ -106,9 +106,13 @@ public class PlayerHandler {
 			JSONObject clazz = (JSONObject) jo.get(k.toString());
 			Integer level = Integer.valueOf(clazz.get("Level").toString());
 			Location loc = LocationUtils.locationDeSerializer(clazz.get("Location").toString());
+			Double mon = Double.valueOf(clazz.get("Currency").toString());
+			Double xp = Double.valueOf(clazz.get("XP").toString());
 			MMOClass mc = (MMOClass) MinecraftMMO.getInstance().getClassHandler().getClass(clazz.get("Class").toString()).clone();
+			mc.setMoney(mon);
 			mc.setLevel(level);
 			mc.setClassLocation(loc);
+			mc.setXp(xp);
 			JSONArray active = (JSONArray)clazz.get("Active");
 			active.forEach(e -> {
 				if(mc.getActiveQuests().contains(MinecraftMMO.getInstance().getQuestManager().getQuest(e.toString()))) return;
@@ -203,6 +207,8 @@ public class PlayerHandler {
 			String s = mc.getName();
 			String loc = LocationUtils.locationSerializer(mc.getClassLocation());
 			Integer level = mc.getLevel();
+			Double mon = mc.getMoney();
+			Double xp = mc.getXp();
 			JSONArray completed = new JSONArray();
 			for(String completedName : mc.getCompletedQuests()) {
 				if(completed.contains(completedName)) continue;
@@ -220,6 +226,8 @@ public class PlayerHandler {
 			}
 			clazz.put("Class", s);
 			clazz.put("Level", level);
+			clazz.put("XP", xp);
+			clazz.put("Currency", mon);
 			clazz.put("Location", loc);
 			clazz.put("Completed", completed);
 			clazz.put("Completable", completable);

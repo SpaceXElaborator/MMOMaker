@@ -27,6 +27,11 @@ public abstract class MMOClass implements Cloneable {
 	private List<Quest> completedableQuests = new ArrayList<>();
 
 	@Getter @Setter
+	private Double money = 0.0;
+	@Getter @Setter
+	private Double xp = 0.0;
+	
+	@Getter @Setter
 	private Location classLocation;
 	
 	@Getter
