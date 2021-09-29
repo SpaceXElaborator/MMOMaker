@@ -4,8 +4,13 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.entity.EntityType;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
 import com.terturl.MMO.MinecraftMMO;
 import com.terturl.MMO.Quests.Subquests.BasicQuest;
+import com.terturl.MMO.Quests.Subquests.EntityKillQuest;
 import com.terturl.MMO.Quests.Subquests.LocationQuest;
 import com.terturl.MMO.Util.JsonFileInterpretter;
 import com.terturl.MMO.Util.LocationUtils;
@@ -37,9 +42,18 @@ public class QuestManager {
 				List<String> questRewards = config.contains("RewardQuests") ? config.getStringList("RewardQuests") : new ArrayList<>();
 				List<String> parentQuests = config.contains("Parents") ? config.getStringList("Parents") : new ArrayList<>();
 				if(name == null || descString == null) continue;
-				
+
 				if(type.equalsIgnoreCase("location")) {
 					q = new LocationQuest(name, LocationUtils.locationDeSerializer(config.getString("Location")));
+				} else if(type.equalsIgnoreCase("killEntity")) { 
+					q = new EntityKillQuest(name);
+					JSONArray ja = config.getArray("EntityInformation");
+					for(Object o : ja) {
+						JSONObject jo = (JSONObject)o;
+						EntityType et = EntityType.valueOf(jo.get("Type").toString().toUpperCase());
+						Integer amount = Integer.parseInt(jo.get("Amount").toString());
+						((EntityKillQuest) q).addEntityToKill(et, amount);
+					}
 				} else {
 					q = new BasicQuest(name);
 				}

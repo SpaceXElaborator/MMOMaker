@@ -18,13 +18,8 @@ public class PlayerMoveListeners implements Listener {
 
 	@EventHandler
 	public void onMove(PlayerMoveEvent e) {
-		//if(!MinecraftMMO.getInstance().getPlayerHandler().PlayerExists(e.getPlayer())) return;
 		MMOPlayer mp = MinecraftMMO.getInstance().getPlayerHandler().getPlayer(e.getPlayer());
 		if(mp == null) return;
-//		if(mp.isHasUpdated()) {
-//			mp.setHasUpdated(true);
-//			mp.updateNPCQuests();
-//		}
 		MMOClass mc = mp.getMmoClasses().get(mp.getCurrentCharacter());
 		List<Quest> moveQuests = mc.getActiveQuests().stream().filter(q -> q.getType().equals(QuestType.LOCATION)).collect(Collectors.toList());
 		for(Quest q : moveQuests) {

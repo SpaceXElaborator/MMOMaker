@@ -44,7 +44,7 @@ public abstract class Quest implements Cloneable {
 	}
 	
 	public enum QuestType {
-		LOCATION;
+		LOCATION, KILLENTITY;
 	}
 	
 	public Object clone() {
