@@ -25,8 +25,9 @@ public class EntityKillQuest extends Quest {
 	
 	public void addEntityToKill(EntityType et, Integer amount) {
 		amountToKill.put(et, amount);
+		hasKilled.put(et, 0);
 	}
-
+	
 	@Override
 	public boolean hasComplete(Player p) {
 		for(EntityType et : amountToKill.keySet()) {
@@ -39,6 +40,24 @@ public class EntityKillQuest extends Quest {
 	public void completeQuest(Player p) {
 		p.sendMessage("You have completed the quest");
 		giveRewards(p);
+	}
+
+	@Override
+	public Object clone() {
+		EntityKillQuest q = new EntityKillQuest(getName());
+		q.setAcceptString(getAcceptString());
+		q.setChildQuests(getChildQuests());
+		q.setDenyString(getDenyString());
+		q.setDescString(getDescString());
+		q.setItems(getItems());
+		q.setMoney(getMoney());
+		q.setXp(getXp());
+		q.setParentQuests(getParentQuests());
+		q.setPresentString(getPresentString());
+		q.setType(getType());
+		q.setAmountToKill(amountToKill);
+		q.setHasKilled(hasKilled);
+		return q;
 	}
 
 }

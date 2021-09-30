@@ -30,5 +30,21 @@ public class LocationQuest extends Quest {
 		}
 		return false;
 	}
+
+	@Override
+	public Object clone() {
+		LocationQuest q = new LocationQuest(getName(), getLoc());
+		q.setAcceptString(getAcceptString());
+		q.setChildQuests(getChildQuests());
+		q.setDenyString(getDenyString());
+		q.setDescString(getDescString());
+		q.setItems(getItems());
+		q.setMoney(getMoney());
+		q.setXp(getXp());
+		q.setParentQuests(getParentQuests());
+		q.setPresentString(getPresentString());
+		q.setType(getType());
+		return q;
+	}
 	
 }

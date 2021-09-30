@@ -76,6 +76,11 @@ public class PlayerHandler {
 		players.remove(removalInt);
 	}
 	
+	public void giveBasicItems(Player p) {
+		p.getInventory().setItem(8, new ItemStack(Material.BOOK));
+		p.updateInventory();
+	}
+	
 	public void pickClass(Player p, Integer i) {
 		MMOPlayer mp = getPlayer(p);
 		mp.setCurrentCharacter(i);
@@ -87,6 +92,7 @@ public class PlayerHandler {
 		p.getInventory().setItem(0, mc.getMainH());
 		p.getInventory().setItem(1, mc.getOffH());
 		mp.getPlayer().teleport(mc.getClassLocation());
+		giveBasicItems(p);
 		Bukkit.getScheduler().runTaskLater(MinecraftMMO.getInstance(), new Runnable() {
 			public void run() {
 				mp.updateNPCQuests();
@@ -214,15 +220,19 @@ public class PlayerHandler {
 				if(completed.contains(completedName)) continue;
 				completed.add(completedName);
 			}
+			
 			JSONArray completable = new JSONArray();
 			for(Quest q : mc.getCompletedableQuests()) {
 				if(completable.contains(q.getName())) continue;
 				completable.add(q.getName());
 			}
+			
 			JSONArray inProg = new JSONArray();
 			for(Quest q : mc.getActiveQuests()) {
 				if(inProg.contains(q.getName())) continue;
-				inProg.add(q.getName());
+				JSONObject questJO = new JSONObject();
+				questJO.put("Type", q.getType());
+				
 			}
 			clazz.put("Class", s);
 			clazz.put("Level", level);

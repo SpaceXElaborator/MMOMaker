@@ -8,6 +8,8 @@ import org.bukkit.entity.Player;
 import com.terturl.MMO.MinecraftMMO;
 import com.terturl.MMO.Player.MMOClass;
 import com.terturl.MMO.Player.MMOPlayer;
+import com.terturl.MMO.Quests.Subquests.EntityKillQuest;
+import com.terturl.MMO.Quests.Subquests.LocationQuest;
 import com.terturl.MMO.Util.Items.CustomItem;
 
 import lombok.EqualsAndHashCode;
@@ -15,7 +17,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @EqualsAndHashCode
-public abstract class Quest implements Cloneable {
+public abstract class Quest {
 	
 	@Getter @Setter
 	private String name;
@@ -47,14 +49,7 @@ public abstract class Quest implements Cloneable {
 		LOCATION, KILLENTITY;
 	}
 	
-	public Object clone() {
-		try {
-			return super.clone();
-		} catch (CloneNotSupportedException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
+	public abstract Object clone();
 	
 	public void giveRewards(Player p) {
 		MMOPlayer mp = MinecraftMMO.getInstance().getPlayerHandler().getPlayer(p);
@@ -63,8 +58,16 @@ public abstract class Quest implements Cloneable {
 		if(xp != 0) mc.setXp(mc.getXp() + xp);
 		if(childQuests.size() != 0) {
 			for(String s : childQuests) {
-				Quest q = MinecraftMMO.getInstance().getQuestManager().getQuest(s);
-				mc.getActiveQuests().add(q);
+				Object q = null;
+				q = MinecraftMMO.getInstance().getQuestManager().getQuest(s);
+				
+				if(q instanceof LocationQuest) {
+					q = (LocationQuest)q;
+				} else if(q instanceof EntityKillQuest) {
+					q = (EntityKillQuest)q;
+				}
+				
+				mc.getActiveQuests().add((Quest) q);
 			}
 		}
 		if(items.size() != 0) {

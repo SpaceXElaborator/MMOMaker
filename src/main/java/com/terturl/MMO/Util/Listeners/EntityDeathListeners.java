@@ -20,21 +20,23 @@ public class EntityDeathListeners implements Listener {
 
 	@EventHandler
 	public void EntityDeath(EntityDeathEvent e) {
-		Player p = e.getEntity().getKiller();
-		MMOPlayer mp = MinecraftMMO.getInstance().getPlayerHandler().getPlayer(p);
-		if(mp == null) return;
-		MMOClass mc = mp.getMmoClasses().get(mp.getCurrentCharacter());
-		List<Quest> killQuests = mc.getActiveQuests().stream().filter(q -> q.getType().equals(QuestType.KILLENTITY)).collect(Collectors.toList());
-		EntityType et = e.getEntity().getType();
-		for(Quest q : killQuests) {
-			EntityKillQuest ekq = (EntityKillQuest)q;
-			if(!ekq.getAmountToKill().containsKey(et)) continue;
-			ekq.getHasKilled().put(et, ekq.getHasKilled().get(et) + 1);
-			if(ekq.hasComplete(p)) {
-				ekq.completeQuest(p);
-				mc.getCompletedQuests().add(q.getName());
-				mc.getActiveQuests().remove(q);
-				mp.updateNPCQuests();
+		if(e.getEntity().getKiller() instanceof Player) {
+			Player p = e.getEntity().getKiller();
+			MMOPlayer mp = MinecraftMMO.getInstance().getPlayerHandler().getPlayer(p);
+			if(mp == null) return;
+			MMOClass mc = mp.getMmoClasses().get(mp.getCurrentCharacter());
+			List<Quest> killQuests = mc.getActiveQuests().stream().filter(q -> q.getType().equals(QuestType.KILLENTITY)).collect(Collectors.toList());
+			EntityType et = e.getEntity().getType();
+			for(Quest q : killQuests) {
+				EntityKillQuest ekq = (EntityKillQuest)q;
+				if(!ekq.getAmountToKill().containsKey(et)) continue;
+				ekq.getHasKilled().put(et, ekq.getHasKilled().get(et) + 1);
+				if(ekq.hasComplete(p)) {
+					ekq.completeQuest(p);
+					mc.getCompletedQuests().add(q.getName());
+					mc.getActiveQuests().remove(q);
+					mp.updateNPCQuests();
+				}
 			}
 		}
 	}
