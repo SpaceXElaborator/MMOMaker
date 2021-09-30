@@ -234,12 +234,12 @@ public class PlayerHandler {
 			clazz.put("Active", inProg);
 			
 			JSONObject inv = new JSONObject();
-			inv.put("Helmet", ItemUtils.itemToJSON(p.getInventory().getHelmet()));
-			inv.put("Chestplate", ItemUtils.itemToJSON(p.getInventory().getChestplate()));
-			inv.put("Leggings", ItemUtils.itemToJSON(p.getInventory().getLeggings()));
-			inv.put("Boots", ItemUtils.itemToJSON(p.getInventory().getBoots()));
-			inv.put("MainHand", ItemUtils.itemToJSON(p.getInventory().getItem(0)));
-			inv.put("OffHand", ItemUtils.itemToJSON(p.getInventory().getItem(1)));
+			inv.put("Helmet", (p.getInventory().getHelmet() != null) ? ItemUtils.itemToJSON(p.getInventory().getHelmet()) : ItemUtils.itemToJSON(new ItemStack(Material.AIR)));
+			inv.put("Chestplate", (p.getInventory().getChestplate() != null) ? ItemUtils.itemToJSON(p.getInventory().getChestplate()) : ItemUtils.itemToJSON(new ItemStack(Material.AIR)));
+			inv.put("Leggings", (p.getInventory().getLeggings() != null) ? ItemUtils.itemToJSON(p.getInventory().getLeggings()) : ItemUtils.itemToJSON(new ItemStack(Material.AIR)));
+			inv.put("Boots", (p.getInventory().getBoots() != null) ? ItemUtils.itemToJSON(p.getInventory().getBoots()) : ItemUtils.itemToJSON(new ItemStack(Material.AIR)));
+			inv.put("MainHand", (p.getInventory().getItem(0) != null) ? ItemUtils.itemToJSON(p.getInventory().getItem(0)) : ItemUtils.itemToJSON(new ItemStack(Material.AIR)));
+			inv.put("OffHand", (p.getInventory().getItem(1) != null) ? ItemUtils.itemToJSON(p.getInventory().getItem(1)) : ItemUtils.itemToJSON(new ItemStack(Material.AIR)));
 			clazz.put("Inventory", inv);
 			
 			classes.put("Class" + String.valueOf(i), clazz);
