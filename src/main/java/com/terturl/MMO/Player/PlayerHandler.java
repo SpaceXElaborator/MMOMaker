@@ -15,6 +15,7 @@ import java.util.TreeMap;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.inventory.ItemStack;
@@ -26,6 +27,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.terturl.MMO.MinecraftMMO;
 import com.terturl.MMO.Quests.Quest;
+import com.terturl.MMO.Quests.Subquests.EntityKillQuest;
+import com.terturl.MMO.Quests.Subquests.LocationQuest;
 import com.terturl.MMO.Util.ItemUtils;
 import com.terturl.MMO.Util.JsonFileInterpretter;
 import com.terturl.MMO.Util.LocationUtils;
@@ -121,8 +124,23 @@ public class PlayerHandler {
 			mc.setXp(xp);
 			JSONArray active = (JSONArray)clazz.get("Active");
 			active.forEach(e -> {
-				if(mc.getActiveQuests().contains(MinecraftMMO.getInstance().getQuestManager().getQuest(e.toString()))) return;
-				mc.getActiveQuests().add(MinecraftMMO.getInstance().getQuestManager().getQuest(e.toString()));
+				JSONObject inProg = (JSONObject)e;
+				if(mc.getActiveQuests().contains(MinecraftMMO.getInstance().getQuestManager().getQuest(inProg.get("Name").toString()))) return;
+				// mc.getActiveQuests().add(MinecraftMMO.getInstance().getQuestManager().getQuest(e.toString()));
+				Quest q = MinecraftMMO.getInstance().getQuestManager().getQuest(inProg.get("Name").toString());
+				if(q instanceof LocationQuest) {
+					((LocationQuest) q).setLoc(LocationUtils.locationDeSerializer(inProg.get("Location").toString()));
+				} else if(q instanceof EntityKillQuest) {
+					JSONArray entries = (JSONArray)inProg.get("Entities");
+					entries.forEach(e2 -> {
+						JSONObject entity = (JSONObject)e2;
+						EntityType et = EntityType.valueOf(entity.get("Type").toString());
+						Integer amount = Integer.parseInt(entity.get("Amount").toString());
+						((EntityKillQuest) q).getHasKilled().put(et, amount);
+					});
+				}
+				
+				mc.getActiveQuests().add(q);
 			});
 			JSONArray completable = (JSONArray)clazz.get("Completable");
 			completable.forEach(e -> {
@@ -231,8 +249,21 @@ public class PlayerHandler {
 			for(Quest q : mc.getActiveQuests()) {
 				if(inProg.contains(q.getName())) continue;
 				JSONObject questJO = new JSONObject();
-				questJO.put("Type", q.getType());
+				questJO.put("Name", q.getName());
 				
+				if(q instanceof LocationQuest) {
+					questJO.put("Location", LocationUtils.locationSerializer(((LocationQuest) q).getLoc()));
+				} else if(q instanceof EntityKillQuest) {
+					JSONArray hasKilled = new JSONArray();
+					for(EntityType et : ((EntityKillQuest) q).getHasKilled().keySet()) {
+						JSONObject entry = new JSONObject();
+						entry.put("Type", et.toString());
+						entry.put("Amount", ((EntityKillQuest) q).getHasKilled().get(et));
+						hasKilled.add(entry);
+					}
+					questJO.put("Entities", hasKilled);
+				}
+				inProg.add(questJO);
 			}
 			clazz.put("Class", s);
 			clazz.put("Level", level);
