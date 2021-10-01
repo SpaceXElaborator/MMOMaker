@@ -17,10 +17,12 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import com.google.gson.Gson;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.nbt.NBTTagCompound;
 
+@EqualsAndHashCode
 public class CustomItem {
 
 	@Getter
@@ -169,9 +171,6 @@ public class CustomItem {
 		}
 		m.setCustomModelData(getCustomItemModel());
 		i.setItemMeta(m);
-//		if(i instanceof Damageable) {
-//			((Damageable)i).setDamage(getItemDamage());
-//		}
 		net.minecraft.world.item.ItemStack stack = CraftItemStack.asNMSCopy(i);
 		NBTTagCompound tag = stack.getTag() != null ? stack.getTag() : new NBTTagCompound();
 		tag.setString("CustomItem", "true");
