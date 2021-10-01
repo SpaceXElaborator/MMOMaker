@@ -20,4 +20,10 @@ public class ShopManager {
 		playerShops.add(ps);
 	}
 	
+	public void removePlayerShop(PlayerShop ps) {
+		if(playerShops.contains(ps)) {
+			playerShops.remove(ps);
+		}
+	}
+	
 }

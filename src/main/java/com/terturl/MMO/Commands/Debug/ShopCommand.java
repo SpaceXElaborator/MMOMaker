@@ -12,7 +12,7 @@ public class ShopCommand extends CraftCommand {
 	}
 	
 	public void handleCommand(Player p, String[] args) {
-		MinecraftMMO.getInstance().getShopManager().createPlayerShop(p, p.getLocation().add(0, 1, 0));
+		MinecraftMMO.getInstance().getShopManager().createPlayerShop(p, p.getLocation().getBlock().getLocation());
 	}
 	
 }
