@@ -25,6 +25,7 @@ import com.terturl.MMO.Framework.CraftCommand;
 import com.terturl.MMO.Player.PlayerHandler;
 import com.terturl.MMO.Player.MMOClasses.ArcherClass;
 import com.terturl.MMO.Player.MMOClasses.ClassHandler;
+import com.terturl.MMO.Player.Shops.ShopManager;
 import com.terturl.MMO.Quests.QuestManager;
 import com.terturl.MMO.Util.NPCManager;
 import com.terturl.MMO.Util.Items.CustomItemManager;
@@ -56,6 +57,8 @@ public class MinecraftMMO extends JavaPlugin {
 	private QuestManager questManager;
 	@Getter
 	private ArmorStandMobController mobController;
+	@Getter
+	private ShopManager shopManager;
 	
 	private static MinecraftMMO instance;
 	
@@ -72,6 +75,8 @@ public class MinecraftMMO extends JavaPlugin {
 		playerHandler = new PlayerHandler();
 		mmoConfiguration = new Configuration();
 		abilityManager = new AbilityManager();
+		
+		shopManager = new ShopManager();
 		
 		try {
 			itemManager = new CustomItemManager();
