@@ -283,7 +283,7 @@ public class CustomItem {
 	}
 
 	public enum SlotType {
-		MAIN_HAND, OFF_HAND, HELMET, CHEST, LEGS, BOOTS, TRINKET;
+		MAIN_HAND, OFF_HAND, HELMET, CHEST, LEGS, BOOTS, TRINKET, DROP;
 
 		public static boolean exists(String s) {
 
