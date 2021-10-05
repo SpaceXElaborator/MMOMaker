@@ -97,8 +97,8 @@ public class CustomItem {
 		madeBy = p.getName();
 	}
 	
-	public ItemStack makeItem() {
-		ItemStack i = new ItemStack(getItemMat());
+	public ItemStack makeItem(Integer amt) {
+		ItemStack i = new ItemStack(getItemMat(), amt);
 		ItemMeta m = i.getItemMeta();
 		m.setDisplayName(getRarity().getChatColor() + getName().replaceAll("_", " "));
 		m.setUnbreakable(true);
@@ -179,6 +179,10 @@ public class CustomItem {
 		stack.setTag(tag);
 		ItemStack after = CraftItemStack.asBukkitCopy(stack);
 		return after;
+	}
+	
+	public ItemStack makeItem() {
+		return makeItem(1);
 	}
 
 	public Integer getRandom(String s) {
