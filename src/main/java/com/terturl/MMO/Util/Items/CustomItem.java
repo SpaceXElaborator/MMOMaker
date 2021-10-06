@@ -150,19 +150,27 @@ public class CustomItem {
 						+ " " + ChatColor.GOLD + "+" + df.format(mult));
 			}
 		}
-		for(String s : getLore()) {
-			lore.add("");
-			lore.add(ChatColor.translateAlternateColorCodes('&', s));
+		
+		if(getLore().size() > 0) {
 			lore.add("");
 		}
+		
+		for(String s : getLore()) {
+			lore.add(ChatColor.translateAlternateColorCodes('&', s));
+		}
+		
 		if (!getMadeBy().isEmpty()) {
+			lore.add("");
 			lore.add(getCraftingRarity().getChatColor() + getCraftingRarity().getFriendlyName());
 			lore.add(ChatColor.GRAY + "Creator: " + ChatColor.DARK_GRAY + getMadeBy());
 		}
+		
 		if (isSoulBound()) {
 			lore.add(ChatColor.GRAY + "" + ChatColor.ITALIC + "Soul-Bound");
 		}
+		
 		if(getDurability() != 0.0 && getMaxDurability() != 0.0) {
+			lore.add("");
 			lore.add(ChatColor.GRAY + "Durability: " + String.valueOf(getDurability()) + "/"
 					+ String.valueOf(getMaxDurability()));
 		}
