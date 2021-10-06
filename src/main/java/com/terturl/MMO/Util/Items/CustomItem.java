@@ -104,7 +104,9 @@ public class CustomItem {
 		m.setUnbreakable(true);
 		List<String> lore = new ArrayList<String>();
 		lore.add(ChatColor.GOLD + "Level: " + String.valueOf(getItemLevel()));
-		lore.add("");
+		if(getMods().size() > 1) {
+			lore.add("");
+		}
 		for (Modifiers mods : getMods().keySet()) {
 			if (getCraftingRarity() == null) {
 				Object o = getMods().get(mods);
@@ -148,11 +150,11 @@ public class CustomItem {
 						+ " " + ChatColor.GOLD + "+" + df.format(mult));
 			}
 		}
-		lore.add("");
 		for(String s : getLore()) {
+			lore.add("");
 			lore.add(ChatColor.translateAlternateColorCodes('&', s));
+			lore.add("");
 		}
-		lore.add("");
 		if (!getMadeBy().isEmpty()) {
 			lore.add(getCraftingRarity().getChatColor() + getCraftingRarity().getFriendlyName());
 			lore.add(ChatColor.GRAY + "Creator: " + ChatColor.DARK_GRAY + getMadeBy());
