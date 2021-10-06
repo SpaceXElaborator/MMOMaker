@@ -26,6 +26,7 @@ import com.google.common.base.Objects;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.terturl.MMO.MinecraftMMO;
+import com.terturl.MMO.Player.Skills.Crafting.CraftingSkill;
 import com.terturl.MMO.Quests.Quest;
 import com.terturl.MMO.Quests.Subquests.EntityKillQuest;
 import com.terturl.MMO.Quests.Subquests.LocationQuest;
@@ -122,6 +123,11 @@ public class PlayerHandler {
 			mc.setLevel(level);
 			mc.setClassLocation(loc);
 			mc.setXp(xp);
+			
+			JSONObject craftSkill = (JSONObject)clazz.get("CraftingSkill");
+			mc.getCraftSkill().setLevel(Integer.valueOf(craftSkill.get("Level").toString()));
+			mc.getCraftSkill().setXp(Double.parseDouble(craftSkill.get("XP").toString()));
+			
 			JSONArray active = (JSONArray)clazz.get("Active");
 			active.forEach(e -> {
 				JSONObject inProg = (JSONObject)e;
@@ -227,64 +233,73 @@ public class PlayerHandler {
 		int i = 1;
 		// TODO: Fix this on a per class basis. Since right now all classes with have the exact same item all the time
 		for(MMOClass mc : mp.getMmoClasses()) {
-			JSONObject clazz = new JSONObject();
-			String s = mc.getName();
-			String loc = LocationUtils.locationSerializer(mc.getClassLocation());
-			Integer level = mc.getLevel();
-			Double mon = mc.getMoney();
-			Double xp = mc.getXp();
-			JSONArray completed = new JSONArray();
-			for(String completedName : mc.getCompletedQuests()) {
-				if(completed.contains(completedName)) continue;
-				completed.add(completedName);
-			}
-			
-			JSONArray completable = new JSONArray();
-			for(Quest q : mc.getCompletedableQuests()) {
-				if(completable.contains(q.getName())) continue;
-				completable.add(q.getName());
-			}
-			
-			JSONArray inProg = new JSONArray();
-			for(Quest q : mc.getActiveQuests()) {
-				if(inProg.contains(q.getName())) continue;
-				JSONObject questJO = new JSONObject();
-				questJO.put("Name", q.getName());
-				
-				if(q instanceof LocationQuest) {
-					questJO.put("Location", LocationUtils.locationSerializer(((LocationQuest) q).getLoc()));
-				} else if(q instanceof EntityKillQuest) {
-					JSONArray hasKilled = new JSONArray();
-					for(EntityType et : ((EntityKillQuest) q).getHasKilled().keySet()) {
-						JSONObject entry = new JSONObject();
-						entry.put("Type", et.toString());
-						entry.put("Amount", ((EntityKillQuest) q).getHasKilled().get(et));
-						hasKilled.add(entry);
-					}
-					questJO.put("Entities", hasKilled);
+			if(mc.equals(mp.getMmoClasses().get(mp.getCurrentCharacter()))) {
+				JSONObject clazz = new JSONObject();
+				String s = mc.getName();
+				String loc = LocationUtils.locationSerializer(mc.getClassLocation());
+				Integer level = mc.getLevel();
+				Double mon = mc.getMoney();
+				Double xp = mc.getXp();
+				CraftingSkill ck = mc.getCraftSkill();
+				JSONArray completed = new JSONArray();
+				for(String completedName : mc.getCompletedQuests()) {
+					if(completed.contains(completedName)) continue;
+					completed.add(completedName);
 				}
-				inProg.add(questJO);
+				
+				JSONArray completable = new JSONArray();
+				for(Quest q : mc.getCompletedableQuests()) {
+					if(completable.contains(q.getName())) continue;
+					completable.add(q.getName());
+				}
+				
+				JSONArray inProg = new JSONArray();
+				for(Quest q : mc.getActiveQuests()) {
+					if(inProg.contains(q.getName())) continue;
+					JSONObject questJO = new JSONObject();
+					questJO.put("Name", q.getName());
+					
+					if(q instanceof LocationQuest) {
+						questJO.put("Location", LocationUtils.locationSerializer(((LocationQuest) q).getLoc()));
+					} else if(q instanceof EntityKillQuest) {
+						JSONArray hasKilled = new JSONArray();
+						for(EntityType et : ((EntityKillQuest) q).getHasKilled().keySet()) {
+							JSONObject entry = new JSONObject();
+							entry.put("Type", et.toString());
+							entry.put("Amount", ((EntityKillQuest) q).getHasKilled().get(et));
+							hasKilled.add(entry);
+						}
+						questJO.put("Entities", hasKilled);
+					}
+					inProg.add(questJO);
+				}
+				
+				JSONObject craftSkill = new JSONObject();
+				craftSkill.put("Level", ck.getLevel());
+				craftSkill.put("XP", ck.getXp());
+				
+				clazz.put("Class", s);
+				clazz.put("Level", level);
+				clazz.put("XP", xp);
+				clazz.put("Currency", mon);
+				clazz.put("Location", loc);
+				clazz.put("CraftingSkill", craftSkill);
+				clazz.put("Completed", completed);
+				clazz.put("Completable", completable);
+				clazz.put("Active", inProg);
+				
+				JSONObject inv = new JSONObject();
+				inv.put("Helmet", (p.getInventory().getHelmet() != null) ? ItemUtils.itemToJSON(p.getInventory().getHelmet()) : ItemUtils.itemToJSON(new ItemStack(Material.AIR)));
+				inv.put("Chestplate", (p.getInventory().getChestplate() != null) ? ItemUtils.itemToJSON(p.getInventory().getChestplate()) : ItemUtils.itemToJSON(new ItemStack(Material.AIR)));
+				inv.put("Leggings", (p.getInventory().getLeggings() != null) ? ItemUtils.itemToJSON(p.getInventory().getLeggings()) : ItemUtils.itemToJSON(new ItemStack(Material.AIR)));
+				inv.put("Boots", (p.getInventory().getBoots() != null) ? ItemUtils.itemToJSON(p.getInventory().getBoots()) : ItemUtils.itemToJSON(new ItemStack(Material.AIR)));
+				inv.put("MainHand", (p.getInventory().getItem(0) != null) ? ItemUtils.itemToJSON(p.getInventory().getItem(0)) : ItemUtils.itemToJSON(new ItemStack(Material.AIR)));
+				inv.put("OffHand", (p.getInventory().getItem(1) != null) ? ItemUtils.itemToJSON(p.getInventory().getItem(1)) : ItemUtils.itemToJSON(new ItemStack(Material.AIR)));
+				clazz.put("Inventory", inv);
+				
+				classes.put("Class" + String.valueOf(i), clazz);
+				i++;
 			}
-			clazz.put("Class", s);
-			clazz.put("Level", level);
-			clazz.put("XP", xp);
-			clazz.put("Currency", mon);
-			clazz.put("Location", loc);
-			clazz.put("Completed", completed);
-			clazz.put("Completable", completable);
-			clazz.put("Active", inProg);
-			
-			JSONObject inv = new JSONObject();
-			inv.put("Helmet", (p.getInventory().getHelmet() != null) ? ItemUtils.itemToJSON(p.getInventory().getHelmet()) : ItemUtils.itemToJSON(new ItemStack(Material.AIR)));
-			inv.put("Chestplate", (p.getInventory().getChestplate() != null) ? ItemUtils.itemToJSON(p.getInventory().getChestplate()) : ItemUtils.itemToJSON(new ItemStack(Material.AIR)));
-			inv.put("Leggings", (p.getInventory().getLeggings() != null) ? ItemUtils.itemToJSON(p.getInventory().getLeggings()) : ItemUtils.itemToJSON(new ItemStack(Material.AIR)));
-			inv.put("Boots", (p.getInventory().getBoots() != null) ? ItemUtils.itemToJSON(p.getInventory().getBoots()) : ItemUtils.itemToJSON(new ItemStack(Material.AIR)));
-			inv.put("MainHand", (p.getInventory().getItem(0) != null) ? ItemUtils.itemToJSON(p.getInventory().getItem(0)) : ItemUtils.itemToJSON(new ItemStack(Material.AIR)));
-			inv.put("OffHand", (p.getInventory().getItem(1) != null) ? ItemUtils.itemToJSON(p.getInventory().getItem(1)) : ItemUtils.itemToJSON(new ItemStack(Material.AIR)));
-			clazz.put("Inventory", inv);
-			
-			classes.put("Class" + String.valueOf(i), clazz);
-			i++;
 		}
 		jo.put("Classes", classes);
 		TreeMap<String, Object> treeMap = new TreeMap<String, Object>(String.CASE_INSENSITIVE_ORDER);

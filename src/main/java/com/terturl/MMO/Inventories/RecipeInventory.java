@@ -8,6 +8,8 @@ import com.terturl.MMO.MinecraftMMO;
 import com.terturl.MMO.Framework.ClickAction;
 import com.terturl.MMO.Framework.InventoryButton;
 import com.terturl.MMO.Framework.InventoryUI;
+import com.terturl.MMO.Player.MMOClass;
+import com.terturl.MMO.Player.MMOPlayer;
 import com.terturl.MMO.Player.Skills.Crafting.MMORecipe;
 import com.terturl.MMO.Player.Skills.Crafting.RecipeManager;
 
@@ -54,8 +56,10 @@ public class RecipeInventory extends InventoryUI {
 	private void showCraftable(Player p) {
 		getAllButtons().clear();
 		RecipeManager rm = MinecraftMMO.getInstance().getRecipeManager();
+		MMOPlayer mp = MinecraftMMO.getInstance().getPlayerHandler().getPlayer(p);
+		MMOClass mc = mp.getMmoClasses().get(mp.getCurrentCharacter());
 		for(MMORecipe mr : rm.getRecipes()) {
-			if(mr.PlayerHasAllItems(p)) {
+			if(mr.PlayerHasAllItems(p) && (mc.getCraftSkill().getLevel() >= mr.getLevelRequired())) {
 				addButton(new InventoryButton(mr.getProduct().makeItem()) {
 					public void onPlayerClick(Player p, ClickAction ca) {
 						mr.craftItem(p);

@@ -6,6 +6,8 @@ import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 
+import com.terturl.MMO.Player.Skills.Skill;
+import com.terturl.MMO.Player.Skills.Crafting.CraftingSkill;
 import com.terturl.MMO.Quests.Quest;
 
 import lombok.EqualsAndHashCode;
@@ -25,7 +27,13 @@ public abstract class MMOClass implements Cloneable {
 	private List<Quest> activeQuests = new ArrayList<>();
 	@Getter
 	private List<Quest> completedableQuests = new ArrayList<>();
-
+	
+	@Getter
+	private CraftingSkill craftSkill = new CraftingSkill();
+	
+	@Getter
+	private List<Skill> playerSkills = new ArrayList<>();
+	
 	@Getter @Setter
 	private Double money = 0.0;
 	@Getter @Setter
