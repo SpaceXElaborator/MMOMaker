@@ -198,4 +198,8 @@ public class InventoryUI implements Listener {
 		return buttons.values();
 	}
 	
+	public Map<Integer, InventoryButton> getAllButtons() {
+		return buttons;
+	}
+	
 }
