@@ -10,6 +10,7 @@ import com.terturl.MMO.Util.Items.CustomItem;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.Setter;
 
 @EqualsAndHashCode
 public class MMORecipe {
@@ -19,6 +20,12 @@ public class MMORecipe {
 	
 	@Getter
 	private Integer levelRequired;
+	
+	@Getter @Setter
+	private Integer amountToGive;
+	
+	@Getter @Setter
+	private Double xpGiven = 0.0;
 	
 	@Getter
 	private Map<CustomItem, Integer> recipeMapping = new HashMap<>();

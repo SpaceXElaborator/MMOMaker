@@ -52,8 +52,10 @@ public class CustomItemManager {
 		cautions = new File(mainItemDir, "Cautions.txt");
 		File armors = new File(mainItemDir, "armor");
 		File items = new File(mainItemDir, "items");
+		File resources = new File(mainItemDir, "resources");
 		if(!armors.exists()) armors.mkdir();
 		if(!items.exists()) items.mkdir();
+		if(!resources.exists()) resources.mkdir();
 		
 		if(getWarnings().exists()) { getWarnings().delete(); }
 		if(getCautions().exists()) { getCautions().delete(); }
@@ -129,6 +131,27 @@ public class CustomItemManager {
 				}
 			}
 		}
+		
+		if(resources.listFiles().length != 0) {
+			for(File f : resources.listFiles()) {
+				if(f.getName().endsWith(".json")) {
+					if(checkResource(f)) {
+						JsonFileInterpretter config = new JsonFileInterpretter(f);
+						String name = config.getString("Name");
+						String friendlyname = config.contains("FriendlyName") ? config.getString("FriendlyName") : name;
+						Material mat = Material.getMaterial(config.getString("Item").toUpperCase());
+						Rarity rare = config.contains("Rarity") ? Rarity.valueOf(config.getString("Rarity").toUpperCase()) : Rarity.COMMON;
+						CustomItem ci = new CustomItem(name, mat, 0, 0, rare);
+						ci.setFriendlyName(friendlyname);
+						ci.setMaxDurability(0.0);
+						ci.setDurability(0.0);
+						ci.setSlotType(SlotType.DROP);
+						customItems.put(name, ci);
+					}
+				}
+			}
+		}
+		
 	}
 	
 	public CustomItem getItem(String name) {
@@ -136,6 +159,30 @@ public class CustomItemManager {
 			return customItems.get(name);
 		}
 		return null;
+	}
+	
+	private boolean checkResource(File f) throws IOException {
+		boolean load = true;
+		JsonFileInterpretter config = new JsonFileInterpretter(f);
+		
+		FileWriter wfw = new FileWriter(getWarnings());
+		BufferedWriter wbw = new BufferedWriter(wfw);
+		
+		if(!config.contains("Name")) {
+			wbw.write("[" + f.getName() + "] 'name' property is not set!");
+			wbw.newLine();
+			load = false;
+		}
+		
+		if(!config.contains("Item")) {
+			wbw.write("[" + f.getName() + "] 'Item' property is not set!");
+			wbw.newLine();
+			load = false;
+		}
+		
+		wbw.flush();
+		wbw.close();
+		return load;
 	}
 	
 	private boolean checkArmor(File f, List<Material> armor) throws IOException {

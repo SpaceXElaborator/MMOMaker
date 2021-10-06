@@ -80,10 +80,10 @@ public class MinecraftMMO extends JavaPlugin {
 		abilityManager = new AbilityManager();
 		
 		shopManager = new ShopManager();
-		recipeManager = new RecipeManager();
 		
 		try {
 			itemManager = new CustomItemManager();
+			recipeManager = new RecipeManager();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
