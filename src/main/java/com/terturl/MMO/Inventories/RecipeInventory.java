@@ -42,7 +42,9 @@ public class RecipeInventory extends InventoryUI {
 		RecipeManager rm = MinecraftMMO.getInstance().getRecipeManager();
 		for(MMORecipe mr : rm.getRecipes()) {
 			addButton(new InventoryButton(mr.getProduct().makeItem()) {
-				
+				public void onPlayerClick(Player p, ClickAction ca) {
+					mr.craftItem(p);
+				}
 			});
 		}
 		addButton(ibShowTrue, 17);
@@ -55,7 +57,9 @@ public class RecipeInventory extends InventoryUI {
 		for(MMORecipe mr : rm.getRecipes()) {
 			if(mr.PlayerHasAllItems(p)) {
 				addButton(new InventoryButton(mr.getProduct().makeItem()) {
-					
+					public void onPlayerClick(Player p, ClickAction ca) {
+						mr.craftItem(p);
+					}
 				});
 			}
 		}

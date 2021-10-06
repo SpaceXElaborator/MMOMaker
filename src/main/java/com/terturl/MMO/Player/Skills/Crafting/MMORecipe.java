@@ -39,6 +39,16 @@ public class MMORecipe {
 		recipeMapping.put(ci, amount);
 	}
 	
+	public void craftItem(Player p) {
+		if(!PlayerHasAllItems(p)) return;
+		for(CustomItem ci : recipeMapping.keySet()) {
+			ItemStack is = ci.makeItem(recipeMapping.get(ci));
+			p.getInventory().remove(is);
+		}
+		p.getInventory().addItem(product.makeItem());
+		p.updateInventory();
+	}
+	
 	public boolean PlayerHasAllItems(Player p) {
 		for(CustomItem ci : recipeMapping.keySet()) {
 			ItemStack is = ci.makeItem();
