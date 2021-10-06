@@ -34,8 +34,8 @@ public class MMORecipe {
 	
 	public boolean PlayerHasAllItems(Player p) {
 		for(CustomItem ci : recipeMapping.keySet()) {
-			ItemStack is = ci.makeItem(recipeMapping.get(ci));
-			if(!p.getInventory().contains(is)) {
+			ItemStack is = ci.makeItem();
+			if(!p.getInventory().containsAtLeast(is, recipeMapping.get(ci))) {
 				return false;
 			}
 		}
