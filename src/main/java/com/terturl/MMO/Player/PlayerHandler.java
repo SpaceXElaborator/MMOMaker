@@ -142,6 +142,17 @@ public class PlayerHandler {
 				mc.getCraftingRecipes().add(recipe);
 			});
 			
+			JSONArray playerAbilities = (JSONArray)clazz.get("PlayerAbilities");
+			playerAbilities.forEach(e -> {
+				String ability = e.toString();
+				if(!MinecraftMMO.getInstance().getAbilityManager().getAbilities().containsKey(ability)) {
+					MinecraftMMO.getInstance().getLogger().log(Level.WARNING, ability + " Does not exist in player's " + p.getName() + " save file with UUID: " + p.getUniqueId().toString());
+					return;
+				}
+				if(mc.getPlayerAbilities().contains(ability)) return;
+				mc.getPlayerAbilities().add(ability);
+			});
+			
 			JSONArray active = (JSONArray)clazz.get("Active");
 			active.forEach(e -> {
 				JSONObject inProg = (JSONObject)e;
@@ -262,6 +273,12 @@ public class PlayerHandler {
 					craftingRecipes.add(craftingRecipe);
 				}
 				
+				JSONArray playerAbilities = new JSONArray();
+				for(String ability : mc.getPlayerAbilities()) {
+					if(playerAbilities.contains(ability)) continue;
+					playerAbilities.add(ability);
+				}
+				
 				JSONArray completed = new JSONArray();
 				for(String completedName : mc.getCompletedQuests()) {
 					if(completed.contains(completedName)) continue;
@@ -306,6 +323,7 @@ public class PlayerHandler {
 				clazz.put("Location", loc);
 				clazz.put("CraftingSkill", craftSkill);
 				clazz.put("CraftingRecipes", craftingRecipes);
+				clazz.put("PlayerAbilities", playerAbilities);
 				clazz.put("Completed", completed);
 				clazz.put("Completable", completable);
 				clazz.put("Active", inProg);
