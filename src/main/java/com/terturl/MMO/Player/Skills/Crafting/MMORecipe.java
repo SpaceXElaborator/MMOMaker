@@ -8,8 +8,10 @@ import org.bukkit.inventory.ItemStack;
 
 import com.terturl.MMO.Util.Items.CustomItem;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
+@EqualsAndHashCode
 public class MMORecipe {
 	
 	@Getter

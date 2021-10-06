@@ -13,6 +13,7 @@ public class RecipeManager {
 	public RecipeManager() {}
 	
 	public void addRecipe(MMORecipe mr) {
+		if(recipes.contains(mr)) return;
 		recipes.add(mr);
 	}
 	

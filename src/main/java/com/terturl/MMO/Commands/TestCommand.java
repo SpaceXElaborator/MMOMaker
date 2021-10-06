@@ -4,6 +4,7 @@ import org.bukkit.entity.Player;
 
 import com.terturl.MMO.Commands.Console.ShowAbilities;
 import com.terturl.MMO.Commands.Console.ShowItems;
+import com.terturl.MMO.Commands.Debug.Crafting;
 import com.terturl.MMO.Commands.Debug.RemoveClass;
 import com.terturl.MMO.Commands.Debug.ShopCommand;
 import com.terturl.MMO.Commands.Debug.SpawnASMob;
@@ -18,12 +19,14 @@ public class TestCommand extends CraftCommand {
 
 	public TestCommand() {
 		super("mmo-test");
-		addSubCommand(new SpawnClass(), new RemoveClass(), new SpawnItem(), new SpawnSkull(), new SpawnASMob(), new TestParticles(), new UseAbility(), new ShowItems(), new ShowAbilities(), new ShopCommand());
+		addSubCommand(new SpawnClass(), new RemoveClass(), new SpawnItem(), new SpawnSkull(), new SpawnASMob(),
+				new TestParticles(), new UseAbility(), new ShowItems(), new ShowAbilities(), new ShopCommand(), new Crafting());
 	}
-	
+
 	public void handleCommand(Player p, String[] args) {
-		if(!p.isOp()) return;
+		if (!p.isOp())
+			return;
 		p.sendMessage("Please follow with a sub-command");
 	}
-	
+
 }
