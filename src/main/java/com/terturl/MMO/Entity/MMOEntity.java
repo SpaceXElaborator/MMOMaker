@@ -4,6 +4,7 @@ import net.minecraft.network.chat.ChatComponentText;
 import net.minecraft.world.entity.EntityCreature;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.ai.goal.PathfinderGoalFloat;
+import net.minecraft.world.entity.ai.goal.PathfinderGoalRandomStrollLand;
 import net.minecraft.world.entity.ai.goal.target.PathfinderGoalHurtByTarget;
 import net.minecraft.world.level.World;
 
@@ -22,6 +23,7 @@ public class MMOEntity extends EntityCreature {
 	@Override
 	public void initPathfinder() {
 		this.bP.a(1, new PathfinderGoalFloat(this));
+		this.bP.a(7, new PathfinderGoalRandomStrollLand(this, 1.0D));
 		this.bQ.a(1, new PathfinderGoalHurtByTarget(this, new Class[0]));
 	}
 	

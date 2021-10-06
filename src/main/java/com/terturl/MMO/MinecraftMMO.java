@@ -105,6 +105,10 @@ public class MinecraftMMO extends JavaPlugin {
 	}
 	
 	public void onDisable() {
+		entityManager.getAliveEntities().forEach(e -> {
+			e.killEntity();
+		});
+		
 		Bukkit.getOnlinePlayers().stream().forEach(e -> {
 			playerHandler.savePlayerInfo(e);
 			e.kickPlayer("Maintenence has been initiated, sorry for the inconvience");
