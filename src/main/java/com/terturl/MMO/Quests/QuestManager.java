@@ -41,6 +41,7 @@ public class QuestManager {
 				List<String> customItems = config.contains("Items") ? config.getStringList("Items") : new ArrayList<>();
 				List<String> questRewards = config.contains("RewardQuests") ? config.getStringList("RewardQuests") : new ArrayList<>();
 				List<String> parentQuests = config.contains("Parents") ? config.getStringList("Parents") : new ArrayList<>();
+				List<String> craftingRecipes = config.contains("CraftingRecipes") ? config.getStringList("CraftingRecipes") : new ArrayList<>();
 				if(name == null || descString == null) continue;
 
 				if(type.equalsIgnoreCase("location")) {
@@ -67,6 +68,7 @@ public class QuestManager {
 				((Quest) q).setMoney(money);
 				((Quest) q).setItems(customItems);
 				((Quest) q).setChildQuests(questRewards);
+				((Quest) q).setRecipes(craftingRecipes);
 				allQuests.add((Quest) q);
 			}
 		}

@@ -32,6 +32,9 @@ public abstract class MMOClass implements Cloneable {
 	private CraftingSkill craftSkill = new CraftingSkill();
 	
 	@Getter
+	private List<String> craftingRecipes = new ArrayList<>();
+	
+	@Getter
 	private List<Skill> playerSkills = new ArrayList<>();
 	
 	@Getter @Setter

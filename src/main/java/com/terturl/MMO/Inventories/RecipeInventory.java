@@ -21,7 +21,7 @@ public class RecipeInventory extends InventoryUI {
 		public void onPlayerClick(Player p, ClickAction a) {
 			Material mat = getItem().getType();
 			if(mat.equals(Material.RED_WOOL)) {
-				addAllItems();
+				addAllItems(p);
 				setStack(new ItemStack(Material.GREEN_WOOL));
 				updateInventory();
 			} else {
@@ -39,10 +39,14 @@ public class RecipeInventory extends InventoryUI {
 		updateInventory();
 	}
 	
-	private void addAllItems() {
+	private void addAllItems(Player p) {
 		getAllButtons().clear();
 		RecipeManager rm = MinecraftMMO.getInstance().getRecipeManager();
-		for(MMORecipe mr : rm.getRecipes()) {
+		MMOPlayer mp = MinecraftMMO.getInstance().getPlayerHandler().getPlayer(p);
+		MMOClass mc = mp.getMmoClasses().get(mp.getCurrentCharacter());
+		for(String s : mc.getCraftingRecipes()) {
+			MMORecipe mr = rm.getRecipeByName(s);
+			if(mr == null) continue;
 			addButton(new InventoryButton(mr.getProduct().makeItem()) {
 				public void onPlayerClick(Player p, ClickAction ca) {
 					mr.craftItem(p);
@@ -58,8 +62,10 @@ public class RecipeInventory extends InventoryUI {
 		RecipeManager rm = MinecraftMMO.getInstance().getRecipeManager();
 		MMOPlayer mp = MinecraftMMO.getInstance().getPlayerHandler().getPlayer(p);
 		MMOClass mc = mp.getMmoClasses().get(mp.getCurrentCharacter());
-		for(MMORecipe mr : rm.getRecipes()) {
-			if(mr.PlayerHasAllItems(p) && (mc.getCraftSkill().getLevel() >= mr.getLevelRequired())) {
+		for(String s : mc.getCraftingRecipes()) {
+			MMORecipe mr = rm.getRecipeByName(s);
+			if(mr == null) continue;
+			if(mr.PlayerHasAllItems(p)) {
 				addButton(new InventoryButton(mr.getProduct().makeItem()) {
 					public void onPlayerClick(Player p, ClickAction ca) {
 						mr.craftItem(p);
@@ -70,5 +76,37 @@ public class RecipeInventory extends InventoryUI {
 		addButton(ibShowTrue, 17);
 		updateInventory();
 	}
+	
+//	private void addAllItems(Player p) {
+//		getAllButtons().clear();
+//		RecipeManager rm = MinecraftMMO.getInstance().getRecipeManager();
+//		for(MMORecipe mr : rm.getRecipes()) {
+//			addButton(new InventoryButton(mr.getProduct().makeItem()) {
+//				public void onPlayerClick(Player p, ClickAction ca) {
+//					mr.craftItem(p);
+//				}
+//			});
+//		}
+//		addButton(ibShowTrue, 17);
+//		updateInventory();
+//	}
+//	
+//	private void showCraftable(Player p) {
+//		getAllButtons().clear();
+//		RecipeManager rm = MinecraftMMO.getInstance().getRecipeManager();
+//		MMOPlayer mp = MinecraftMMO.getInstance().getPlayerHandler().getPlayer(p);
+//		MMOClass mc = mp.getMmoClasses().get(mp.getCurrentCharacter());
+//		for(MMORecipe mr : rm.getRecipes()) {
+//			if(mr.PlayerHasAllItems(p) && (mc.getCraftSkill().getLevel() >= mr.getLevelRequired())) {
+//				addButton(new InventoryButton(mr.getProduct().makeItem()) {
+//					public void onPlayerClick(Player p, ClickAction ca) {
+//						mr.craftItem(p);
+//					}
+//				});
+//			}
+//		}
+//		addButton(ibShowTrue, 17);
+//		updateInventory();
+//	}
 	
 }

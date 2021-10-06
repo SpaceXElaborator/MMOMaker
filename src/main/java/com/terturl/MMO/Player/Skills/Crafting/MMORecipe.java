@@ -19,6 +19,9 @@ import lombok.Setter;
 public class MMORecipe {
 	
 	@Getter
+	private String name;
+	
+	@Getter
 	private CustomItem product;
 	
 	@Getter
@@ -33,9 +36,10 @@ public class MMORecipe {
 	@Getter
 	private Map<CustomItem, Integer> recipeMapping = new HashMap<>();
 	
-	public MMORecipe(CustomItem ci, Integer level) {
+	public MMORecipe(String n, CustomItem ci, Integer level) {
 		product = ci;
 		levelRequired = level;
+		name = n;
 	}
 	
 	public void addItem(CustomItem ci, Integer amount) {

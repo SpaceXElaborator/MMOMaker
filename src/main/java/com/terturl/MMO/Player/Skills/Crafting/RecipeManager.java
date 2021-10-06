@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -41,8 +42,11 @@ public class RecipeManager {
 						Integer amount = config.contains("Amount") ? config.getInt("Amount") : 1;
 						Double xpToGive = config.contains("XP") ? config.getDouble("XP") : 0.0;
 						CustomItem ci = MinecraftMMO.getInstance().getItemManager().getItem(item);
+						String name = f.getName().substring(0, f.getName().length()-5);
 						
-						MMORecipe mr = new MMORecipe(ci, level);
+						MinecraftMMO.getInstance().getLogger().log(Level.INFO, name);
+						
+						MMORecipe mr = new MMORecipe(name, ci, level);
 						mr.setAmountToGive(amount);
 						mr.setXpGiven(xpToGive);
 						
@@ -65,6 +69,10 @@ public class RecipeManager {
 	public void addRecipe(MMORecipe mr) {
 		if(recipes.contains(mr)) return;
 		recipes.add(mr);
+	}
+	
+	public MMORecipe getRecipeByName(String s) {
+		return recipes.stream().filter(e -> e.getName().equalsIgnoreCase(s)).findFirst().orElse(null);
 	}
 	
 	private boolean checkRecipe(File f) throws IOException {

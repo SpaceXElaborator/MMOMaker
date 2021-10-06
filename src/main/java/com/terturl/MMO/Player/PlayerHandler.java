@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -130,6 +131,17 @@ public class PlayerHandler {
 			mc.getCraftSkill().setLevel(Integer.valueOf(craftSkill.get("Level").toString()));
 			mc.getCraftSkill().setXp(Double.parseDouble(craftSkill.get("XP").toString()));
 			
+			JSONArray craftingRecipes = (JSONArray)clazz.get("CraftingRecipes");
+			craftingRecipes.forEach(e -> {
+				String recipe = e.toString();
+				if(MinecraftMMO.getInstance().getRecipeManager().getRecipeByName(recipe) == null) {
+					MinecraftMMO.getInstance().getLogger().log(Level.WARNING, recipe + " Does not exist in player's " + p.getName() + " save file with UUID: " + p.getUniqueId().toString());
+					return;
+				}
+				if(mc.getCraftingRecipes().contains(recipe)) return;
+				mc.getCraftingRecipes().add(recipe);
+			});
+			
 			JSONArray active = (JSONArray)clazz.get("Active");
 			active.forEach(e -> {
 				JSONObject inProg = (JSONObject)e;
@@ -243,6 +255,13 @@ public class PlayerHandler {
 				Double mon = mc.getMoney();
 				Double xp = mc.getXp();
 				CraftingSkill ck = mc.getCraftSkill();
+				
+				JSONArray craftingRecipes = new JSONArray();
+				for(String craftingRecipe : mc.getCraftingRecipes()) {
+					if(craftingRecipes.contains(craftingRecipe)) continue;
+					craftingRecipes.add(craftingRecipe);
+				}
+				
 				JSONArray completed = new JSONArray();
 				for(String completedName : mc.getCompletedQuests()) {
 					if(completed.contains(completedName)) continue;
@@ -286,6 +305,7 @@ public class PlayerHandler {
 				clazz.put("Currency", mon);
 				clazz.put("Location", loc);
 				clazz.put("CraftingSkill", craftSkill);
+				clazz.put("CraftingRecipes", craftingRecipes);
 				clazz.put("Completed", completed);
 				clazz.put("Completable", completable);
 				clazz.put("Active", inProg);

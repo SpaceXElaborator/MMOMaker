@@ -42,6 +42,12 @@ public abstract class Quest {
 	@Getter @Setter
 	private List<String> items = new ArrayList<>();
 	
+	@Getter @Setter
+	private List<String> abilities = new ArrayList<>();
+	
+	@Getter @Setter
+	private List<String> recipes = new ArrayList<>();
+	
 	public Quest(String name) {
 		setName(name);
 	}
@@ -76,6 +82,12 @@ public abstract class Quest {
 				CustomItem ci = MinecraftMMO.getInstance().getItemManager().getItem(s);
 				p.getInventory().addItem(ci.makeItem());
 				p.updateInventory();
+			}
+		}
+		if(recipes.size() != 0) {
+			for(String s : recipes) {
+				if(mc.getCraftingRecipes().contains(s)) continue;
+				mc.getCraftingRecipes().add(s);
 			}
 		}
 	}
