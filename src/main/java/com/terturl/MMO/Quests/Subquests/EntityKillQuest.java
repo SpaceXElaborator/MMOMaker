@@ -1,15 +1,21 @@
 package com.terturl.MMO.Quests.Subquests;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import com.terturl.MMO.Quests.Quest;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.md_5.bungee.api.ChatColor;
 
 public class EntityKillQuest extends Quest {
 
@@ -58,6 +64,27 @@ public class EntityKillQuest extends Quest {
 		q.setAmountToKill(amountToKill);
 		q.setHasKilled(hasKilled);
 		return q;
+	}
+
+	@Override
+	public ItemStack questItem(Player p) {
+		ItemStack item = new ItemStack(Material.PAPER);
+		ItemMeta meta = item.getItemMeta();
+		
+		meta.setDisplayName(ChatColor.GOLD + getName());
+		List<String> lore = new ArrayList<>();
+		lore.add(ChatColor.GREEN + "Requirements: ");
+		for(EntityType et : amountToKill.keySet()) {
+			lore.add("Kill " + String.valueOf(amountToKill.get(et)) + et.toString());
+		}
+		lore.add(ChatColor.GREEN + "\nCompleted: ");
+		for(EntityType et : hasKilled.keySet()) {
+			lore.add("Killed " + String.valueOf(hasKilled.get(et)) + et.toString());
+		}
+		meta.setLore(lore);
+		item.setItemMeta(meta);
+		
+		return item;
 	}
 
 }

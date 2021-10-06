@@ -1,6 +1,7 @@
 package com.terturl.MMO.Quests.Subquests;
 
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import com.terturl.MMO.Quests.Quest;
 
@@ -32,6 +33,11 @@ public class BasicQuest extends Quest {
 		q.setPresentString(getPresentString());
 		q.setType(getType());
 		return q;
+	}
+
+	@Override
+	public ItemStack questItem(Player p) {
+		return null;
 	}
 	
 }

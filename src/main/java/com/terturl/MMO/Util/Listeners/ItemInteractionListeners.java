@@ -14,7 +14,7 @@ public class ItemInteractionListeners implements Listener {
 	@EventHandler
 	public void interact(PlayerInteractEvent e) {
 		if(!e.getHand().equals(EquipmentSlot.HAND)) return;
-		if(e.getPlayer().getInventory().getItemInMainHand().getType().equals(Material.BOOK)) {
+		if(e.getPlayer().getInventory().getItemInMainHand().getType().equals(Material.COMPASS)) {
 			QuestInventory qi = new QuestInventory(MinecraftMMO.getInstance().getPlayerHandler().getPlayer(e.getPlayer()));
 			qi.open(e.getPlayer());
 		}

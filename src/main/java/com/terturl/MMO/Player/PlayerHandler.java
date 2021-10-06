@@ -30,6 +30,7 @@ import com.terturl.MMO.Player.Skills.Crafting.CraftingSkill;
 import com.terturl.MMO.Quests.Quest;
 import com.terturl.MMO.Quests.Subquests.EntityKillQuest;
 import com.terturl.MMO.Quests.Subquests.LocationQuest;
+import com.terturl.MMO.Util.BasicInventoryItems;
 import com.terturl.MMO.Util.ItemUtils;
 import com.terturl.MMO.Util.JsonFileInterpretter;
 import com.terturl.MMO.Util.LocationUtils;
@@ -81,7 +82,8 @@ public class PlayerHandler {
 	}
 	
 	public void giveBasicItems(Player p) {
-		p.getInventory().setItem(8, new ItemStack(Material.BOOK));
+		p.getInventory().setItem(8, new ItemStack(Material.COMPASS));
+		p.getInventory().setItem(9, BasicInventoryItems.getPlayerClassItem(p));
 		p.updateInventory();
 	}
 	
