@@ -71,6 +71,13 @@ public class MinecraftMMO extends JavaPlugin {
 		instance = this;
 		if(!getDataFolder().exists()) getDataFolder().mkdir();
 		
+		try {
+			itemManager = new CustomItemManager();
+			recipeManager = new RecipeManager();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 		classHandler = new ClassHandler();
 		registerClasses();
 		questManager = new QuestManager();
@@ -80,13 +87,6 @@ public class MinecraftMMO extends JavaPlugin {
 		abilityManager = new AbilityManager();
 		
 		shopManager = new ShopManager();
-		
-		try {
-			itemManager = new CustomItemManager();
-			recipeManager = new RecipeManager();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 		this.getServer().getConsoleSender().sendMessage("Enabling MMO Plugin");
 		registerCommand(new TestCommand());
 		

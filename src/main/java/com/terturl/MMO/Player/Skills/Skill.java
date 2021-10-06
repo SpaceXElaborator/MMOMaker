@@ -9,7 +9,7 @@ public abstract class Skill {
 	private String skillName;
 	
 	@Getter @Setter
-	private Integer level = 1;
+	private Integer level = 0;
 	
 	@Getter @Setter
 	private Double xp = 0.0;
@@ -18,6 +18,14 @@ public abstract class Skill {
 		skillName = name;
 	}
 	
-	public abstract void addXP(Double d);
+	public void addXP(Double d) {
+		Double finalXP = ((double)level+1) * 10 + (Math.pow(1.7, (double)level));
+		if(xp+d >= finalXP) {
+			Double rollOver = (xp+d) - finalXP;
+			level = level + 1;
+			addXP(rollOver);
+		}
+		xp += d;
+	}
 	
 }

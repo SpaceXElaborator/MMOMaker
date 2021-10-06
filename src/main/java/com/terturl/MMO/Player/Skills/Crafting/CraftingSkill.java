@@ -14,11 +14,5 @@ public class CraftingSkill extends Skill {
 		sk.setXp(getXp());
 		return sk;
 	}
-
-	@Override
-	public void addXP(Double d) {
-		// TODO: Add level when adding XP to this skill
-		setXp(getXp() + d);
-	}
 	
 }
