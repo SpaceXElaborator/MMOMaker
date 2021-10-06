@@ -20,6 +20,7 @@ import com.terturl.MMO.Abilities.AbilityManager;
 import com.terturl.MMO.Commands.TestCommand;
 import com.terturl.MMO.CustomArmorStandMobs.ArmorStandMobController;
 import com.terturl.MMO.Files.Configuration;
+import com.terturl.MMO.Files.MathConfiguration;
 import com.terturl.MMO.Framework.CommandMeta;
 import com.terturl.MMO.Framework.CraftCommand;
 import com.terturl.MMO.Player.PlayerHandler;
@@ -51,6 +52,8 @@ public class MinecraftMMO extends JavaPlugin {
 	@Getter
 	private Configuration mmoConfiguration;
 	@Getter
+	private MathConfiguration mathConfig;
+	@Getter
 	private ClassHandler classHandler;
 	@Getter
 	private CustomItemManager itemManager;
@@ -70,6 +73,8 @@ public class MinecraftMMO extends JavaPlugin {
 	public void onEnable() {
 		instance = this;
 		if(!getDataFolder().exists()) getDataFolder().mkdir();
+		
+		mathConfig = new MathConfiguration();
 		
 		try {
 			itemManager = new CustomItemManager();
