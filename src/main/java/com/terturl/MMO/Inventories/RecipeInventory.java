@@ -77,36 +77,4 @@ public class RecipeInventory extends InventoryUI {
 		updateInventory();
 	}
 	
-//	private void addAllItems(Player p) {
-//		getAllButtons().clear();
-//		RecipeManager rm = MinecraftMMO.getInstance().getRecipeManager();
-//		for(MMORecipe mr : rm.getRecipes()) {
-//			addButton(new InventoryButton(mr.getProduct().makeItem()) {
-//				public void onPlayerClick(Player p, ClickAction ca) {
-//					mr.craftItem(p);
-//				}
-//			});
-//		}
-//		addButton(ibShowTrue, 17);
-//		updateInventory();
-//	}
-//	
-//	private void showCraftable(Player p) {
-//		getAllButtons().clear();
-//		RecipeManager rm = MinecraftMMO.getInstance().getRecipeManager();
-//		MMOPlayer mp = MinecraftMMO.getInstance().getPlayerHandler().getPlayer(p);
-//		MMOClass mc = mp.getMmoClasses().get(mp.getCurrentCharacter());
-//		for(MMORecipe mr : rm.getRecipes()) {
-//			if(mr.PlayerHasAllItems(p) && (mc.getCraftSkill().getLevel() >= mr.getLevelRequired())) {
-//				addButton(new InventoryButton(mr.getProduct().makeItem()) {
-//					public void onPlayerClick(Player p, ClickAction ca) {
-//						mr.craftItem(p);
-//					}
-//				});
-//			}
-//		}
-//		addButton(ibShowTrue, 17);
-//		updateInventory();
-//	}
-	
 }
