@@ -6,7 +6,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -43,8 +42,6 @@ public class RecipeManager {
 						Double xpToGive = config.contains("XP") ? config.getDouble("XP") : 0.0;
 						CustomItem ci = MinecraftMMO.getInstance().getItemManager().getItem(item);
 						String name = f.getName().substring(0, f.getName().length()-5);
-						
-						MinecraftMMO.getInstance().getLogger().log(Level.INFO, name);
 						
 						MMORecipe mr = new MMORecipe(name, ci, level);
 						mr.setAmountToGive(amount);

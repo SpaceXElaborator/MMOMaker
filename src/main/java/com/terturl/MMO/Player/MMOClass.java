@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import com.terturl.MMO.Player.Skills.Skill;
 import com.terturl.MMO.Player.Skills.Crafting.CraftingSkill;
 import com.terturl.MMO.Quests.Quest;
+import com.terturl.MMO.Util.BasicInventoryItems;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -85,6 +87,21 @@ public abstract class MMOClass implements Cloneable {
 			if(!completedQuests.contains(quest)) return false;
 		}
 		return true;
+	}
+	
+	public void addMoney(Double b) {
+		money += b;
+	}
+	
+	// TODO: Make level progression
+	public void addXP(Double b) {
+		xp += b;
+	}
+	
+	public void updateClassInformation(Player p) {
+		ItemStack is = BasicInventoryItems.getPlayerClassItem(p);
+		p.getInventory().setItem(9, is);
+		p.updateInventory();
 	}
 	
 	public Object clone() {

@@ -37,6 +37,7 @@ import com.terturl.MMO.Util.Listeners.EntityDeathListeners;
 import com.terturl.MMO.Util.Listeners.HotbarListeners;
 import com.terturl.MMO.Util.Listeners.InteractNPCListener;
 import com.terturl.MMO.Util.Listeners.ItemInteractionListeners;
+import com.terturl.MMO.Util.Listeners.MMOEntityDeathListener;
 import com.terturl.MMO.Util.Listeners.PlayerJoinListener;
 import com.terturl.MMO.Util.Listeners.PlayerMoveListeners;
 
@@ -95,7 +96,13 @@ public class MinecraftMMO extends JavaPlugin {
 		abilityManager = new AbilityManager();
 		
 		shopManager = new ShopManager();
-		entityManager = new MMOEntityManager();
+		
+		try {
+			entityManager = new MMOEntityManager();
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+		
 		this.getServer().getConsoleSender().sendMessage("Enabling MMO Plugin");
 		registerCommand(new TestCommand());
 		
@@ -129,14 +136,14 @@ public class MinecraftMMO extends JavaPlugin {
 	}
 	
 	private void registerListeners() {
-		PluginManager pm = Bukkit.getPluginManager();
-		pm.registerEvents(new PlayerJoinListener(), this);
-		pm.registerEvents(new InteractNPCListener(), this);
-		pm.registerEvents(new ItemInteractionListeners(), this);
-		pm.registerEvents(new PlayerMoveListeners(), this);
-		pm.registerEvents(new HotbarListeners(), this);
-		pm.registerEvents(new DamageEvent(), this);
-		pm.registerEvents(new EntityDeathListeners(), this);
+		registerListener(new PlayerJoinListener());
+		registerListener(new InteractNPCListener());
+		registerListener(new ItemInteractionListeners());
+		registerListener(new PlayerMoveListeners());
+		registerListener(new HotbarListeners());
+		registerListener(new DamageEvent());
+		registerListener(new EntityDeathListeners());
+		registerListener(new MMOEntityDeathListener());
 	}
 	
 	public <T extends CraftCommand> void registerCommand(T command) {

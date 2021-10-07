@@ -1,5 +1,13 @@
 package com.terturl.MMO.Entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.terturl.MMO.Entity.Util.MMOEntityDrop;
+import com.terturl.MMO.Util.MinMax;
+
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.network.chat.ChatComponentText;
 import net.minecraft.world.entity.EntityCreature;
 import net.minecraft.world.entity.EntityTypes;
@@ -12,6 +20,15 @@ public class MMOEntity extends EntityCreature {
 	
 	private String name;
 	private EntityTypes<? extends EntityCreature> type;
+	
+	@Getter @Setter
+	private List<MMOEntityDrop> entityDrops = new ArrayList<>();
+	
+	@Getter @Setter
+	private MinMax givableXP;
+	
+	@Getter @Setter
+	private MinMax givableCurrency;
 	
 	protected MMOEntity(EntityTypes<? extends EntityCreature> t, World w, String s) {
 		super(t, w);
@@ -29,6 +46,9 @@ public class MMOEntity extends EntityCreature {
 	
 	public MMOEntity clone() {
 		MMOEntity me = new MMOEntity(type, this.getWorld(), name);
+		me.setGivableCurrency(givableCurrency);
+		me.setGivableXP(givableXP);
+		me.setEntityDrops(entityDrops);
 		return me;
 	}
 	

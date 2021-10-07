@@ -29,6 +29,7 @@ public class BasicInventoryItems {
 		lore.add(ChatColor.GOLD + "-----Info-----");
 		lore.add("Level: " + String.valueOf(mc.getLevel()));
 		lore.add("XP: " + String.valueOf(mc.getXp()) + "/50");
+		lore.add("Currency: " + String.valueOf(mc.getMoney()));
 		lore.add("");
 		lore.add(ChatColor.GOLD + "-----Skills-----");
 		CraftingSkill sk = mc.getCraftSkill();
