@@ -13,7 +13,7 @@ import com.terturl.MMO.Quests.Subquests.BasicQuest;
 import com.terturl.MMO.Quests.Subquests.EntityKillQuest;
 import com.terturl.MMO.Quests.Subquests.LocationQuest;
 import com.terturl.MMO.Util.JsonFileInterpretter;
-import com.terturl.MMO.Util.LocationUtils;
+import com.terturl.MMO.Util.JSONHelpers.LocationUtils;
 
 import lombok.Getter;
 

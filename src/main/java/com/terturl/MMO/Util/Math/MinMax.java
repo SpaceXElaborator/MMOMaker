@@ -1,4 +1,4 @@
-package com.terturl.MMO.Util;
+package com.terturl.MMO.Util.Math;
 
 import java.text.DecimalFormat;
 import java.util.Random;

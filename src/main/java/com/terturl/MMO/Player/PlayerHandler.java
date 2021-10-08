@@ -27,16 +27,16 @@ import com.google.common.base.Objects;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.terturl.MMO.MinecraftMMO;
+import com.terturl.MMO.Entity.NPC.NPC;
+import com.terturl.MMO.Entity.NPC.NPC.ItemSlot;
 import com.terturl.MMO.Player.Skills.Crafting.CraftingSkill;
 import com.terturl.MMO.Quests.Quest;
 import com.terturl.MMO.Quests.Subquests.EntityKillQuest;
 import com.terturl.MMO.Quests.Subquests.LocationQuest;
 import com.terturl.MMO.Util.BasicInventoryItems;
-import com.terturl.MMO.Util.ItemUtils;
 import com.terturl.MMO.Util.JsonFileInterpretter;
-import com.terturl.MMO.Util.LocationUtils;
-import com.terturl.MMO.Util.NPC;
-import com.terturl.MMO.Util.NPC.ItemSlot;
+import com.terturl.MMO.Util.JSONHelpers.ItemUtils;
+import com.terturl.MMO.Util.JSONHelpers.LocationUtils;
 
 import lombok.Getter;
 

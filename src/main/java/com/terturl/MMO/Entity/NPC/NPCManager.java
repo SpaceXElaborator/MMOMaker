@@ -1,4 +1,4 @@
-package com.terturl.MMO.Util;
+package com.terturl.MMO.Entity.NPC;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -12,6 +12,8 @@ import org.bukkit.Location;
 import com.google.common.base.Objects;
 import com.terturl.MMO.MinecraftMMO;
 import com.terturl.MMO.Quests.Quest;
+import com.terturl.MMO.Util.JsonFileInterpretter;
+import com.terturl.MMO.Util.JSONHelpers.LocationUtils;
 
 import lombok.Getter;
 

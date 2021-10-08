@@ -5,7 +5,7 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import com.terturl.MMO.Util.NPC;
+import com.terturl.MMO.Entity.NPC.NPC;
 
 import lombok.Getter;
 

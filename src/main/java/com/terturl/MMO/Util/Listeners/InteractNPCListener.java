@@ -5,8 +5,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import com.terturl.MMO.MinecraftMMO;
+import com.terturl.MMO.Entity.NPC.NPC;
 import com.terturl.MMO.Quests.Quest;
-import com.terturl.MMO.Util.NPC;
 import com.terturl.MMO.Util.Events.ClickClassNPCEvent;
 import com.terturl.MMO.Util.Events.ClickNPCEvent;
 import com.terturl.MMO.Util.Events.ClickPlayerClassNPCEvent;

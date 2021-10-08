@@ -20,8 +20,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import com.mojang.datafixers.util.Pair;
 import com.terturl.MMO.MinecraftMMO;
+import com.terturl.MMO.Entity.NPC.NPC;
 import com.terturl.MMO.Quests.Quest;
-import com.terturl.MMO.Util.NPC;
 import com.terturl.MMO.Util.Items.SkullCreator;
 
 import lombok.Getter;

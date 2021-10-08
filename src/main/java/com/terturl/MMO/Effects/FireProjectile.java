@@ -5,7 +5,7 @@ import org.bukkit.entity.Projectile;
 
 import com.terturl.MMO.MinecraftMMO;
 import com.terturl.MMO.Effects.Util.EffectInformation;
-import com.terturl.MMO.Effects.Util.SoundInformation;
+import com.terturl.MMO.Util.SoundInformation;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -8,9 +8,9 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import com.terturl.MMO.MinecraftMMO;
+import com.terturl.MMO.Entity.NPC.NPC;
 import com.terturl.MMO.Player.MMOClass;
 import com.terturl.MMO.Player.MMOPlayer;
-import com.terturl.MMO.Util.NPC;
 
 public class PlayerJoinListener implements Listener {
 

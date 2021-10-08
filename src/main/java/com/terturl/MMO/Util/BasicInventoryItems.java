@@ -20,10 +20,8 @@ public class BasicInventoryItems {
 	public static ItemStack getPlayerClassItem(Player p) {
 		MMOPlayer mp = MinecraftMMO.getInstance().getPlayerHandler().getPlayer(p);
 		MMOClass mc = mp.getMmoClasses().get(mp.getCurrentCharacter());
-		
 		ItemStack item = new ItemStack(Material.BOOK);
 		ItemMeta im = item.getItemMeta();
-		
 		im.setDisplayName(ChatColor.GREEN + "Character Sheet");
 		List<String> lore = new ArrayList<>();
 		lore.add(ChatColor.GOLD + "-----Info-----");
@@ -36,7 +34,6 @@ public class BasicInventoryItems {
 		lore.add("Crafting: (" + String.valueOf(sk.getLevel()) + ") " + String.valueOf(sk.getXp()) + "/" + String.valueOf(sk.getXPToLevelUp()));
 		im.setLore(lore);
 		item.setItemMeta(im);
-		
 		return item;
 	}
 	

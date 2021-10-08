@@ -14,7 +14,6 @@ import org.bukkit.util.Vector;
 import com.terturl.MMO.Effects.Effect;
 import com.terturl.MMO.Effects.Effect.LocationType;
 import com.terturl.MMO.Effects.Util.EffectInformation;
-import com.terturl.MMO.Player.MMOClass;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -31,7 +30,7 @@ public class Ability implements Cloneable {
 
 	@Getter
 	@Setter
-	private MMOClass mmoClass;
+	private String mmoClass;
 
 	@Getter
 	@Setter

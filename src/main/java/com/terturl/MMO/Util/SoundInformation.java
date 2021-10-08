@@ -1,7 +1,6 @@
-package com.terturl.MMO.Effects.Util;
+package com.terturl.MMO.Util;
 
 import org.bukkit.Location;
-import org.bukkit.Sound;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -11,7 +10,7 @@ public class SoundInformation {
 	@Getter @Setter
 	private Location loc;
 	@Getter @Setter
-	private Sound sound;
+	private String sound;
 	@Getter @Setter
 	private float volume;
 	@Getter @Setter

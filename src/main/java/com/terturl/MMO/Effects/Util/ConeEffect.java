@@ -11,6 +11,7 @@ import org.bukkit.util.Vector;
 import com.terturl.MMO.MinecraftMMO;
 import com.terturl.MMO.Effects.Effect;
 import com.terturl.MMO.Effects.FireProjectile;
+import com.terturl.MMO.Util.SoundInformation;
 
 import lombok.Getter;
 import lombok.Setter;

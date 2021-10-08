@@ -6,7 +6,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.util.Vector;
 
 import com.terturl.MMO.Effects.Util.EffectInformation;
-import com.terturl.MMO.Effects.Util.SoundInformation;
+import com.terturl.MMO.Util.SoundInformation;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 
 import com.terturl.MMO.Effects.Effect.EffectType;
 import com.terturl.MMO.Effects.Effect.LocationType;
+import com.terturl.MMO.Util.SoundInformation;
 
 import lombok.Getter;
 import lombok.Setter;

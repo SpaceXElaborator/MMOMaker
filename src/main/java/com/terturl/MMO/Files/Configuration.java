@@ -11,8 +11,8 @@ import org.bukkit.block.Block;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import com.terturl.MMO.MinecraftMMO;
-import com.terturl.MMO.Util.LocationUtils;
-import com.terturl.MMO.Util.NPC;
+import com.terturl.MMO.Entity.NPC.NPC;
+import com.terturl.MMO.Util.JSONHelpers.LocationUtils;
 
 import lombok.Getter;
 import lombok.Setter;

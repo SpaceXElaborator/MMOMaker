@@ -1,4 +1,4 @@
-package com.terturl.MMO.Util;
+package com.terturl.MMO.Entity.NPC;
 
 import java.io.IOException;
 import java.lang.reflect.Field;

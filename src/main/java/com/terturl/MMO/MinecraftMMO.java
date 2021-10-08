@@ -20,6 +20,7 @@ import com.terturl.MMO.Abilities.AbilityManager;
 import com.terturl.MMO.Commands.TestCommand;
 import com.terturl.MMO.CustomArmorStandMobs.ArmorStandMobController;
 import com.terturl.MMO.Entity.MMOEntityManager;
+import com.terturl.MMO.Entity.NPC.NPCManager;
 import com.terturl.MMO.Files.Configuration;
 import com.terturl.MMO.Files.MathConfiguration;
 import com.terturl.MMO.Framework.CommandMeta;
@@ -30,7 +31,6 @@ import com.terturl.MMO.Player.MMOClasses.ClassHandler;
 import com.terturl.MMO.Player.Shops.ShopManager;
 import com.terturl.MMO.Player.Skills.Crafting.RecipeManager;
 import com.terturl.MMO.Quests.QuestManager;
-import com.terturl.MMO.Util.NPCManager;
 import com.terturl.MMO.Util.Items.CustomItemManager;
 import com.terturl.MMO.Util.Listeners.DamageEvent;
 import com.terturl.MMO.Util.Listeners.EntityDeathListeners;
@@ -87,13 +87,13 @@ public class MinecraftMMO extends JavaPlugin {
 			e.printStackTrace();
 		}
 		
+		abilityManager = new AbilityManager();
 		classHandler = new ClassHandler();
 		registerClasses();
 		questManager = new QuestManager();
 		npcHandler = new NPCManager();
 		playerHandler = new PlayerHandler();
 		mmoConfiguration = new Configuration();
-		abilityManager = new AbilityManager();
 		
 		shopManager = new ShopManager();
 		

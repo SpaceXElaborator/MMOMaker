@@ -1,4 +1,4 @@
-package com.terturl.MMO.Util;
+package com.terturl.MMO.Util.JSONHelpers;
 
 import java.util.ArrayList;
 import java.util.List;

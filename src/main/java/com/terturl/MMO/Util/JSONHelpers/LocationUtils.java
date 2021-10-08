@@ -1,4 +1,4 @@
-package com.terturl.MMO.Util;
+package com.terturl.MMO.Util.JSONHelpers;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
