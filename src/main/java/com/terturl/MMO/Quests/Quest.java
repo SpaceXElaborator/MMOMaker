@@ -11,6 +11,7 @@ import com.terturl.MMO.Player.MMOClass;
 import com.terturl.MMO.Player.MMOPlayer;
 import com.terturl.MMO.Quests.Subquests.EntityKillQuest;
 import com.terturl.MMO.Quests.Subquests.LocationQuest;
+import com.terturl.MMO.Quests.Subquests.NPCTalkQuest;
 import com.terturl.MMO.Util.Items.CustomItem;
 
 import lombok.EqualsAndHashCode;
@@ -53,7 +54,7 @@ public abstract class Quest {
 	}
 	
 	public enum QuestType {
-		LOCATION, KILLENTITY;
+		LOCATION, KILLENTITY, TALKTONPC;
 	}
 	
 	public abstract Object clone();
@@ -61,8 +62,8 @@ public abstract class Quest {
 	public void giveRewards(Player p) {
 		MMOPlayer mp = MinecraftMMO.getInstance().getPlayerHandler().getPlayer(p);
 		MMOClass mc = mp.getMmoClasses().get(mp.getCurrentCharacter());
-		if(money != 0) mc.setMoney(mc.getMoney() + money);
-		if(xp != 0) mc.setXp(mc.getXp() + xp);
+		if(money != 0) mc.addMoney(money);
+		if(xp != 0) mc.addXP(xp);
 		if(childQuests.size() != 0) {
 			for(String s : childQuests) {
 				Object q = null;
@@ -72,6 +73,8 @@ public abstract class Quest {
 					q = (LocationQuest)q;
 				} else if(q instanceof EntityKillQuest) {
 					q = (EntityKillQuest)q;
+				} else if(q instanceof NPCTalkQuest) {
+					q = (NPCTalkQuest)q;
 				}
 				
 				mc.getActiveQuests().add((Quest) q);

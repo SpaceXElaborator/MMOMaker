@@ -12,6 +12,7 @@ import com.terturl.MMO.MinecraftMMO;
 import com.terturl.MMO.Quests.Subquests.BasicQuest;
 import com.terturl.MMO.Quests.Subquests.EntityKillQuest;
 import com.terturl.MMO.Quests.Subquests.LocationQuest;
+import com.terturl.MMO.Quests.Subquests.NPCTalkQuest;
 import com.terturl.MMO.Util.JsonFileInterpretter;
 import com.terturl.MMO.Util.JSONHelpers.LocationUtils;
 
@@ -45,8 +46,9 @@ public class QuestManager {
 				if(name == null || descString == null) continue;
 
 				if(type.equalsIgnoreCase("location")) {
-					q = new LocationQuest(name, LocationUtils.locationDeSerializer(config.getString("Location")));
-				} else if(type.equalsIgnoreCase("killEntity")) { 
+					q = new LocationQuest(name);
+					((LocationQuest) q).setLoc(LocationUtils.locationDeSerializer(config.getString("Location")));
+				} else if(type.equalsIgnoreCase("killEntity")) {
 					q = new EntityKillQuest(name);
 					JSONArray ja = config.getArray("EntityInformation");
 					for(Object o : ja) {
@@ -54,6 +56,21 @@ public class QuestManager {
 						EntityType et = EntityType.valueOf(jo.get("Type").toString().toUpperCase());
 						Integer amount = Integer.parseInt(jo.get("Amount").toString());
 						((EntityKillQuest) q).addEntityToKill(et, amount);
+					}
+				} else if(type.equalsIgnoreCase("talkto")) {
+					q = new NPCTalkQuest(name);
+					JSONArray dialog = config.getArray("NPCS");
+					for(Object o : dialog) {
+						JSONObject npc = (JSONObject)o;
+						String npcName = npc.get("Name").toString();
+						((NPCTalkQuest) q).addNPC(npcName);
+						if(npc.containsKey("Dialog")) {
+							JSONArray dialogStrings = (JSONArray)npc.get("Dialog");
+							for(Object dialogString : dialogStrings) {
+								String s = dialogString.toString();
+								((NPCTalkQuest) q).addDialog(npcName, s);
+							}
+						}
 					}
 				} else {
 					q = new BasicQuest(name);

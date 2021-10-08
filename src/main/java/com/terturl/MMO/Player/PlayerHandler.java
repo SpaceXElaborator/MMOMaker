@@ -32,7 +32,7 @@ import com.terturl.MMO.Entity.NPC.NPC.ItemSlot;
 import com.terturl.MMO.Player.Skills.Crafting.CraftingSkill;
 import com.terturl.MMO.Quests.Quest;
 import com.terturl.MMO.Quests.Subquests.EntityKillQuest;
-import com.terturl.MMO.Quests.Subquests.LocationQuest;
+import com.terturl.MMO.Quests.Subquests.NPCTalkQuest;
 import com.terturl.MMO.Util.BasicInventoryItems;
 import com.terturl.MMO.Util.JsonFileInterpretter;
 import com.terturl.MMO.Util.JSONHelpers.ItemUtils;
@@ -159,16 +159,24 @@ public class PlayerHandler {
 				if(mc.getActiveQuests().contains(MinecraftMMO.getInstance().getQuestManager().getQuest(inProg.get("Name").toString()))) return;
 				// mc.getActiveQuests().add(MinecraftMMO.getInstance().getQuestManager().getQuest(e.toString()));
 				Quest q = MinecraftMMO.getInstance().getQuestManager().getQuest(inProg.get("Name").toString());
-				if(q instanceof LocationQuest) {
-					((LocationQuest) q).setLoc(LocationUtils.locationDeSerializer(inProg.get("Location").toString()));
-				} else if(q instanceof EntityKillQuest) {
-					JSONArray entries = (JSONArray)inProg.get("Entities");
-					entries.forEach(e2 -> {
-						JSONObject entity = (JSONObject)e2;
-						EntityType et = EntityType.valueOf(entity.get("Type").toString());
-						Integer amount = Integer.parseInt(entity.get("Amount").toString());
-						((EntityKillQuest) q).getHasKilled().put(et, amount);
-					});
+				if(q instanceof EntityKillQuest) {
+					if(inProg.containsKey("Entities")) {
+						JSONArray entries = (JSONArray)inProg.get("Entities");
+						entries.forEach(e2 -> {
+							JSONObject entity = (JSONObject)e2;
+							EntityType et = EntityType.valueOf(entity.get("Type").toString());
+							Integer amount = Integer.parseInt(entity.get("Amount").toString());
+							((EntityKillQuest) q).getHasKilled().put(et, amount);
+						});
+					}
+				} else if(q instanceof NPCTalkQuest) {
+					if(inProg.containsKey("TalkedTo")) {
+						JSONArray talkedTo = (JSONArray)inProg.get("TalkedTo");
+						for(Object o : talkedTo) {
+							String s = o.toString();
+							((NPCTalkQuest) q).getHasTalkedTo().add(s);
+						}
+					}
 				}
 				
 				mc.getActiveQuests().add(q);
@@ -297,9 +305,7 @@ public class PlayerHandler {
 					JSONObject questJO = new JSONObject();
 					questJO.put("Name", q.getName());
 					
-					if(q instanceof LocationQuest) {
-						questJO.put("Location", LocationUtils.locationSerializer(((LocationQuest) q).getLoc()));
-					} else if(q instanceof EntityKillQuest) {
+					if(q instanceof EntityKillQuest) {
 						JSONArray hasKilled = new JSONArray();
 						for(EntityType et : ((EntityKillQuest) q).getHasKilled().keySet()) {
 							JSONObject entry = new JSONObject();
@@ -308,6 +314,12 @@ public class PlayerHandler {
 							hasKilled.add(entry);
 						}
 						questJO.put("Entities", hasKilled);
+					} else if(q instanceof NPCTalkQuest) {
+						JSONArray hasTalkedTo = new JSONArray();
+						for(String talkedTo : ((NPCTalkQuest) q).getHasTalkedTo()) {
+							hasTalkedTo.add(talkedTo);
+						}
+						questJO.put("TalkedTo", hasTalkedTo);
 					}
 					inProg.add(questJO);
 				}

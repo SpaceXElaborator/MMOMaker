@@ -1,12 +1,19 @@
 package com.terturl.MMO.Util.Listeners;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import com.terturl.MMO.MinecraftMMO;
 import com.terturl.MMO.Entity.NPC.NPC;
+import com.terturl.MMO.Player.MMOClass;
+import com.terturl.MMO.Player.MMOPlayer;
 import com.terturl.MMO.Quests.Quest;
+import com.terturl.MMO.Quests.Quest.QuestType;
+import com.terturl.MMO.Quests.Subquests.NPCTalkQuest;
 import com.terturl.MMO.Util.Events.ClickClassNPCEvent;
 import com.terturl.MMO.Util.Events.ClickNPCEvent;
 import com.terturl.MMO.Util.Events.ClickPlayerClassNPCEvent;
@@ -17,22 +24,41 @@ public class InteractNPCListener implements Listener {
 	public void handleNPCEvent(ClickNPCEvent e) {
 		Player p = e.getP();
 		NPC npc = e.getNpc();
-		npc.lookAtPlayer(p, p);
-		if(npc.getGivableQuest().size() > 0) {
-			// Eventually check for checks available
-			Quest q = npc.getNextAvailabeQuest(MinecraftMMO.getInstance().getPlayerHandler().getPlayer(p));
-			
-			if(q == null) {
-				p.sendMessage(npc.getIdleString());
-				return;
+		MMOPlayer mp = MinecraftMMO.getInstance().getPlayerHandler().getPlayer(p);
+		if(mp == null) return;
+		MMOClass mc = mp.getMmoClasses().get(mp.getCurrentCharacter());
+		List<Quest> talkToQuests = mc.getActiveQuests().stream().filter(q -> q.getType().equals(QuestType.TALKTONPC)).collect(Collectors.toList());
+		
+		// NPC Talk Quests take priority over giving quests. Make sure there are no quests to talk about first
+		if(talkToQuests.size() > 0) {
+			for(Quest q : talkToQuests) {
+				NPCTalkQuest ntq = (NPCTalkQuest)q;
+				if(!ntq.containsNPC(npc.getDisplayName())) continue;
+				ntq.talkTo(npc.getDisplayName(), p);
+				if(ntq.hasComplete(p)) {
+					ntq.completeQuest(p);
+					mc.getCompletedQuests().add(q.getName());
+					mc.getActiveQuests().remove(q);
+					mp.updateNPCQuests();
+				}
 			}
-			
-			MinecraftMMO.getInstance().getClassHandler().addQuest(p, q);
-			p.sendTitle(q.getName(), q.getPresentString(), 5, 10, 5);
-			p.sendMessage(q.getPresentString());
-
 		} else {
-			p.sendMessage(npc.getIdleString());
+			npc.lookAtPlayer(p, p);
+			if(npc.getGivableQuest().size() > 0) {
+				Quest q = npc.getNextAvailabeQuest(MinecraftMMO.getInstance().getPlayerHandler().getPlayer(p));
+				
+				if(q == null) {
+					p.sendMessage(npc.getIdleString());
+					return;
+				}
+				
+				MinecraftMMO.getInstance().getClassHandler().addQuest(p, q);
+				p.sendTitle(q.getName(), q.getPresentString(), 5, 10, 5);
+				p.sendMessage(q.getPresentString());
+
+			} else {
+				p.sendMessage(npc.getIdleString());
+			}
 		}
 	}
 	

@@ -20,10 +20,9 @@ public class LocationQuest extends Quest {
 	@Getter @Setter
 	private Location loc;
 	
-	public LocationQuest(String name, Location location) {
+	public LocationQuest(String name) {
 		super(name);
 		setType(QuestType.LOCATION);
-		loc = location;
 	}
 
 	public void completeQuest(Player p) {
@@ -40,7 +39,8 @@ public class LocationQuest extends Quest {
 
 	@Override
 	public Object clone() {
-		LocationQuest q = new LocationQuest(getName(), getLoc());
+		LocationQuest q = new LocationQuest(getName());
+		q.setLoc(getLoc());
 		q.setAcceptString(getAcceptString());
 		q.setChildQuests(getChildQuests());
 		q.setDenyString(getDenyString());
