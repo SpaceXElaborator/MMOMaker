@@ -6,11 +6,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+
+import com.terturl.MMO.MinecraftMMO;
 
 import lombok.ToString;
 
@@ -24,6 +27,7 @@ public class JsonFileInterpretter {
 		try {
 			json = (JSONObject)parser.parse(new InputStreamReader(new FileInputStream(f), "UTF-8"));
 		} catch (IOException | ParseException e) {
+			MinecraftMMO.getInstance().getLogger().log(Level.INFO, f.getName());
 			e.printStackTrace();
 		}
 	}
