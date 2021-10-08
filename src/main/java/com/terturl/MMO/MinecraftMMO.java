@@ -38,6 +38,7 @@ import com.terturl.MMO.Util.Listeners.HotbarListeners;
 import com.terturl.MMO.Util.Listeners.InteractNPCListener;
 import com.terturl.MMO.Util.Listeners.ItemInteractionListeners;
 import com.terturl.MMO.Util.Listeners.MMOEntityDeathListener;
+import com.terturl.MMO.Util.Listeners.PlayerDropItemListener;
 import com.terturl.MMO.Util.Listeners.PlayerJoinListener;
 import com.terturl.MMO.Util.Listeners.PlayerMoveListeners;
 
@@ -144,6 +145,7 @@ public class MinecraftMMO extends JavaPlugin {
 		registerListener(new DamageEvent());
 		registerListener(new EntityDeathListeners());
 		registerListener(new MMOEntityDeathListener());
+		registerListener(new PlayerDropItemListener());
 	}
 	
 	public <T extends CraftCommand> void registerCommand(T command) {
