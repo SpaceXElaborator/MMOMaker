@@ -16,7 +16,6 @@ import com.terturl.MMO.MinecraftMMO;
 import com.terturl.MMO.Player.MMOClass;
 import com.terturl.MMO.Player.MMOPlayer;
 import com.terturl.MMO.Quests.Quest;
-import com.terturl.MMO.Quests.Quest.QuestType;
 import com.terturl.MMO.Quests.Subquests.EntityKillQuest;
 import com.terturl.MMO.Util.Events.MMOEntityDeathEvent;
 
@@ -29,7 +28,7 @@ public class EntityDeathListeners implements Listener {
 			MMOPlayer mp = MinecraftMMO.getInstance().getPlayerHandler().getPlayer(p);
 			if(mp == null) return;
 			MMOClass mc = mp.getMmoClasses().get(mp.getCurrentCharacter());
-			List<Quest> killQuests = mc.getActiveQuests().stream().filter(q -> q.getType().equals(QuestType.KILLENTITY)).collect(Collectors.toList());
+			List<Quest> killQuests = mc.getActiveQuests().stream().filter(q -> q.getQuestType().equals("KillEntity")).collect(Collectors.toList());
 			EntityType et = e.getEntity().getType();
 			for(Quest q : killQuests) {
 				EntityKillQuest ekq = (EntityKillQuest)q;

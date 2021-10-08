@@ -12,7 +12,6 @@ import com.terturl.MMO.Entity.NPC.NPC;
 import com.terturl.MMO.Player.MMOClass;
 import com.terturl.MMO.Player.MMOPlayer;
 import com.terturl.MMO.Quests.Quest;
-import com.terturl.MMO.Quests.Quest.QuestType;
 import com.terturl.MMO.Quests.Subquests.NPCTalkQuest;
 import com.terturl.MMO.Util.Events.ClickClassNPCEvent;
 import com.terturl.MMO.Util.Events.ClickNPCEvent;
@@ -27,7 +26,7 @@ public class InteractNPCListener implements Listener {
 		MMOPlayer mp = MinecraftMMO.getInstance().getPlayerHandler().getPlayer(p);
 		if(mp == null) return;
 		MMOClass mc = mp.getMmoClasses().get(mp.getCurrentCharacter());
-		List<Quest> talkToQuests = mc.getActiveQuests().stream().filter(q -> q.getType().equals(QuestType.TALKTONPC)).collect(Collectors.toList());
+		List<Quest> talkToQuests = mc.getActiveQuests().stream().filter(q -> q.getQuestType().equals("TalkTo")).collect(Collectors.toList());
 		
 		// NPC Talk Quests take priority over giving quests. Make sure there are no quests to talk about first
 		if(talkToQuests.size() > 0) {

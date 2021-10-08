@@ -12,6 +12,7 @@ import org.json.simple.JSONObject;
 
 import com.terturl.MMO.Player.MMOClass;
 import com.terturl.MMO.Quests.Quest;
+import com.terturl.MMO.Util.JSONHelpers.LocationUtils;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -21,11 +22,6 @@ public class LocationQuest extends Quest {
 
 	@Getter @Setter
 	private Location loc;
-	
-	public LocationQuest(String name) {
-		super(name);
-		setType(QuestType.LOCATION);
-	}
 
 	public void completeQuest(Player p) {
 		p.sendMessage("You have completed the quest");
@@ -41,7 +37,8 @@ public class LocationQuest extends Quest {
 
 	@Override
 	public Object clone() {
-		LocationQuest q = new LocationQuest(getName());
+		LocationQuest q = new LocationQuest();
+		q.setName(getName());
 		q.setLoc(getLoc());
 		q.setAcceptString(getAcceptString());
 		q.setChildQuests(getChildQuests());
@@ -52,7 +49,6 @@ public class LocationQuest extends Quest {
 		q.setXp(getXp());
 		q.setParentQuests(getParentQuests());
 		q.setPresentString(getPresentString());
-		q.setType(getType());
 		return q;
 	}
 
@@ -77,8 +73,13 @@ public class LocationQuest extends Quest {
 	}
 
 	@Override
-	public void loadQuest(JSONObject jo, MMOClass mc) {
+	public void loadQuestToPlayer(JSONObject jo, MMOClass mc) {
 		return;
+	}
+
+	@Override
+	public void loadQuest(JSONObject jo) {
+		setLoc(LocationUtils.locationDeSerializer(jo.get("Location").toString()));
 	}
 	
 }

@@ -27,11 +27,6 @@ public class NPCTalkQuest extends Quest {
 	@Getter @Setter
 	private List<String> hasTalkedTo = new ArrayList<>();
 	
-	public NPCTalkQuest(String name) {
-		super(name);
-		setType(QuestType.TALKTONPC);
-	}
-	
 	public void addNPC(String s) {
 		if(NPCList.containsKey(s)) return;
 		NPCList.put(s, new ArrayList<>());
@@ -58,7 +53,8 @@ public class NPCTalkQuest extends Quest {
 	
 	@Override
 	public Object clone() {
-		NPCTalkQuest q = new NPCTalkQuest(getName());
+		NPCTalkQuest q = new NPCTalkQuest();
+		q.setName(getName());
 		q.setAcceptString(getAcceptString());
 		q.setChildQuests(getChildQuests());
 		q.setDenyString(getDenyString());
@@ -68,10 +64,9 @@ public class NPCTalkQuest extends Quest {
 		q.setXp(getXp());
 		q.setParentQuests(getParentQuests());
 		q.setPresentString(getPresentString());
-		q.setType(getType());
 		q.setNPCList(getNPCList());
 		q.setHasTalkedTo(getHasTalkedTo());
-		return null;
+		return q;
 	}
 	
 	@Override
@@ -119,12 +114,29 @@ public class NPCTalkQuest extends Quest {
 	}
 
 	@Override
-	public void loadQuest(JSONObject jo, MMOClass mc) {
+	public void loadQuestToPlayer(JSONObject jo, MMOClass mc) {
 		if(jo.containsKey("TalkedTo")) {
 			JSONArray talkedTo = (JSONArray)jo.get("TalkedTo");
 			for(Object o : talkedTo) {
 				String s = o.toString();
 				getHasTalkedTo().add(s);
+			}
+		}
+	}
+
+	@Override
+	public void loadQuest(JSONObject jo) {
+		JSONArray dialog = (JSONArray) jo.get("NPCS");
+		for(Object o : dialog) {
+			JSONObject npc = (JSONObject)o;
+			String npcName = npc.get("Name").toString();
+			addNPC(npcName);
+			if(npc.containsKey("Dialog")) {
+				JSONArray dialogStrings = (JSONArray)npc.get("Dialog");
+				for(Object dialogString : dialogStrings) {
+					String s = dialogString.toString();
+					addDialog(npcName, s);
+				}
 			}
 		}
 	}

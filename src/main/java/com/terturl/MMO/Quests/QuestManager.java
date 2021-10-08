@@ -2,19 +2,13 @@ package com.terturl.MMO.Quests;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 
-import org.bukkit.entity.EntityType;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-
 import com.terturl.MMO.MinecraftMMO;
-import com.terturl.MMO.Quests.Subquests.EntityKillQuest;
-import com.terturl.MMO.Quests.Subquests.LocationQuest;
-import com.terturl.MMO.Quests.Subquests.NPCTalkQuest;
 import com.terturl.MMO.Util.JsonFileInterpretter;
-import com.terturl.MMO.Util.JSONHelpers.LocationUtils;
 
 import lombok.Getter;
 
@@ -23,10 +17,16 @@ public class QuestManager {
 	@Getter
 	private List<Quest> allQuests = new ArrayList<>();
 	
+	private Map<String, Quest> questTypes = new HashMap<>();
+	
+	private File questDir;
+	
 	public QuestManager() {
-		File questDir = new File(MinecraftMMO.getInstance().getDataFolder(), "quests");
+		questDir = new File(MinecraftMMO.getInstance().getDataFolder(), "quests");
 		if(!questDir.exists()) questDir.mkdir();
-		
+	}
+	
+	public void loadQuests() {
 		for(File f : questDir.listFiles()) {
 			if(f.getName().endsWith(".json")) {
 				Object q = null;
@@ -39,44 +39,33 @@ public class QuestManager {
 				String type = config.contains("Type") ? config.getString("Type") : "Basic";
 				Double money = config.contains("Money") ? config.getDouble("Money") : 0.0;
 				Double xp = config.contains("XP") ? config.getDouble("XP") : 0.0;
+				
+				// TODO: Combine these into one Rewards JSONObject
 				List<String> customItems = config.contains("Items") ? config.getStringList("Items") : new ArrayList<>();
 				List<String> questRewards = config.contains("RewardQuests") ? config.getStringList("RewardQuests") : new ArrayList<>();
 				List<String> parentQuests = config.contains("Parents") ? config.getStringList("Parents") : new ArrayList<>();
 				List<String> craftingRecipes = config.contains("CraftingRecipes") ? config.getStringList("CraftingRecipes") : new ArrayList<>();
+				
+				// TODO: Make this a check method
 				if(name == null || descString == null) continue;
-
-				if(type.equalsIgnoreCase("location")) {
-					q = new LocationQuest(name);
-					((LocationQuest) q).setLoc(LocationUtils.locationDeSerializer(config.getString("Location")));
-				} else if(type.equalsIgnoreCase("killEntity")) {
-					q = new EntityKillQuest(name);
-					JSONArray ja = config.getArray("EntityInformation");
-					for(Object o : ja) {
-						JSONObject jo = (JSONObject)o;
-						EntityType et = EntityType.valueOf(jo.get("Type").toString().toUpperCase());
-						Integer amount = Integer.parseInt(jo.get("Amount").toString());
-						((EntityKillQuest) q).addEntityToKill(et, amount);
-					}
-				} else if(type.equalsIgnoreCase("talkto")) {
-					q = new NPCTalkQuest(name);
-					JSONArray dialog = config.getArray("NPCS");
-					for(Object o : dialog) {
-						JSONObject npc = (JSONObject)o;
-						String npcName = npc.get("Name").toString();
-						((NPCTalkQuest) q).addNPC(npcName);
-						if(npc.containsKey("Dialog")) {
-							JSONArray dialogStrings = (JSONArray)npc.get("Dialog");
-							for(Object dialogString : dialogStrings) {
-								String s = dialogString.toString();
-								((NPCTalkQuest) q).addDialog(npcName, s);
-							}
-						}
-					}
-				} else {
-					MinecraftMMO.getInstance().getLogger().log(Level.WARNING, "Unable to load quest with name: " + name + ". Couldn't find type!");
+				if(!questTypes.containsKey(type)) {
+					MinecraftMMO.getInstance().getLogger().log(Level.WARNING, "Quest File: " + f.getName() + " has unknown type");
+					continue;
+				}
+				if(!config.contains("Properties")) {
+					MinecraftMMO.getInstance().getLogger().log(Level.WARNING, "Quest File: " + f.getName() + " has no properties field to load quest information");
 					continue;
 				}
 				
+				q = (Quest) questTypes.get(type).clone();
+				if(q == null) {
+					MinecraftMMO.getInstance().getLogger().log(Level.WARNING, "Quest File: " + f.getName() + " unable to create new");
+					continue;
+				}
+				
+				((Quest) q).loadQuest(config.getObject("Properties"));
+				((Quest) q).setName(name);
+				((Quest) q).setQuestType(type);
 				((Quest) q).setDescString(descString);
 				((Quest) q).setAcceptString(acceptString);
 				((Quest) q).setDenyString(denyString);
@@ -90,6 +79,10 @@ public class QuestManager {
 				allQuests.add((Quest) q);
 			}
 		}
+	}
+	
+	public void registerQuest(String type, Quest baseClass) {
+		questTypes.put(type, baseClass);
 	}
 	
 	public Quest getQuest(String s) {

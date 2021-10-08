@@ -29,10 +29,10 @@ public abstract class Quest {
 	private String descString, acceptString, DenyString, presentString;
 	
 	@Getter @Setter
-	private List<String> parentQuests = new ArrayList<>();
+	private String questType;
 	
 	@Getter @Setter
-	private QuestType type;
+	private List<String> parentQuests = new ArrayList<>();
 	
 	// Rewards
 	@Getter @Setter
@@ -50,13 +50,7 @@ public abstract class Quest {
 	@Getter @Setter
 	private List<String> recipes = new ArrayList<>();
 	
-	public Quest(String name) {
-		setName(name);
-	}
-	
-	public enum QuestType {
-		LOCATION, KILLENTITY, TALKTONPC;
-	}
+	public Quest() {}
 	
 	public abstract Object clone();
 	
@@ -100,7 +94,8 @@ public abstract class Quest {
 	public abstract void completeQuest(Player p);
 	public abstract ItemStack questItem(Player p);
 	
+	public abstract void loadQuest(JSONObject jo);
 	public abstract JSONObject saveQuest();
-	public abstract void loadQuest(JSONObject jo, MMOClass mc);
+	public abstract void loadQuestToPlayer(JSONObject jo, MMOClass mc);
 	
 }

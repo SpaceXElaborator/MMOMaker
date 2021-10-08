@@ -11,7 +11,6 @@ import com.terturl.MMO.MinecraftMMO;
 import com.terturl.MMO.Player.MMOClass;
 import com.terturl.MMO.Player.MMOPlayer;
 import com.terturl.MMO.Quests.Quest;
-import com.terturl.MMO.Quests.Quest.QuestType;
 import com.terturl.MMO.Quests.Subquests.LocationQuest;
 
 public class PlayerMoveListeners implements Listener {
@@ -21,7 +20,7 @@ public class PlayerMoveListeners implements Listener {
 		MMOPlayer mp = MinecraftMMO.getInstance().getPlayerHandler().getPlayer(e.getPlayer());
 		if(mp == null) return;
 		MMOClass mc = mp.getMmoClasses().get(mp.getCurrentCharacter());
-		List<Quest> moveQuests = mc.getActiveQuests().stream().filter(q -> q.getType().equals(QuestType.LOCATION)).collect(Collectors.toList());
+		List<Quest> moveQuests = mc.getActiveQuests().stream().filter(q -> q.getQuestType().equals("Location")).collect(Collectors.toList());
 		for(Quest q : moveQuests) {
 			LocationQuest lq = (LocationQuest)q;
 			if(lq.hasComplete(e.getPlayer())) {

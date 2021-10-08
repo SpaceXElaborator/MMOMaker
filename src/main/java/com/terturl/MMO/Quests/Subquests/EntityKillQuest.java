@@ -27,11 +27,6 @@ public class EntityKillQuest extends Quest {
 	@Getter @Setter
 	public Map<EntityType, Integer> hasKilled = new HashMap<>();
 	
-	public EntityKillQuest(String name) {
-		super(name);
-		setType(QuestType.KILLENTITY);
-	}
-	
 	public void addEntityToKill(EntityType et, Integer amount) {
 		amountToKill.put(et, amount);
 		hasKilled.put(et, 0);
@@ -53,7 +48,8 @@ public class EntityKillQuest extends Quest {
 
 	@Override
 	public Object clone() {
-		EntityKillQuest q = new EntityKillQuest(getName());
+		EntityKillQuest q = new EntityKillQuest();
+		q.setName(getName());
 		q.setAcceptString(getAcceptString());
 		q.setChildQuests(getChildQuests());
 		q.setDenyString(getDenyString());
@@ -63,7 +59,6 @@ public class EntityKillQuest extends Quest {
 		q.setXp(getXp());
 		q.setParentQuests(getParentQuests());
 		q.setPresentString(getPresentString());
-		q.setType(getType());
 		q.setAmountToKill(amountToKill);
 		return q;
 	}
@@ -105,7 +100,7 @@ public class EntityKillQuest extends Quest {
 	}
 	
 	@Override
-	public void loadQuest(JSONObject jo, MMOClass mc) {
+	public void loadQuestToPlayer(JSONObject jo, MMOClass mc) {
 		if(jo.containsKey("Entities")) {
 			JSONArray entries = (JSONArray)jo.get("Entities");
 			for(Object o : entries) {
@@ -114,6 +109,17 @@ public class EntityKillQuest extends Quest {
 				Integer amount = Integer.parseInt(entity.get("Amount").toString());
 				getHasKilled().put(et, amount);
 			}
+		}
+	}
+
+	@Override
+	public void loadQuest(JSONObject jo) {
+		JSONArray ja = (JSONArray) jo.get("EntityInformation");
+		for(Object o : ja) {
+			JSONObject entry = (JSONObject)o;
+			EntityType et = EntityType.valueOf(entry.get("Type").toString().toUpperCase());
+			Integer amount = Integer.parseInt(entry.get("Amount").toString());
+			addEntityToKill(et, amount);
 		}
 	}
 

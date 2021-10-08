@@ -31,6 +31,9 @@ import com.terturl.MMO.Player.MMOClasses.ClassHandler;
 import com.terturl.MMO.Player.Shops.ShopManager;
 import com.terturl.MMO.Player.Skills.Crafting.RecipeManager;
 import com.terturl.MMO.Quests.QuestManager;
+import com.terturl.MMO.Quests.Subquests.EntityKillQuest;
+import com.terturl.MMO.Quests.Subquests.LocationQuest;
+import com.terturl.MMO.Quests.Subquests.NPCTalkQuest;
 import com.terturl.MMO.Util.Items.CustomItemManager;
 import com.terturl.MMO.Util.Listeners.DamageEvent;
 import com.terturl.MMO.Util.Listeners.EntityDeathListeners;
@@ -73,12 +76,15 @@ public class MinecraftMMO extends JavaPlugin {
 	
 	private static MinecraftMMO instance;
 	
+	public void onLoad() {
+		instance = this;
+		if(!getDataFolder().exists()) getDataFolder().mkdir();
+		questManager = new QuestManager();
+	}
+	
 	// CustomMobs {Level} | {Name} | {Health}
 	// Test 2
 	public void onEnable() {
-		instance = this;
-		if(!getDataFolder().exists()) getDataFolder().mkdir();
-		
 		mathConfig = new MathConfiguration();
 		
 		try {
@@ -91,7 +97,8 @@ public class MinecraftMMO extends JavaPlugin {
 		abilityManager = new AbilityManager();
 		classHandler = new ClassHandler();
 		registerClasses();
-		questManager = new QuestManager();
+		registerQuestTypes();
+		questManager.loadQuests();
 		npcHandler = new NPCManager();
 		playerHandler = new PlayerHandler();
 		mmoConfiguration = new Configuration();
@@ -146,6 +153,12 @@ public class MinecraftMMO extends JavaPlugin {
 		registerListener(new EntityDeathListeners());
 		registerListener(new MMOEntityDeathListener());
 		registerListener(new PlayerDropItemListener());
+	}
+	
+	private void registerQuestTypes() {
+		questManager.registerQuest("Location", new LocationQuest());
+		questManager.registerQuest("KillEntity", new EntityKillQuest());
+		questManager.registerQuest("TalkTo", new NPCTalkQuest());
 	}
 	
 	public <T extends CraftCommand> void registerCommand(T command) {
