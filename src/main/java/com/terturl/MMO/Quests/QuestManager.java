@@ -3,13 +3,13 @@ package com.terturl.MMO.Quests;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.bukkit.entity.EntityType;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.terturl.MMO.MinecraftMMO;
-import com.terturl.MMO.Quests.Subquests.BasicQuest;
 import com.terturl.MMO.Quests.Subquests.EntityKillQuest;
 import com.terturl.MMO.Quests.Subquests.LocationQuest;
 import com.terturl.MMO.Quests.Subquests.NPCTalkQuest;
@@ -73,7 +73,8 @@ public class QuestManager {
 						}
 					}
 				} else {
-					q = new BasicQuest(name);
+					MinecraftMMO.getInstance().getLogger().log(Level.WARNING, "Unable to load quest with name: " + name + ". Couldn't find type!");
+					continue;
 				}
 				
 				((Quest) q).setDescString(descString);

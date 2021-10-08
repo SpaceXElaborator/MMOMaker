@@ -10,7 +10,10 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
+import com.terturl.MMO.Player.MMOClass;
 import com.terturl.MMO.Quests.Quest;
 
 import lombok.Getter;
@@ -101,6 +104,29 @@ public class NPCTalkQuest extends Quest {
 		item.setItemMeta(meta);
 		
 		return item;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public JSONObject saveQuest() {
+		JSONObject jo = new JSONObject();
+		JSONArray hasTalkedTo = new JSONArray();
+		for(String talkedTo : getHasTalkedTo()) {
+			hasTalkedTo.add(talkedTo);
+		}
+		jo.put("TalkedTo", hasTalkedTo);
+		return jo;
+	}
+
+	@Override
+	public void loadQuest(JSONObject jo, MMOClass mc) {
+		if(jo.containsKey("TalkedTo")) {
+			JSONArray talkedTo = (JSONArray)jo.get("TalkedTo");
+			for(Object o : talkedTo) {
+				String s = o.toString();
+				getHasTalkedTo().add(s);
+			}
+		}
 	}
 	
 }

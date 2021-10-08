@@ -16,7 +16,6 @@ import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.inventory.ItemStack;
@@ -31,8 +30,6 @@ import com.terturl.MMO.Entity.NPC.NPC;
 import com.terturl.MMO.Entity.NPC.NPC.ItemSlot;
 import com.terturl.MMO.Player.Skills.Crafting.CraftingSkill;
 import com.terturl.MMO.Quests.Quest;
-import com.terturl.MMO.Quests.Subquests.EntityKillQuest;
-import com.terturl.MMO.Quests.Subquests.NPCTalkQuest;
 import com.terturl.MMO.Util.BasicInventoryItems;
 import com.terturl.MMO.Util.JsonFileInterpretter;
 import com.terturl.MMO.Util.JSONHelpers.ItemUtils;
@@ -157,29 +154,14 @@ public class PlayerHandler {
 			active.forEach(e -> {
 				JSONObject inProg = (JSONObject)e;
 				if(mc.getActiveQuests().contains(MinecraftMMO.getInstance().getQuestManager().getQuest(inProg.get("Name").toString()))) return;
-				// mc.getActiveQuests().add(MinecraftMMO.getInstance().getQuestManager().getQuest(e.toString()));
-				Quest q = MinecraftMMO.getInstance().getQuestManager().getQuest(inProg.get("Name").toString());
-				if(q instanceof EntityKillQuest) {
-					if(inProg.containsKey("Entities")) {
-						JSONArray entries = (JSONArray)inProg.get("Entities");
-						entries.forEach(e2 -> {
-							JSONObject entity = (JSONObject)e2;
-							EntityType et = EntityType.valueOf(entity.get("Type").toString());
-							Integer amount = Integer.parseInt(entity.get("Amount").toString());
-							((EntityKillQuest) q).getHasKilled().put(et, amount);
-						});
-					}
-				} else if(q instanceof NPCTalkQuest) {
-					if(inProg.containsKey("TalkedTo")) {
-						JSONArray talkedTo = (JSONArray)inProg.get("TalkedTo");
-						for(Object o : talkedTo) {
-							String s = o.toString();
-							((NPCTalkQuest) q).getHasTalkedTo().add(s);
-						}
-					}
+				Object q = MinecraftMMO.getInstance().getQuestManager().getQuest(inProg.get("Name").toString()).clone();
+				
+				if(inProg.containsKey("Properties")) {
+					JSONObject questProperties = (JSONObject)inProg.get("Properties");
+					((Quest) q).loadQuest(questProperties, mc);
 				}
 				
-				mc.getActiveQuests().add(q);
+				mc.getActiveQuests().add((Quest) q);
 			});
 			JSONArray completable = (JSONArray)clazz.get("Completable");
 			completable.forEach(e -> {
@@ -304,23 +286,8 @@ public class PlayerHandler {
 					if(inProg.contains(q.getName())) continue;
 					JSONObject questJO = new JSONObject();
 					questJO.put("Name", q.getName());
-					
-					if(q instanceof EntityKillQuest) {
-						JSONArray hasKilled = new JSONArray();
-						for(EntityType et : ((EntityKillQuest) q).getHasKilled().keySet()) {
-							JSONObject entry = new JSONObject();
-							entry.put("Type", et.toString());
-							entry.put("Amount", ((EntityKillQuest) q).getHasKilled().get(et));
-							hasKilled.add(entry);
-						}
-						questJO.put("Entities", hasKilled);
-					} else if(q instanceof NPCTalkQuest) {
-						JSONArray hasTalkedTo = new JSONArray();
-						for(String talkedTo : ((NPCTalkQuest) q).getHasTalkedTo()) {
-							hasTalkedTo.add(talkedTo);
-						}
-						questJO.put("TalkedTo", hasTalkedTo);
-					}
+					JSONObject questProperties = q.saveQuest();
+					if(questProperties != null) questJO.put("Properties", q.saveQuest());
 					inProg.add(questJO);
 				}
 				

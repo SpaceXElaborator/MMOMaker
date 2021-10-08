@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.json.simple.JSONObject;
 
 import com.terturl.MMO.MinecraftMMO;
 import com.terturl.MMO.Player.MMOClass;
@@ -98,5 +99,8 @@ public abstract class Quest {
 	public abstract boolean hasComplete(Player p);
 	public abstract void completeQuest(Player p);
 	public abstract ItemStack questItem(Player p);
+	
+	public abstract JSONObject saveQuest();
+	public abstract void loadQuest(JSONObject jo, MMOClass mc);
 	
 }

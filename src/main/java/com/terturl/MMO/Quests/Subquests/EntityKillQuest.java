@@ -10,7 +10,10 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
+import com.terturl.MMO.Player.MMOClass;
 import com.terturl.MMO.Quests.Quest;
 
 import lombok.Getter;
@@ -62,7 +65,6 @@ public class EntityKillQuest extends Quest {
 		q.setPresentString(getPresentString());
 		q.setType(getType());
 		q.setAmountToKill(amountToKill);
-		q.setHasKilled(hasKilled);
 		return q;
 	}
 
@@ -75,16 +77,44 @@ public class EntityKillQuest extends Quest {
 		List<String> lore = new ArrayList<>();
 		lore.add(ChatColor.GREEN + "Requirements: ");
 		for(EntityType et : amountToKill.keySet()) {
-			lore.add("Kill " + String.valueOf(amountToKill.get(et)) + et.toString());
+			lore.add("Kill " + String.valueOf(amountToKill.get(et)) + " " + et.toString());
 		}
 		lore.add(ChatColor.GREEN + "\nCompleted: ");
 		for(EntityType et : hasKilled.keySet()) {
-			lore.add("Killed " + String.valueOf(hasKilled.get(et)) + et.toString());
+			lore.add("Killed " + String.valueOf(hasKilled.get(et)) + " " + et.toString());
 		}
 		meta.setLore(lore);
 		item.setItemMeta(meta);
 		
 		return item;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public JSONObject saveQuest() {
+		JSONObject jo = new JSONObject();
+		JSONArray hasKilled = new JSONArray();
+		for(EntityType et : getHasKilled().keySet()) {
+			JSONObject entry = new JSONObject();
+			entry.put("Type", et.toString());
+			entry.put("Amount", getHasKilled().get(et));
+			hasKilled.add(entry);
+		}
+		jo.put("Entities", hasKilled);
+		return jo;
+	}
+	
+	@Override
+	public void loadQuest(JSONObject jo, MMOClass mc) {
+		if(jo.containsKey("Entities")) {
+			JSONArray entries = (JSONArray)jo.get("Entities");
+			for(Object o : entries) {
+				JSONObject entity = (JSONObject)o;
+				EntityType et = EntityType.valueOf(entity.get("Type").toString());
+				Integer amount = Integer.parseInt(entity.get("Amount").toString());
+				getHasKilled().put(et, amount);
+			}
+		}
 	}
 
 }

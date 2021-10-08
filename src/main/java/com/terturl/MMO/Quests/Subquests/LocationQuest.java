@@ -8,7 +8,9 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.json.simple.JSONObject;
 
+import com.terturl.MMO.Player.MMOClass;
 import com.terturl.MMO.Quests.Quest;
 
 import lombok.Getter;
@@ -67,6 +69,16 @@ public class LocationQuest extends Quest {
 		is.setItemMeta(im);
 		
 		return is;
+	}
+
+	@Override
+	public JSONObject saveQuest() {
+		return null;
+	}
+
+	@Override
+	public void loadQuest(JSONObject jo, MMOClass mc) {
+		return;
 	}
 	
 }
