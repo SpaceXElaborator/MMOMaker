@@ -56,7 +56,7 @@ public class PlayerHandler {
 	}
 	
 	public void addQuestItem(Player p) {
-		p.getInventory().setItem(8, new ItemStack(Material.BOOK));
+		p.getInventory().setItem(8, new ItemStack(Material.COMPASS));
 		p.updateInventory();
 	}
 	
