@@ -59,7 +59,7 @@ public class QuestManager {
 				
 				q = (Quest) questTypes.get(type).clone();
 				if(q == null) {
-					MinecraftMMO.getInstance().getLogger().log(Level.WARNING, "Quest File: " + f.getName() + " unable to create new");
+					MinecraftMMO.getInstance().getLogger().log(Level.WARNING, "Quest File: " + f.getName() + " unable to create new. Check clone() method");
 					continue;
 				}
 				
