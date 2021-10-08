@@ -3,12 +3,14 @@ package com.terturl.MMO.Player.Skills.Crafting;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import com.terturl.MMO.MinecraftMMO;
 import com.terturl.MMO.Player.MMOClass;
 import com.terturl.MMO.Player.MMOPlayer;
+import com.terturl.MMO.Util.Events.MMOItemCraftEvent;
 import com.terturl.MMO.Util.Items.CustomItem;
 
 import lombok.EqualsAndHashCode;
@@ -58,6 +60,8 @@ public class MMORecipe {
 		mc.getCraftSkill().addXP(xpGiven);
 		p.getInventory().addItem(product.makeItem());
 		p.updateInventory();
+		MMOItemCraftEvent event = new MMOItemCraftEvent(product, p);
+		if(!event.isCancelled()) Bukkit.getPluginManager().callEvent(event);
 	}
 	
 	public boolean PlayerHasAllItems(Player p) {

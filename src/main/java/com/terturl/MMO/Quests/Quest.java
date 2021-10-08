@@ -96,6 +96,6 @@ public abstract class Quest {
 	
 	public abstract void loadQuest(JSONObject jo);
 	public abstract JSONObject saveQuest();
-	public abstract void loadQuestToPlayer(JSONObject jo, MMOClass mc);
+	public abstract void loadQuestToPlayer(JSONObject jo);
 	
 }

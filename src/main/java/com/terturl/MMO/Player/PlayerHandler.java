@@ -158,7 +158,7 @@ public class PlayerHandler {
 				
 				if(inProg.containsKey("Properties")) {
 					JSONObject questProperties = (JSONObject)inProg.get("Properties");
-					((Quest) q).loadQuestToPlayer(questProperties, mc);
+					((Quest) q).loadQuestToPlayer(questProperties);
 				}
 				
 				mc.getActiveQuests().add((Quest) q);

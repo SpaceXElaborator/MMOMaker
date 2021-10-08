@@ -10,7 +10,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.json.simple.JSONObject;
 
-import com.terturl.MMO.Player.MMOClass;
 import com.terturl.MMO.Quests.Quest;
 import com.terturl.MMO.Util.JSONHelpers.LocationUtils;
 
@@ -73,7 +72,7 @@ public class LocationQuest extends Quest {
 	}
 
 	@Override
-	public void loadQuestToPlayer(JSONObject jo, MMOClass mc) {
+	public void loadQuestToPlayer(JSONObject jo) {
 		return;
 	}
 

@@ -13,7 +13,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import com.terturl.MMO.Player.MMOClass;
 import com.terturl.MMO.Quests.Quest;
 
 import lombok.Getter;
@@ -114,7 +113,7 @@ public class NPCTalkQuest extends Quest {
 	}
 
 	@Override
-	public void loadQuestToPlayer(JSONObject jo, MMOClass mc) {
+	public void loadQuestToPlayer(JSONObject jo) {
 		if(jo.containsKey("TalkedTo")) {
 			JSONArray talkedTo = (JSONArray)jo.get("TalkedTo");
 			for(Object o : talkedTo) {
