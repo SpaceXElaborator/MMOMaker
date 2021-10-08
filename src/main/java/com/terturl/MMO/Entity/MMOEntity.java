@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.terturl.MMO.Entity.Util.MMOEntityDrop;
-import com.terturl.MMO.Util.MinMax;
+import com.terturl.MMO.Util.SoundInformation;
+import com.terturl.MMO.Util.Math.MinMax;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -30,9 +31,13 @@ public class MMOEntity extends EntityCreature {
 	@Getter @Setter
 	private MinMax givableCurrency;
 	
+	@Getter @Setter
+	private SoundInformation MMOSoundHurt, MMOSoundDeath;
+	
 	protected MMOEntity(EntityTypes<? extends EntityCreature> t, World w, String s) {
 		super(t, w);
 		setCustomName(new ChatComponentText(s));
+		setCustomNameVisible(true);
 		name = s;
 		type = t;
 	}
@@ -49,6 +54,8 @@ public class MMOEntity extends EntityCreature {
 		me.setGivableCurrency(givableCurrency);
 		me.setGivableXP(givableXP);
 		me.setEntityDrops(entityDrops);
+		me.setMMOSoundDeath(getMMOSoundDeath());
+		me.setMMOSoundHurt(getMMOSoundHurt());
 		return me;
 	}
 	

@@ -7,6 +7,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import com.terturl.MMO.Abilities.Ability;
 import com.terturl.MMO.Player.Skills.Skill;
 import com.terturl.MMO.Player.Skills.Crafting.CraftingSkill;
 import com.terturl.MMO.Quests.Quest;
@@ -41,6 +42,9 @@ public abstract class MMOClass implements Cloneable {
 	
 	@Getter
 	private List<Skill> playerSkills = new ArrayList<>();
+	
+	@Getter @Setter
+	private Ability hotAbility1, hotAbility2, hotAbility3;
 	
 	@Getter @Setter
 	private Double money = 0.0;

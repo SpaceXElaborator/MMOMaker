@@ -20,8 +20,9 @@ import org.json.simple.JSONObject;
 import com.terturl.MMO.MinecraftMMO;
 import com.terturl.MMO.Entity.Util.MMOEntityDrop;
 import com.terturl.MMO.Util.JsonFileInterpretter;
-import com.terturl.MMO.Util.MinMax;
+import com.terturl.MMO.Util.SoundInformation;
 import com.terturl.MMO.Util.Items.CustomItem;
+import com.terturl.MMO.Util.Math.MinMax;
 
 import lombok.Getter;
 import net.minecraft.server.level.WorldServer;
@@ -66,6 +67,30 @@ public class MMOEntityManager {
 							Double max = Double.parseDouble(jo.get("Max").toString());
 							MinMax mm = new MinMax(min, max);
 							em.setGivableCurrency(mm);
+						}
+						
+						if(config.contains("HurtSound")) {
+							JSONObject jo = config.getObject("HurtSound");
+							String sound = jo.containsKey("Sound") ? jo.get("Sound").toString() : "minecraft:entity.zombie.hit";
+							Float vol = jo.containsKey("Volume") ? Float.valueOf(jo.get("Volume").toString()) : 1.0f;
+							Float pitch = jo.containsKey("Pitch") ? Float.valueOf(jo.get("Pitch").toString()) : 1.0f;
+							SoundInformation se = new SoundInformation();
+							se.setSound(sound);
+							se.setVolume(vol);
+							se.setPitch(pitch);
+							em.setMMOSoundHurt(se);
+						}
+						
+						if(config.contains("DeathSound")) {
+							JSONObject jo = config.getObject("DeathSound");
+							String sound = jo.containsKey("Sound") ? jo.get("Sound").toString() : "minecraft:entity.zombie.hit";
+							Float vol = jo.containsKey("Volume") ? Float.valueOf(jo.get("Volume").toString()) : 1.0f;
+							Float pitch = jo.containsKey("Pitch") ? Float.valueOf(jo.get("Pitch").toString()) : 1.0f;
+							SoundInformation se = new SoundInformation();
+							se.setSound(sound);
+							se.setVolume(vol);
+							se.setPitch(pitch);
+							em.setMMOSoundDeath(se);
 						}
 						
 						if(config.contains("Items")) {

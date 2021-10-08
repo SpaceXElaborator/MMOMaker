@@ -9,7 +9,9 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 
 import com.terturl.MMO.MinecraftMMO;
+import com.terturl.MMO.Entity.MMOEntity;
 import com.terturl.MMO.Player.MMOPlayer;
+import com.terturl.MMO.Util.SoundInformation;
 
 public class DamageEvent implements Listener {
 
@@ -39,6 +41,21 @@ public class DamageEvent implements Listener {
 			if(mp == null) return;
 			e.setDamage(mp.getProjectileMapping().get(proj.getUniqueId()));
 			mp.getProjectileMapping().remove(proj.getUniqueId());
+		}
+		
+		if(e.getDamager() instanceof Player) {
+			Player p = (Player)e.getDamager();
+			if(!MinecraftMMO.getInstance().getPlayerHandler().PlayerExists(p)) return;
+			MMOPlayer mp = MinecraftMMO.getInstance().getPlayerHandler().getPlayer(p);
+			mp.updateAndTakeDamage();
+			
+			if(MinecraftMMO.getInstance().getEntityManager().containsUUID(e.getEntity().getUniqueId())) {
+				MMOEntity me = MinecraftMMO.getInstance().getEntityManager().getEntity(e.getEntity().getUniqueId());
+				SoundInformation si = me.getMMOSoundHurt();
+				if(si == null) return;
+				p.playSound(e.getEntity().getLocation(), si.getSound(), si.getVolume(), si.getPitch());
+			}
+			
 		}
 	}
 	

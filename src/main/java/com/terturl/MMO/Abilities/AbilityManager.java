@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Particle;
-import org.bukkit.Sound;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -23,9 +22,8 @@ import com.terturl.MMO.Effects.EffectTypes.LimitEffect;
 import com.terturl.MMO.Effects.EffectTypes.RepeatingEffect;
 import com.terturl.MMO.Effects.Util.ConeEffect;
 import com.terturl.MMO.Effects.Util.EffectInformation;
-import com.terturl.MMO.Effects.Util.SoundInformation;
-import com.terturl.MMO.Player.MMOClass;
 import com.terturl.MMO.Util.JsonFileInterpretter;
+import com.terturl.MMO.Util.SoundInformation;
 
 import lombok.Getter;
 import net.md_5.bungee.api.ChatColor;
@@ -56,8 +54,8 @@ public class AbilityManager {
 				
 				Ability a = new Ability(name);
 				a.setRequiredLevel(levelRequied);
-				MMOClass mmoClass = MinecraftMMO.getInstance().getClassHandler().getClass(requiredClass);
-				a.setMmoClass(mmoClass);
+				// MMOClass mmoClass = MinecraftMMO.getInstance().getClassHandler().getClass(requiredClass);
+				a.setMmoClass(requiredClass);
 				a.setCosts(costs);
 				
 				JSONArray ja = config.getArray("Activate");
@@ -94,7 +92,7 @@ public class AbilityManager {
 					for(int x = 0; x < sounds.size(); x++) {
 						JSONObject sound = (JSONObject) sounds.get(x);
 						SoundInformation si = new SoundInformation();
-						si.setSound((sound.containsKey("Sound") ? Sound.valueOf(sound.get("Sound").toString()) : Sound.BLOCK_GLASS_HIT));
+						si.setSound((sound.containsKey("Sound") ? sound.get("Sound").toString() : "minecraft:block.glass.hit"));
 						si.setVolume((sound.containsKey("Volume") ? Float.valueOf(sound.get("Volume").toString()) : 1.0f));
 						si.setPitch((sound.containsKey("Pitch") ? Float.valueOf(sound.get("Pitch").toString()) : 1.0f));
 						ei.getSounds().add(si);
