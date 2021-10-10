@@ -14,14 +14,17 @@ public class MathConfiguration {
 	@Getter
 	private String skillLevelCalculation;
 	
+	@Getter
+	private String playerLevelEquation;
+	
 	public MathConfiguration() {
 		File configurationFile = new File(MinecraftMMO.getInstance().getDataFolder(), "math.yml");
 		if(!configurationFile.exists()) {
 			try {
 				configurationFile.createNewFile();
 				YamlConfiguration config = YamlConfiguration.loadConfiguration(configurationFile);
-				config.set("skillLevelEquation", "(NL * 10) + (1.7^NL)");
-				
+				config.set("skillLevelEquation", "ceil((NL * 10) + (1.7^NL))");
+				config.set("playerLevelEquation", "CL*100*1.5");
 				config.save(configurationFile);
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -29,6 +32,7 @@ public class MathConfiguration {
 		}
 		YamlConfiguration config = YamlConfiguration.loadConfiguration(configurationFile);
 		skillLevelCalculation = config.getString("skillLevelEquation");
+		playerLevelEquation = config.getString("playerLevelEquation");
 	}
 	
 }

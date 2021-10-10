@@ -82,6 +82,12 @@ public class PlayerHandler {
 	public void giveBasicItems(Player p) {
 		p.getInventory().setItem(8, new ItemStack(Material.COMPASS));
 		p.getInventory().setItem(9, BasicInventoryItems.getPlayerClassItem(p));
+		p.getInventory().setItem(2, BasicInventoryItems.getQuickActionAbilities());
+		p.getInventory().setItem(3, BasicInventoryItems.getQuickActionAbilities());
+		p.getInventory().setItem(4, BasicInventoryItems.getQuickActionAbilities());
+		p.getInventory().setItem(5, BasicInventoryItems.getRegularAbilities());
+		p.getInventory().setItem(6, BasicInventoryItems.getRegularAbilities());
+		p.getInventory().setItem(7, BasicInventoryItems.getRegularAbilities());
 		p.updateInventory();
 	}
 	

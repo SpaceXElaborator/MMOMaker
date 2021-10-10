@@ -30,10 +30,6 @@ public class Ability implements Cloneable {
 
 	@Getter
 	@Setter
-	private String mmoClass;
-
-	@Getter
-	@Setter
 	private Map<AbilityCosts, Double> costs = new HashMap<>();
 
 	@Getter
@@ -78,7 +74,7 @@ public class Ability implements Cloneable {
 		effects.add(e);
 	}
 
-	protected enum AbilityCosts {
+	public enum AbilityCosts {
 		HEALTH, MANA, MONEY;
 	}
 

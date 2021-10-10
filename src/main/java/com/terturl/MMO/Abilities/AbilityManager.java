@@ -41,7 +41,6 @@ public class AbilityManager {
 				
 				JsonFileInterpretter config = new JsonFileInterpretter(f);
 				String name = config.getString("Name");
-				String requiredClass = config.getString("Class");
 				Integer levelRequied = config.getInt("Level");
 				Map<AbilityCosts, Double> costs = new HashMap<>();
 				JSONObject jo = config.getObject("Cost");
@@ -54,8 +53,6 @@ public class AbilityManager {
 				
 				Ability a = new Ability(name);
 				a.setRequiredLevel(levelRequied);
-				// MMOClass mmoClass = MinecraftMMO.getInstance().getClassHandler().getClass(requiredClass);
-				a.setMmoClass(requiredClass);
 				a.setCosts(costs);
 				
 				JSONArray ja = config.getArray("Activate");

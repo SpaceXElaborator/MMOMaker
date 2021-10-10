@@ -6,7 +6,10 @@ import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.mariuszgromada.math.mxparser.Argument;
+import org.mariuszgromada.math.mxparser.Expression;
 
+import com.terturl.MMO.MinecraftMMO;
 import com.terturl.MMO.Abilities.Ability;
 import com.terturl.MMO.Player.Skills.Skill;
 import com.terturl.MMO.Player.Skills.Crafting.CraftingSkill;
@@ -97,9 +100,23 @@ public abstract class MMOClass implements Cloneable {
 		money += b;
 	}
 	
-	// TODO: Make level progression
-	public void addXP(Double b) {
-		xp += b;
+	public void addXP(Double d) {
+		Double finalXP = getNextLevelXP();
+		if(xp+d >= finalXP) {
+			Double rollOver = (xp+d) - finalXP;
+			setLevel(getLevel() + 1);
+			addXP(rollOver);
+		}
+		xp += d;
+	}
+	
+	public double getNextLevelXP() {
+		Argument CL = new Argument("CL = " + String.valueOf(getLevel()));
+		Argument NL = new Argument("NL = " + String.valueOf(getLevel() + 1));
+		Argument XP = new Argument("XP = " + String.valueOf(getXp()));
+		Expression e = new Expression(MinecraftMMO.getInstance().getMathConfig().getPlayerLevelEquation(), CL, NL, XP);
+		Double finalXP = e.calculate();
+		return finalXP;
 	}
 	
 	public void updateClassInformation(Player p) {
