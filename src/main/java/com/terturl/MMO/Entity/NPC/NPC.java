@@ -45,8 +45,8 @@ import org.json.simple.parser.ParseException;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.mojang.datafixers.util.Pair;
-import com.terturl.MMO.Player.MMOClass;
 import com.terturl.MMO.Player.MMOPlayer;
+import com.terturl.MMO.Player.MMOClasses.MMOClass;
 import com.terturl.MMO.Quests.Quest;
 
 import io.netty.buffer.Unpooled;

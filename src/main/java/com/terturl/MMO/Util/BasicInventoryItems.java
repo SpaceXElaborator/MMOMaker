@@ -11,8 +11,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 import com.terturl.MMO.MinecraftMMO;
 import com.terturl.MMO.Abilities.Ability;
 import com.terturl.MMO.Abilities.Ability.AbilityCosts;
-import com.terturl.MMO.Player.MMOClass;
 import com.terturl.MMO.Player.MMOPlayer;
+import com.terturl.MMO.Player.MMOClasses.MMOClass;
 import com.terturl.MMO.Player.Skills.Crafting.CraftingSkill;
 
 import net.md_5.bungee.api.ChatColor;
@@ -47,7 +47,8 @@ public class BasicInventoryItems {
 		List<String> lore = new ArrayList<>();
 		lore.add(ChatColor.GOLD + "Left Click: Set Slot Ability");
 		lore.add(ChatColor.GOLD + "Right Click: Use Ability");
-		lore.add("Regular ability slot requires you to have to scroll \nto the item and right click to cast");
+		lore.add("Regular ability slot requires you to have to scroll");
+		lore.add("to the item and right click to cast");
 		im.setLore(lore);
 		item.setItemMeta(im);
 		return item;
@@ -61,7 +62,9 @@ public class BasicInventoryItems {
 		List<String> lore = new ArrayList<>();
 		lore.add(ChatColor.GOLD + "Left Click: Set Quick Action Ability");
 		lore.add(ChatColor.GOLD + "Right Click: Use Ability");
-		lore.add("When in battle, scroll to this item to automatically cast the ability if the \ncooldown is ready and the mana is available");
+		lore.add("When in battle, scroll to this item");
+		lore.add("to automatically cast the ability if the");
+		lore.add("cooldown is ready and the mana is available");
 		im.setLore(lore);
 		item.setItemMeta(im);
 		return item;

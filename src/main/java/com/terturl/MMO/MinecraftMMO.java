@@ -26,7 +26,6 @@ import com.terturl.MMO.Files.MathConfiguration;
 import com.terturl.MMO.Framework.CommandMeta;
 import com.terturl.MMO.Framework.CraftCommand;
 import com.terturl.MMO.Player.PlayerHandler;
-import com.terturl.MMO.Player.MMOClasses.ArcherClass;
 import com.terturl.MMO.Player.MMOClasses.ClassHandler;
 import com.terturl.MMO.Player.Shops.ShopManager;
 import com.terturl.MMO.Player.Skills.Crafting.RecipeManager;
@@ -97,7 +96,6 @@ public class MinecraftMMO extends JavaPlugin {
 		
 		abilityManager = new AbilityManager();
 		classHandler = new ClassHandler();
-		registerClasses();
 		registerQuestTypes();
 		questManager.loadQuests();
 		npcHandler = new NPCManager();
@@ -133,10 +131,6 @@ public class MinecraftMMO extends JavaPlugin {
 	
 	public static MinecraftMMO getInstance() {
 		return instance;
-	}
-	
-	private void registerClasses() {
-		classHandler.registerClass(new ArcherClass());
 	}
 	
 	public <T extends Listener> T registerListener(T listener) {

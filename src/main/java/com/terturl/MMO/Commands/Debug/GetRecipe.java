@@ -4,8 +4,8 @@ import org.bukkit.entity.Player;
 
 import com.terturl.MMO.MinecraftMMO;
 import com.terturl.MMO.Framework.CraftCommand;
-import com.terturl.MMO.Player.MMOClass;
 import com.terturl.MMO.Player.MMOPlayer;
+import com.terturl.MMO.Player.MMOClasses.MMOClass;
 import com.terturl.MMO.Player.Skills.Crafting.MMORecipe;
 
 public class GetRecipe extends CraftCommand {

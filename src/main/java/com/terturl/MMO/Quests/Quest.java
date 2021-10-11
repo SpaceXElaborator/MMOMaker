@@ -8,8 +8,8 @@ import org.bukkit.inventory.ItemStack;
 import org.json.simple.JSONObject;
 
 import com.terturl.MMO.MinecraftMMO;
-import com.terturl.MMO.Player.MMOClass;
 import com.terturl.MMO.Player.MMOPlayer;
+import com.terturl.MMO.Player.MMOClasses.MMOClass;
 import com.terturl.MMO.Quests.Subquests.EntityKillQuest;
 import com.terturl.MMO.Quests.Subquests.LocationQuest;
 import com.terturl.MMO.Quests.Subquests.NPCTalkQuest;

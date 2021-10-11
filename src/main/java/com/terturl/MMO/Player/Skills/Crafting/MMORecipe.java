@@ -8,8 +8,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import com.terturl.MMO.MinecraftMMO;
-import com.terturl.MMO.Player.MMOClass;
 import com.terturl.MMO.Player.MMOPlayer;
+import com.terturl.MMO.Player.MMOClasses.MMOClass;
 import com.terturl.MMO.Util.Events.MMOItemCraftEvent;
 import com.terturl.MMO.Util.Items.CustomItem;
 

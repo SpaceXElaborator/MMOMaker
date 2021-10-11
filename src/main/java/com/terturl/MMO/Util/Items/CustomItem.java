@@ -25,6 +25,13 @@ import net.minecraft.nbt.NBTTagCompound;
 @EqualsAndHashCode
 public class CustomItem {
 
+	// TODO: Separation of lowest items upwards.
+	// As in, CustomItem should ONLY be name, friendlyName, itemMat, itemModal, Rarity, CraftingRarity, Lore, MadeBy, CanCraft, CraftOnly, SoulBound (Resource Items)
+	// StatBoosters: Modifiers (SlotType = Trinket)
+	// Damageables: Durability/MaxDurability
+	// Armor: (SlotType = Helmet, Chest, Leggings, Boots, OffHand*)
+	// Weapons: (SlotType = MainHand, OffHand*)
+	
 	@Getter
 	@Setter
 	private String name;
@@ -100,87 +107,89 @@ public class CustomItem {
 	public ItemStack makeItem(Integer amt) {
 		ItemStack i = new ItemStack(getItemMat(), amt);
 		ItemMeta m = i.getItemMeta();
-		m.setDisplayName(getRarity().getChatColor() + getName().replaceAll("_", " "));
-		m.setUnbreakable(true);
-		List<String> lore = new ArrayList<String>();
-		lore.add(ChatColor.GOLD + "Level: " + String.valueOf(getItemLevel()));
-		if(getMods().size() > 1) {
-			lore.add("");
-		}
-		for (Modifiers mods : getMods().keySet()) {
-			if (getCraftingRarity() == null) {
-				Object o = getMods().get(mods);
-				Double mult = null;
-				Double d = null;
-				if (o instanceof Double) {
-					d = (Double) getMods().get(mods);
-					getModsOn().put(mods, d);
-				} else if (o instanceof String) {
-					String s = (String) getMods().get(mods);
-					Integer in = getRandom(s);
-					d = in + 0.0D;
-					getModsOn().put(mods, d);
-				}
-				mult = d * getCraftingRarity().getMultiplier();
-				DecimalFormat df = new DecimalFormat("##.00");
-				getValueAddOn().put(mods, mult);
-				lore.add(ChatColor.GRAY + mods.getFriendlyName() + ":" + ChatColor.GREEN + " +" + getModsOn().get(mods)
-						+ " " + ChatColor.GOLD + "+" + df.format(mult));
+		if(m != null) {
+			m.setDisplayName(getRarity().getChatColor() + getName().replaceAll("_", " "));
+			m.setUnbreakable(true);
+			List<String> lore = new ArrayList<String>();
+			lore.add(ChatColor.GOLD + "Level: " + String.valueOf(getItemLevel()));
+			if(getMods().size() > 1) {
+				lore.add("");
 			}
-
-			if (getCraftingRarity().equals(CraftRarity.CRUDE)) {
-				lore.add(ChatColor.GRAY + mods.getFriendlyName() + ":" + ChatColor.GREEN + " +" + getMods().get(mods));
-			} else {
-				Object o = getMods().get(mods);
-				Double mult = null;
-				Double d = null;
-				if (o instanceof Double) {
-					d = (Double) getMods().get(mods);
-					getModsOn().put(mods, d);
-				} else if (o instanceof String) {
-					String s = (String) getMods().get(mods);
-					Integer in = getRandom(s);
-					d = in + 0.0D;
-					getModsOn().put(mods, d);
+			for (Modifiers mods : getMods().keySet()) {
+				if (getCraftingRarity() == null) {
+					Object o = getMods().get(mods);
+					Double mult = null;
+					Double d = null;
+					if (o instanceof Double) {
+						d = (Double) getMods().get(mods);
+						getModsOn().put(mods, d);
+					} else if (o instanceof String) {
+						String s = (String) getMods().get(mods);
+						Integer in = getRandom(s);
+						d = in + 0.0D;
+						getModsOn().put(mods, d);
+					}
+					mult = d * getCraftingRarity().getMultiplier();
+					DecimalFormat df = new DecimalFormat("##.00");
+					getValueAddOn().put(mods, mult);
+					lore.add(ChatColor.GRAY + mods.getFriendlyName() + ":" + ChatColor.GREEN + " +" + getModsOn().get(mods)
+							+ " " + ChatColor.GOLD + "+" + df.format(mult));
 				}
-				mult = d * getCraftingRarity().getMultiplier();
-				DecimalFormat df = new DecimalFormat("##.00");
-				getValueAddOn().put(mods, mult);
-				lore.add(ChatColor.GRAY + mods.getFriendlyName() + ":" + ChatColor.GREEN + " +" + getModsOn().get(mods)
-						+ " " + ChatColor.GOLD + "+" + df.format(mult));
+	
+				if (getCraftingRarity().equals(CraftRarity.CRUDE)) {
+					lore.add(ChatColor.GRAY + mods.getFriendlyName() + ":" + ChatColor.GREEN + " +" + getMods().get(mods));
+				} else {
+					Object o = getMods().get(mods);
+					Double mult = null;
+					Double d = null;
+					if (o instanceof Double) {
+						d = (Double) getMods().get(mods);
+						getModsOn().put(mods, d);
+					} else if (o instanceof String) {
+						String s = (String) getMods().get(mods);
+						Integer in = getRandom(s);
+						d = in + 0.0D;
+						getModsOn().put(mods, d);
+					}
+					mult = d * getCraftingRarity().getMultiplier();
+					DecimalFormat df = new DecimalFormat("##.00");
+					getValueAddOn().put(mods, mult);
+					lore.add(ChatColor.GRAY + mods.getFriendlyName() + ":" + ChatColor.GREEN + " +" + getModsOn().get(mods)
+							+ " " + ChatColor.GOLD + "+" + df.format(mult));
+				}
 			}
+			
+			if(getLore().size() > 0) {
+				lore.add("");
+			}
+			
+			for(String s : getLore()) {
+				lore.add(ChatColor.translateAlternateColorCodes('&', s));
+			}
+			
+			if (!getMadeBy().isEmpty()) {
+				lore.add("");
+				lore.add(getCraftingRarity().getChatColor() + getCraftingRarity().getFriendlyName());
+				lore.add(ChatColor.GRAY + "Creator: " + ChatColor.DARK_GRAY + getMadeBy());
+			}
+			
+			if (isSoulBound()) {
+				lore.add(ChatColor.GRAY + "" + ChatColor.ITALIC + "Soul-Bound");
+			}
+			
+			if(getDurability() != 0.0 && getMaxDurability() != 0.0) {
+				lore.add("");
+				lore.add(ChatColor.GRAY + "Durability: " + String.valueOf(getDurability()) + "/"
+						+ String.valueOf(getMaxDurability()));
+			}
+			m.setLore(lore);
+			m.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_UNBREAKABLE);
+			for (Attribute a : Attribute.values()) {
+				m.removeAttributeModifier(a);
+			}
+			m.setCustomModelData(getCustomItemModel());
+			i.setItemMeta(m);
 		}
-		
-		if(getLore().size() > 0) {
-			lore.add("");
-		}
-		
-		for(String s : getLore()) {
-			lore.add(ChatColor.translateAlternateColorCodes('&', s));
-		}
-		
-		if (!getMadeBy().isEmpty()) {
-			lore.add("");
-			lore.add(getCraftingRarity().getChatColor() + getCraftingRarity().getFriendlyName());
-			lore.add(ChatColor.GRAY + "Creator: " + ChatColor.DARK_GRAY + getMadeBy());
-		}
-		
-		if (isSoulBound()) {
-			lore.add(ChatColor.GRAY + "" + ChatColor.ITALIC + "Soul-Bound");
-		}
-		
-		if(getDurability() != 0.0 && getMaxDurability() != 0.0) {
-			lore.add("");
-			lore.add(ChatColor.GRAY + "Durability: " + String.valueOf(getDurability()) + "/"
-					+ String.valueOf(getMaxDurability()));
-		}
-		m.setLore(lore);
-		m.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_UNBREAKABLE);
-		for (Attribute a : Attribute.values()) {
-			m.removeAttributeModifier(a);
-		}
-		m.setCustomModelData(getCustomItemModel());
-		i.setItemMeta(m);
 		net.minecraft.world.item.ItemStack stack = CraftItemStack.asNMSCopy(i);
 		NBTTagCompound tag = stack.getTag() != null ? stack.getTag() : new NBTTagCompound();
 		tag.setString("CustomItem", "true");

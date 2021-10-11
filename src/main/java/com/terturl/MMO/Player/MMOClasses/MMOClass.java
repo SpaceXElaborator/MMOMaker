@@ -1,7 +1,9 @@
-package com.terturl.MMO.Player;
+package com.terturl.MMO.Player.MMOClasses;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -15,13 +17,14 @@ import com.terturl.MMO.Player.Skills.Skill;
 import com.terturl.MMO.Player.Skills.Crafting.CraftingSkill;
 import com.terturl.MMO.Quests.Quest;
 import com.terturl.MMO.Util.BasicInventoryItems;
+import com.terturl.MMO.Util.Items.CustomItem.SlotType;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
 @EqualsAndHashCode
-public abstract class MMOClass implements Cloneable {
+public class MMOClass implements Cloneable {
 
 	@Getter
 	@Setter
@@ -59,25 +62,16 @@ public abstract class MMOClass implements Cloneable {
 	
 	@Getter
 	private String name;
-
+	
 	@Getter @Setter
-	private ItemStack helmet, chest, legs, boots, mainH, offH;
+	private Map<SlotType, String> startItems = new HashMap<>();
+	
+	@Getter @Setter
+	private String helmet, chest, legs, boots, mainH, offH;
 	
 	public MMOClass(String name) {
 		this.name = name;
 	}
-
-	public abstract ItemStack startMainHand();
-	
-	public abstract ItemStack startOffHand();
-	
-	public abstract ItemStack starterHelmet();
-	
-	public abstract ItemStack starterChestplate();
-	
-	public abstract ItemStack starterLeggings();
-	
-	public abstract ItemStack starterBoots();
 	
 	public boolean hasActiveQuest(Quest q) {
 		Quest quest = activeQuests.stream().filter(e -> e.equals(q)).findFirst().orElse(null);

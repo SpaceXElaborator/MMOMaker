@@ -8,8 +8,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import com.terturl.MMO.MinecraftMMO;
-import com.terturl.MMO.Player.MMOClass;
 import com.terturl.MMO.Player.MMOPlayer;
+import com.terturl.MMO.Player.MMOClasses.MMOClass;
 import com.terturl.MMO.Quests.Quest;
 import com.terturl.MMO.Quests.Subquests.CustomCraftQuest;
 import com.terturl.MMO.Util.Events.MMOItemCraftEvent;

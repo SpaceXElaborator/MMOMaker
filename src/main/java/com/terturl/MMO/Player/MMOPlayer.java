@@ -21,6 +21,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import com.mojang.datafixers.util.Pair;
 import com.terturl.MMO.MinecraftMMO;
 import com.terturl.MMO.Entity.NPC.NPC;
+import com.terturl.MMO.Player.MMOClasses.MMOClass;
 import com.terturl.MMO.Quests.Quest;
 import com.terturl.MMO.Util.Items.SkullCreator;
 
@@ -43,7 +44,7 @@ public class MMOPlayer {
 	@Getter
 	private List<NPC> playerSpecificNPCs = new ArrayList<>();
 	@Getter @Setter
-	private int currentCharacter;
+	private int currentCharacter = -1;
 	
 	@Getter
 	private Map<UUID, Double> projectileMapping = new HashMap<>();

@@ -9,14 +9,17 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import com.terturl.MMO.MinecraftMMO;
 import com.terturl.MMO.Entity.NPC.NPC;
-import com.terturl.MMO.Player.MMOClass;
 import com.terturl.MMO.Player.MMOPlayer;
+import com.terturl.MMO.Player.MMOClasses.MMOClass;
+import com.terturl.MMO.Util.Items.CustomItem.SlotType;
+import com.terturl.MMO.Util.Items.CustomItemManager;
 
 public class PlayerJoinListener implements Listener {
 
 	@EventHandler
 	public void onJoin(PlayerJoinEvent e) {
 		PacketListener.injectPlayer(e.getPlayer());
+		CustomItemManager cim = MinecraftMMO.getInstance().getItemManager();
 		
 		// Spawn any and all NPCs that have been saved to the list
 		for (NPC npc : MinecraftMMO.getInstance().getNpcHandler().getNpcs()) {
@@ -31,13 +34,13 @@ public class PlayerJoinListener implements Listener {
 		
 		for(NPC npc : MinecraftMMO.getInstance().getNpcHandler().getClassNpcs()) {
 			npc.spawnNPC(e.getPlayer());
-			MMOClass mmoClass = MinecraftMMO.getInstance().getClassHandler().getClass(npc.getDisplayName());
-			npc.setEquipment(e.getPlayer(), NPC.ItemSlot.HELMET, mmoClass.starterHelmet());
-			npc.setEquipment(e.getPlayer(), NPC.ItemSlot.CHESTPLATE, mmoClass.starterChestplate());
-			npc.setEquipment(e.getPlayer(), NPC.ItemSlot.LEGGINGS, mmoClass.starterLeggings());
-			npc.setEquipment(e.getPlayer(), NPC.ItemSlot.BOOTS, mmoClass.starterBoots());
-			npc.setEquipment(e.getPlayer(), NPC.ItemSlot.MAIN_HAND, mmoClass.startMainHand());
-			npc.setEquipment(e.getPlayer(), NPC.ItemSlot.OFF_HAND, mmoClass.startOffHand());
+			MMOClass mc = MinecraftMMO.getInstance().getClassHandler().getClass(npc.getDisplayName());
+			npc.setEquipment(e.getPlayer(), NPC.ItemSlot.HELMET, cim.getCustomItems().get(mc.getStartItems().get(SlotType.HELMET)).makeItem());
+			npc.setEquipment(e.getPlayer(), NPC.ItemSlot.CHESTPLATE, cim.getCustomItems().get(mc.getStartItems().get(SlotType.CHEST)).makeItem());
+			npc.setEquipment(e.getPlayer(), NPC.ItemSlot.LEGGINGS, cim.getCustomItems().get(mc.getStartItems().get(SlotType.LEGS)).makeItem());
+			npc.setEquipment(e.getPlayer(), NPC.ItemSlot.BOOTS, cim.getCustomItems().get(mc.getStartItems().get(SlotType.BOOTS)).makeItem());
+			npc.setEquipment(e.getPlayer(), NPC.ItemSlot.MAIN_HAND, cim.getCustomItems().get(mc.getStartItems().get(SlotType.MAIN_HAND)).makeItem());
+			npc.setEquipment(e.getPlayer(), NPC.ItemSlot.OFF_HAND, cim.getCustomItems().get(mc.getStartItems().get(SlotType.OFF_HAND)).makeItem());
 		}
 		
 		if (!MinecraftMMO.getInstance().getPlayerHandler().PlayerExists(e.getPlayer())) {
@@ -52,8 +55,10 @@ public class PlayerJoinListener implements Listener {
 	@EventHandler
 	public void onLeave(PlayerQuitEvent e) {
 		MMOPlayer mp = MinecraftMMO.getInstance().getPlayerHandler().getPlayer(e.getPlayer());
-		MMOClass mc = mp.getMmoClasses().get(mp.getCurrentCharacter());
-		mc.setClassLocation(e.getPlayer().getLocation());
+		if(mp.getCurrentCharacter() != -1) {
+			MMOClass mc = mp.getMmoClasses().get(mp.getCurrentCharacter());
+			mc.setClassLocation(e.getPlayer().getLocation());
+		}
 		PacketListener.removePlayer(e.getPlayer());
 		MinecraftMMO.getInstance().getPlayerHandler().savePlayerInfo(e.getPlayer());
 	}
