@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarFlag;
 import org.bukkit.boss.BarStyle;
@@ -45,6 +46,9 @@ public class MMOPlayer {
 	private List<NPC> playerSpecificNPCs = new ArrayList<>();
 	@Getter @Setter
 	private int currentCharacter = -1;
+	
+	@Getter @Setter
+	private List<Location> blocksNotViewing = new ArrayList<>();
 	
 	@Getter
 	private Map<UUID, Double> projectileMapping = new HashMap<>();

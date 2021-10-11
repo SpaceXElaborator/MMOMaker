@@ -26,6 +26,7 @@ public class HerbalismInteract implements Listener {
 		MMOPlayer mp = MinecraftMMO.getInstance().getPlayerHandler().getPlayer(p);
 		MMOClass mc = mp.getMmoClasses().get(mp.getCurrentCharacter());
 		if(!mc.containsSkill("Herbalism")) return;
+		if(mp.getBlocksNotViewing().contains(e.getClickedBlock().getLocation())) return;
 		HerbalismGatherItems hgi = hm.getItem(mat);
 		mc.addXp("Herbalism", hgi.getXp());
 		hgi.getItems().forEach((k, v) -> {
@@ -34,6 +35,23 @@ public class HerbalismInteract implements Listener {
 				p.getInventory().addItem(is);
 			}
 		});
+		
+		mp.getBlocksNotViewing().add(e.getClickedBlock().getLocation());
+		
+		Runnable r2 = new Runnable() {
+			public void run() {
+				p.sendBlockChange(e.getClickedBlock().getLocation(), Material.AIR.createBlockData());
+			}
+		};
+		MinecraftMMO.getInstance().getServer().getScheduler().runTaskLater(MinecraftMMO.getInstance(), r2, 1L);
+		Runnable r = new Runnable() {
+			@Override
+			public void run() {
+				p.sendBlockChange(e.getClickedBlock().getLocation(), mat.createBlockData());
+				mp.getBlocksNotViewing().remove(e.getClickedBlock().getLocation());
+			}
+		};
+		MinecraftMMO.getInstance().getServer().getScheduler().runTaskLater(MinecraftMMO.getInstance(), r, 40L);
 	}
 	
 }
