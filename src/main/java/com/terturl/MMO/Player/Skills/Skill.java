@@ -8,7 +8,7 @@ import com.terturl.MMO.MinecraftMMO;
 import lombok.Getter;
 import lombok.Setter;
 
-public abstract class Skill {
+public abstract class Skill implements Cloneable {
 	
 	@Getter
 	private String skillName;
@@ -28,7 +28,6 @@ public abstract class Skill {
 		Argument NL = new Argument("NL = " + String.valueOf(level + 1));
 		Argument XP = new Argument("XP = " + String.valueOf(xp));
 		Expression e = new Expression(MinecraftMMO.getInstance().getMathConfig().getSkillLevelCalculation(), CL, NL, XP);
-		// ((double)level+1) * 10 + (Math.pow(1.7, (double)level+1));
 		Double finalXP = e.calculate();
 		return finalXP;
 	}
@@ -41,6 +40,15 @@ public abstract class Skill {
 			addXP(rollOver);
 		}
 		xp += d;
+	}
+	
+	public Object clone() {
+		try {
+			return super.clone();
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
+		return level;
 	}
 	
 }

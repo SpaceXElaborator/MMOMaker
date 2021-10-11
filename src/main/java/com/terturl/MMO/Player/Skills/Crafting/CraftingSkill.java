@@ -8,11 +8,4 @@ public class CraftingSkill extends Skill {
 		super("Crafting");
 	}
 	
-	public CraftingSkill clone() {
-		CraftingSkill sk = new CraftingSkill();
-		sk.setLevel(getLevel());
-		sk.setXp(getXp());
-		return sk;
-	}
-	
 }

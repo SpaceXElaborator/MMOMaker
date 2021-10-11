@@ -35,14 +35,28 @@ public class InteractNPCListener implements Listener {
 				if(!ntq.containsNPC(npc.getDisplayName())) continue;
 				ntq.talkTo(npc.getDisplayName(), p);
 				if(ntq.hasComplete(p)) {
-					ntq.completeQuest(p);
-					mc.getCompletedQuests().add(q.getName());
-					mc.getActiveQuests().remove(q);
-					mp.updateNPCQuests();
+					ntq.finishQuest(p);
 				}
 			}
 		} else {
 			npc.lookAtPlayer(p, p);
+			Quest questToComplete = null;
+			for(Quest q : mc.getCompletedableQuests()) {
+				if(npc.getGivableQuest().contains(q)) {
+					questToComplete = q;
+					break;
+				}
+			}
+			
+			if(questToComplete != null) {
+				questToComplete.completeQuest(p);
+				mc.removeCompletableQuest(questToComplete);
+				mc.getCompletedQuests().add(questToComplete.getName());
+				mc.getActiveQuests().remove(questToComplete);
+				mp.updateNPCQuests();
+				return;
+			}
+			
 			if(npc.getGivableQuest().size() > 0) {
 				Quest q = npc.getNextAvailabeQuest(MinecraftMMO.getInstance().getPlayerHandler().getPlayer(p));
 				
@@ -54,7 +68,6 @@ public class InteractNPCListener implements Listener {
 				MinecraftMMO.getInstance().getClassHandler().addQuest(p, q);
 				p.sendTitle(q.getName(), q.getPresentString(), 5, 10, 5);
 				p.sendMessage(q.getPresentString());
-
 			} else {
 				p.sendMessage(npc.getIdleString());
 			}

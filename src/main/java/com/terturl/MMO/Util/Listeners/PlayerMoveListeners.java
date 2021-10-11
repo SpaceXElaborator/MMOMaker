@@ -25,10 +25,7 @@ public class PlayerMoveListeners implements Listener {
 		for(Quest q : moveQuests) {
 			LocationQuest lq = (LocationQuest)q;
 			if(lq.hasComplete(e.getPlayer())) {
-				lq.completeQuest(e.getPlayer());
-				mc.getCompletedQuests().add(q.getName());
-				mc.getActiveQuests().remove(q);
-				mp.updateNPCQuests();
+				lq.finishQuest(e.getPlayer());
 			}
 		}
 	}

@@ -28,7 +28,7 @@ public class MMOClass implements Cloneable {
 
 	@Getter
 	@Setter
-	private int Level = 1;
+	private int level = 1;
 
 	@Getter
 	private List<String> completedQuests = new ArrayList<>();
@@ -74,9 +74,25 @@ public class MMOClass implements Cloneable {
 	}
 	
 	public boolean hasActiveQuest(Quest q) {
-		Quest quest = activeQuests.stream().filter(e -> e.equals(q)).findFirst().orElse(null);
-		if(quest != null) return true;
-		return false;
+		return activeQuests.contains(q);
+	}
+	
+	public boolean hasCompletableQuest(Quest q) {
+		return completedableQuests.contains(q);
+	}
+	
+	public void removeCompletableQuest(Quest q) {
+		int toRemove = -1;
+		for(int i = 0; i < completedableQuests.size(); i++) {
+			if(q.getName().equalsIgnoreCase(completedableQuests.get(i).getName())) {
+				toRemove = i;
+				break;
+			}
+		}
+		
+		if(toRemove != -1) {
+			completedableQuests.remove(toRemove);
+		}
 	}
 
 	public boolean hasCompletedQuest(Quest q) {

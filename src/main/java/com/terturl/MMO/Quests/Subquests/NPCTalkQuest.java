@@ -94,6 +94,10 @@ public class NPCTalkQuest extends Quest {
 			if(hasTalkedTo.contains(s)) continue;
 			lore.add(ChatColor.GREEN + "Talk To: " + s);
 		}
+		if(isCompleted()) {
+			lore.add("");
+			lore.add(ChatColor.GOLD + "Ready For Turn In");
+		}
 		meta.setLore(lore);
 		item.setItemMeta(meta);
 		

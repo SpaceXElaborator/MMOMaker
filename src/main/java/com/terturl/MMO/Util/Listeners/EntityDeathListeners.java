@@ -35,10 +35,7 @@ public class EntityDeathListeners implements Listener {
 				if(!ekq.getAmountToKill().containsKey(et)) continue;
 				ekq.getHasKilled().put(et, ekq.getHasKilled().get(et) + 1);
 				if(ekq.hasComplete(p)) {
-					ekq.completeQuest(p);
-					mc.getCompletedQuests().add(q.getName());
-					mc.getActiveQuests().remove(q);
-					mp.updateNPCQuests();
+					ekq.finishQuest(p);
 				}
 			}
 		}

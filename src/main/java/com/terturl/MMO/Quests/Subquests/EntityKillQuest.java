@@ -77,6 +77,10 @@ public class EntityKillQuest extends Quest {
 		for(EntityType et : hasKilled.keySet()) {
 			lore.add("Killed " + String.valueOf(hasKilled.get(et)) + " " + et.toString());
 		}
+		if(isCompleted()) {
+			lore.add("");
+			lore.add(ChatColor.GOLD + "Ready For Turn In");
+		}
 		meta.setLore(lore);
 		item.setItemMeta(meta);
 		

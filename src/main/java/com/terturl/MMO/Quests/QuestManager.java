@@ -33,6 +33,7 @@ public class QuestManager {
 				JsonFileInterpretter config = new JsonFileInterpretter(f);
 				String name = config.contains("Name") ? config.getString("Name") : null;
 				String descString = config.contains("Description") ? config.getString("Description") : null;
+				Boolean requireTurnIn = config.contains("RequireTurnIn") ? config.getBoolean("RequireTurnIn") : true;
 				String presentString = config.contains("Present") ? config.getString("Present") : "Would you like to ACCEPT or DENY?";
 				String denyString = config.contains("Deny") ? config.getString("Deny") : "That's Very Sad Traveller";
 				String acceptString = config.contains("Accept") ? config.getString("Accept") : "Thank you Traveller!";
@@ -66,6 +67,7 @@ public class QuestManager {
 				((Quest) q).loadQuest(config.getObject("Properties"));
 				((Quest) q).setName(name);
 				((Quest) q).setQuestType(type);
+				((Quest) q).setRequireTurnIn(requireTurnIn);
 				((Quest) q).setDescString(descString);
 				((Quest) q).setAcceptString(acceptString);
 				((Quest) q).setDenyString(denyString);

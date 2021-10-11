@@ -112,6 +112,7 @@ public class MMOPlayer {
 	}
 	
 	public void updateNPCQuests() {
+		MMOClass mc = mmoClasses.get(currentCharacter);
 		newQuestNotifiers.stream().forEach(e -> {
 			PacketPlayOutEntityDestroy packet = new PacketPlayOutEntityDestroy(e.getId());
 			((CraftPlayer) player).getHandle().b.sendPacket(packet);
@@ -122,12 +123,24 @@ public class MMOPlayer {
 		});
 		newQuestNotifiers.clear();
 		completableQuestNofifiers.clear();
+		
 		for (NPC npc : MinecraftMMO.getInstance().getNpcHandler().getNpcs()) {
 			if(npc.getGivableQuest().size() > 0) {
 				for(Quest q : npc.getGivableQuest()) {
-					if(mmoClasses.get(currentCharacter).hasActiveQuest(q)) continue;
-					if(mmoClasses.get(currentCharacter).hasCompletedQuest(q)) continue;
-					if(q.getParentQuests().size() == 0 || mmoClasses.get(currentCharacter).hasParentQuestsCompleted(q)) {
+					if(mc.hasCompletedQuest(q)) continue;
+					if(mc.hasCompletableQuest(q) && mc.hasActiveQuest(q)) {
+						WorldServer s = ((CraftWorld) player.getWorld()).getHandle();
+						EntityArmorStand stand = new EntityArmorStand(EntityTypes.c, s);
+						stand.setLocation(npc.getLocation().getX(), npc.getLocation().getY() + 1.0, npc.getLocation().getZ(), 0,
+								0);
+						stand.setNoGravity(true);
+						stand.setInvisible(true);
+						
+						completableQuestNofifiers.add(stand);
+						continue;
+					}
+					if(mc.hasActiveQuest(q)) continue;
+					if(q.getParentQuests().size() == 0 || mc.hasParentQuestsCompleted(q)) {
 						WorldServer s = ((CraftWorld) player.getWorld()).getHandle();
 						EntityArmorStand stand = new EntityArmorStand(EntityTypes.c, s);
 						stand.setLocation(npc.getLocation().getX(), npc.getLocation().getY() + 1.0, npc.getLocation().getZ(), 0,
@@ -141,11 +154,24 @@ public class MMOPlayer {
 			}
 		}
 		
+		for(EntityArmorStand eas : completableQuestNofifiers) {
+			PacketPlayOutEntityEquipment equip = new PacketPlayOutEntityEquipment(eas.getId(),
+					Arrays.asList(new Pair<EnumItemSlot, ItemStack>(EnumItemSlot.f,
+							CraftItemStack.asNMSCopy(SkullCreator.getSkull(
+									"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZGEyZmRlMzRkMzRjODU4OGU1OGJmZDc5MGNlMTgwMjVmNzg0MzM5OWRlZTJhYjRjZWRjMmMwYjQ2M2ZkMWUifX19")))));
+			PacketPlayOutSpawnEntity packet = new PacketPlayOutSpawnEntity(eas);
+			PacketPlayOutEntityMetadata meta = new PacketPlayOutEntityMetadata(eas.getId(), eas.getDataWatcher(), true);
+			eas.setInvisible(true);
+			((CraftPlayer) player).getHandle().b.sendPacket(packet);
+			((CraftPlayer) player).getHandle().b.sendPacket(meta);
+			((CraftPlayer) player).getHandle().b.sendPacket(equip);
+		}
+		
 		for(EntityArmorStand eas : newQuestNotifiers) {
 			PacketPlayOutEntityEquipment equip = new PacketPlayOutEntityEquipment(eas.getId(),
 					Arrays.asList(new Pair<EnumItemSlot, ItemStack>(EnumItemSlot.f,
 							CraftItemStack.asNMSCopy(SkullCreator.getSkull(
-									"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjZlNTIyZDkxODI1MjE0OWU2ZWRlMmVkZjNmZTBmMmMyYzU4ZmVlNmFjMTFjYjg4YzYxNzIwNzIxOGFlNDU5NSJ9fX0=")))));
+									"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTRlMWRhODgyZTQzNDgyOWI5NmVjOGVmMjQyYTM4NGE1M2Q4OTAxOGZhNjVmZWU1YjM3ZGViMDRlY2NiZjEwZSJ9fX0=")))));
 			PacketPlayOutSpawnEntity packet = new PacketPlayOutSpawnEntity(eas);
 			PacketPlayOutEntityMetadata meta = new PacketPlayOutEntityMetadata(eas.getId(), eas.getDataWatcher(), true);
 			eas.setInvisible(true);

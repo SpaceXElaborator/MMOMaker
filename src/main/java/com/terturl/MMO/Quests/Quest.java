@@ -32,6 +32,12 @@ public abstract class Quest {
 	private String questType;
 	
 	@Getter @Setter
+	private boolean requireTurnIn = true;
+	
+	@Getter @Setter
+	private boolean completed = false;
+	
+	@Getter @Setter
 	private List<String> parentQuests = new ArrayList<>();
 	
 	// Rewards
@@ -88,6 +94,21 @@ public abstract class Quest {
 				mc.getCraftingRecipes().add(s);
 			}
 		}
+	}
+	
+	public void finishQuest(Player p) {
+		MMOPlayer mp = MinecraftMMO.getInstance().getPlayerHandler().getPlayer(p);
+		MMOClass mc = mp.getMmoClasses().get(mp.getCurrentCharacter());
+		if(requireTurnIn) {
+			if(mc.getCompletedableQuests().contains(this)) return;
+			mc.getCompletedableQuests().add(this);
+			completed = true;
+		} else {
+			completeQuest(p);
+			mc.getCompletedQuests().add(getName());
+			mc.getActiveQuests().remove(this);
+		}
+		mp.updateNPCQuests();
 	}
 	
 	public abstract boolean hasComplete(Player p);

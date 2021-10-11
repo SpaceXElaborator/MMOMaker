@@ -30,10 +30,7 @@ public class MMOItemCraftListener implements Listener {
 			if(!ccq.getToCraft().containsKey(ci.getName())) continue;
 			ccq.getHasCrafted().put(ci.getName(), ccq.getHasCrafted().get(ci.getName()) + 1);
 			if(ccq.hasComplete(p)) {
-				ccq.completeQuest(p);
-				mc.getCompletedQuests().add(q.getName());
-				mc.getActiveQuests().remove(q);
-				mp.updateNPCQuests();
+				ccq.finishQuest(p);
 			}
 		}
 	}

@@ -60,6 +60,10 @@ public class LocationQuest extends Quest {
 		List<String> lore = new ArrayList<>();
 		lore.add(ChatColor.GREEN + "Requirements: ");
 		lore.add(ChatColor.GREEN + "Move To: " + String.valueOf(getLoc().getX()) + " " + String.valueOf(getLoc().getY()) + " " + String.valueOf(getLoc().getZ()));
+		if(isCompleted()) {
+			lore.add("");
+			lore.add(ChatColor.GOLD + "Ready For Turn In");
+		}
 		im.setLore(lore);
 		is.setItemMeta(im);
 		
