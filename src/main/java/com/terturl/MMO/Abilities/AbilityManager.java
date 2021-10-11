@@ -34,7 +34,7 @@ public class AbilityManager {
 	private Map<String, Ability> abilities = new HashMap<String, Ability>();
 	
 	public AbilityManager() {
-		File abDir = new File(MinecraftMMO.getInstance().getDataFolder(), "skills");
+		File abDir = new File(MinecraftMMO.getInstance().getDataFolder(), "abilities");
 		if(!abDir.exists()) abDir.mkdir();
 		for(File f : abDir.listFiles()) {
 			if(f.getName().endsWith(".json")) {

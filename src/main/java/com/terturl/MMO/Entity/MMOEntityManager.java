@@ -18,7 +18,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.terturl.MMO.MinecraftMMO;
-import com.terturl.MMO.Entity.Util.MMOEntityDrop;
 import com.terturl.MMO.Util.JsonFileInterpretter;
 import com.terturl.MMO.Util.SoundInformation;
 import com.terturl.MMO.Util.Items.CustomItem;
@@ -99,7 +98,7 @@ public class MMOEntityManager {
 								JSONObject jo = (JSONObject)o;
 								String item = jo.get("Item").toString();
 								Integer amount = jo.containsKey("Amount") ? Integer.valueOf(jo.get("Amount").toString()) : 1;
-								Integer chance = jo.containsKey("Chance") ? Integer.valueOf(jo.get("Chance").toString()) : 50;
+								Double chance = jo.containsKey("Chance") ? Double.parseDouble(jo.get("Chance").toString()) : 50.0;
 								CustomItem ci = MinecraftMMO.getInstance().getItemManager().getItem(item);
 								MMOEntityDrop med = new MMOEntityDrop(ci, amount, chance);
 								em.getEntityDrops().add(med);

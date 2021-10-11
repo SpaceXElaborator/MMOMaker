@@ -38,6 +38,7 @@ public class LocationQuest extends Quest {
 	public Object clone() {
 		LocationQuest q = new LocationQuest();
 		q.setName(getName());
+		q.setQuestType(getQuestType());
 		q.setLoc(getLoc());
 		q.setAcceptString(getAcceptString());
 		q.setChildQuests(getChildQuests());

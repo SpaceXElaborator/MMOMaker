@@ -29,6 +29,8 @@ import com.terturl.MMO.Player.PlayerHandler;
 import com.terturl.MMO.Player.MMOClasses.ClassHandler;
 import com.terturl.MMO.Player.Shops.ShopManager;
 import com.terturl.MMO.Player.Skills.Crafting.RecipeManager;
+import com.terturl.MMO.Player.Skills.Herbalism.HerbalismInteract;
+import com.terturl.MMO.Player.Skills.Herbalism.HerbalismManager;
 import com.terturl.MMO.Quests.QuestManager;
 import com.terturl.MMO.Quests.Subquests.CustomCraftQuest;
 import com.terturl.MMO.Quests.Subquests.EntityKillQuest;
@@ -74,6 +76,10 @@ public class MinecraftMMO extends JavaPlugin {
 	@Getter
 	private MMOEntityManager entityManager;
 	
+	// Skills
+	@Getter
+	private HerbalismManager herbalismManager;
+	
 	private static MinecraftMMO instance;
 	
 	public void onLoad() {
@@ -103,6 +109,9 @@ public class MinecraftMMO extends JavaPlugin {
 		mmoConfiguration = new Configuration();
 		
 		shopManager = new ShopManager();
+		
+		// Skills
+		herbalismManager = new HerbalismManager();
 		
 		try {
 			entityManager = new MMOEntityManager();
@@ -148,6 +157,8 @@ public class MinecraftMMO extends JavaPlugin {
 		registerListener(new EntityDeathListeners());
 		registerListener(new MMOEntityDeathListener());
 		registerListener(new PlayerDropItemListener());
+		
+		registerListener(new HerbalismInteract());
 	}
 	
 	private void registerQuestTypes() {

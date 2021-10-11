@@ -30,6 +30,7 @@ public class CustomCraftQuest extends Quest {
 	public Object clone() {
 		CustomCraftQuest q = new CustomCraftQuest();
 		q.setName(getName());
+		q.setQuestType(getQuestType());
 		q.setAcceptString(getAcceptString());
 		q.setChildQuests(getChildQuests());
 		q.setDenyString(getDenyString());

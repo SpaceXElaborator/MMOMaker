@@ -135,6 +135,22 @@ public class MMOClass implements Cloneable {
 		p.updateInventory();
 	}
 	
+	public boolean containsSkill(String s) {
+		for(Skill skill : playerSkills) {
+			if(skill.getSkillName().equalsIgnoreCase(s)) return true;
+		}
+		return false;
+	}
+	
+	public void addXp(String s, Double xp) {
+		if(!containsSkill(s)) return;
+		playerSkills.forEach(e -> {
+			if(e.getSkillName().equalsIgnoreCase(s)) {
+				e.addXP(xp);
+			}
+		});
+	}
+	
 	public Object clone() {
 		try {
 			return super.clone();

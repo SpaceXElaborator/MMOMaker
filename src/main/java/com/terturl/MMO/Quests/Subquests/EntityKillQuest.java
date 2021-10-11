@@ -49,6 +49,7 @@ public class EntityKillQuest extends Quest {
 	public Object clone() {
 		EntityKillQuest q = new EntityKillQuest();
 		q.setName(getName());
+		q.setQuestType(getQuestType());
 		q.setAcceptString(getAcceptString());
 		q.setChildQuests(getChildQuests());
 		q.setDenyString(getDenyString());

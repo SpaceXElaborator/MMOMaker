@@ -54,6 +54,7 @@ public class NPCTalkQuest extends Quest {
 	public Object clone() {
 		NPCTalkQuest q = new NPCTalkQuest();
 		q.setName(getName());
+		q.setQuestType(getQuestType());
 		q.setAcceptString(getAcceptString());
 		q.setChildQuests(getChildQuests());
 		q.setDenyString(getDenyString());

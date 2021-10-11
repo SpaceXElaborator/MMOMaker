@@ -84,6 +84,7 @@ public class QuestManager {
 	}
 	
 	public void registerQuest(String type, Quest baseClass) {
+		baseClass.setQuestType(type);
 		questTypes.put(type, baseClass);
 	}
 	

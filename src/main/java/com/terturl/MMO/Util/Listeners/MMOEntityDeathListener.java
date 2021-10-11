@@ -10,7 +10,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.terturl.MMO.MinecraftMMO;
 import com.terturl.MMO.Entity.MMOEntity;
-import com.terturl.MMO.Entity.Util.MMOEntityDrop;
+import com.terturl.MMO.Entity.MMOEntityDrop;
 import com.terturl.MMO.Player.MMOPlayer;
 import com.terturl.MMO.Player.MMOClasses.MMOClass;
 import com.terturl.MMO.Util.SoundInformation;

@@ -26,7 +26,10 @@ public class RecipeManager {
 	private File warnings;
 	
 	public RecipeManager() throws IOException {
-		File recDir = new File(MinecraftMMO.getInstance().getDataFolder(), "recipes");
+		File skillsDir = new File(MinecraftMMO.getInstance().getDataFolder(), "skills");
+		if(!skillsDir.exists()) skillsDir.mkdir();
+		
+		File recDir = new File(skillsDir, "recipes");
 		warnings = new File(recDir, "Warnings.txt");
 		if(!recDir.exists()) recDir.mkdir();
 		if(getWarnings().exists()) { getWarnings().delete(); }
