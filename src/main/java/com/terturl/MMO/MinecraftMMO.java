@@ -35,6 +35,7 @@ import com.terturl.MMO.Quests.QuestManager;
 import com.terturl.MMO.Quests.Subquests.CustomCraftQuest;
 import com.terturl.MMO.Quests.Subquests.EntityKillQuest;
 import com.terturl.MMO.Quests.Subquests.LocationQuest;
+import com.terturl.MMO.Quests.Subquests.MMOItemCollectQuest;
 import com.terturl.MMO.Quests.Subquests.NPCTalkQuest;
 import com.terturl.MMO.Util.Items.CustomItemManager;
 import com.terturl.MMO.Util.Listeners.DamageEvent;
@@ -43,6 +44,7 @@ import com.terturl.MMO.Util.Listeners.HotbarListeners;
 import com.terturl.MMO.Util.Listeners.InteractNPCListener;
 import com.terturl.MMO.Util.Listeners.ItemInteractionListeners;
 import com.terturl.MMO.Util.Listeners.MMOEntityDeathListener;
+import com.terturl.MMO.Util.Listeners.MMOItemPickUpListener;
 import com.terturl.MMO.Util.Listeners.PlayerDropItemListener;
 import com.terturl.MMO.Util.Listeners.PlayerJoinListener;
 import com.terturl.MMO.Util.Listeners.PlayerMoveListeners;
@@ -157,6 +159,7 @@ public class MinecraftMMO extends JavaPlugin {
 		registerListener(new EntityDeathListeners());
 		registerListener(new MMOEntityDeathListener());
 		registerListener(new PlayerDropItemListener());
+		registerListener(new MMOItemPickUpListener());
 		
 		registerListener(new HerbalismInteract());
 	}
@@ -166,6 +169,7 @@ public class MinecraftMMO extends JavaPlugin {
 		questManager.registerQuest("KillEntity", new EntityKillQuest());
 		questManager.registerQuest("TalkTo", new NPCTalkQuest());
 		questManager.registerQuest("CraftItem", new CustomCraftQuest());
+		questManager.registerQuest("CollectItem", new MMOItemCollectQuest());
 	}
 	
 	public <T extends CraftCommand> void registerCommand(T command) {

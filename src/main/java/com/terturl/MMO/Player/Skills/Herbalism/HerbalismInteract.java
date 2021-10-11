@@ -1,5 +1,6 @@
 package com.terturl.MMO.Player.Skills.Herbalism;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -12,6 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import com.terturl.MMO.MinecraftMMO;
 import com.terturl.MMO.Player.MMOPlayer;
 import com.terturl.MMO.Player.MMOClasses.MMOClass;
+import com.terturl.MMO.Util.Events.PickUpMMOItemEvent;
 
 public class HerbalismInteract implements Listener {
 
@@ -31,7 +33,13 @@ public class HerbalismInteract implements Listener {
 		mc.addXp("Herbalism", hgi.getXp());
 		hgi.getItems().forEach((k, v) -> {
 			if(v.getsItem()) {
-				ItemStack is = k.makeItem(v.getAmount().getAmount());
+				Integer amount = v.getAmount().getAmount();
+				
+				PickUpMMOItemEvent pumie = new PickUpMMOItemEvent(p, k, amount);
+				if(!pumie.isCancelled()) Bukkit.getPluginManager().callEvent(pumie);
+				
+				ItemStack is = k.makeItem(amount);
+				
 				p.getInventory().addItem(is);
 			}
 		});

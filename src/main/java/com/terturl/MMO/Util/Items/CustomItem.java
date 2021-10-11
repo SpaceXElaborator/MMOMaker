@@ -192,7 +192,7 @@ public class CustomItem {
 		}
 		net.minecraft.world.item.ItemStack stack = CraftItemStack.asNMSCopy(i);
 		NBTTagCompound tag = stack.getTag() != null ? stack.getTag() : new NBTTagCompound();
-		tag.setString("CustomItem", "true");
+		tag.setBoolean("CustomItem", true);
 		Gson g = new Gson();
 		tag.setString("CustomItemValues", g.toJson(this));
 		stack.setTag(tag);
