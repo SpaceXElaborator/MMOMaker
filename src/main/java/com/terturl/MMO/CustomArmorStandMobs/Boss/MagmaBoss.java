@@ -12,8 +12,8 @@ import org.bukkit.util.EulerAngle;
 import com.terturl.MMO.MinecraftMMO;
 import com.terturl.MMO.CustomArmorStandMobs.ArmorStandMob;
 import com.terturl.MMO.CustomArmorStandMobs.Utils.ArmorStandContainer;
-import com.terturl.MMO.CustomArmorStandMobs.Utils.RelativeLocation;
 import com.terturl.MMO.Util.Items.SkullCreator;
+import com.terturl.MMO.Util.Math.RelativeLocation;
 
 import lombok.Getter;
 

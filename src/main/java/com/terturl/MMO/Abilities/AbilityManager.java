@@ -18,6 +18,9 @@ import com.terturl.MMO.Effects.Effect.LocationType;
 import com.terturl.MMO.Effects.FireProjectile;
 import com.terturl.MMO.Effects.LineEffect;
 import com.terturl.MMO.Effects.Sphere;
+import com.terturl.MMO.Effects.VectorDirection;
+import com.terturl.MMO.Effects.VectorPush;
+import com.terturl.MMO.Effects.VectorRelative;
 import com.terturl.MMO.Effects.EffectTypes.LimitEffect;
 import com.terturl.MMO.Effects.EffectTypes.RepeatingEffect;
 import com.terturl.MMO.Effects.Util.ConeEffect;
@@ -122,7 +125,14 @@ public class AbilityManager {
 						for(Effect e : coneEffects) {
 							((ConeEffect)ef).getEffects().add(e);
 						}
+					} else if(effectName.equals("Vector")) {
+						ef = new VectorPush(ei);
+					} else if(effectName.equals("VelocityVector")) {
+						ef = new VectorRelative(ei);
+					} else if(effectName.equals("DirectionVector")) {
+						ef = new VectorDirection(ei);
 					}
+					
 					if(ei.getType().equals(EffectType.REPEATING)) {
 						RepeatingEffect re = new RepeatingEffect(ei, (Effect) ef);
 						effectsList.add(re);

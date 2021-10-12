@@ -1,4 +1,4 @@
-package com.terturl.MMO.CustomArmorStandMobs.Utils;
+package com.terturl.MMO.Util.Math;
 
 public class CosSineTable {
 	double[] cos = new double[361];

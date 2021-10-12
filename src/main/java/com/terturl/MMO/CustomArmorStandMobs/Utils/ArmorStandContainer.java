@@ -6,6 +6,9 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.EulerAngle;
 
+import com.terturl.MMO.Util.Math.CosSineTable;
+import com.terturl.MMO.Util.Math.RelativeLocation;
+
 import lombok.Getter;
 
 public class ArmorStandContainer {

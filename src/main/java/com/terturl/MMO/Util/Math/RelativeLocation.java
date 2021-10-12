@@ -1,4 +1,4 @@
-package com.terturl.MMO.CustomArmorStandMobs.Utils;
+package com.terturl.MMO.Util.Math;
 
 import org.bukkit.Location;
 
