@@ -1,5 +1,8 @@
 package com.terturl.MMO.Util.Listeners;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Item;
@@ -13,6 +16,8 @@ import com.terturl.MMO.Entity.MMOEntity;
 import com.terturl.MMO.Entity.MMOEntityDrop;
 import com.terturl.MMO.Player.MMOPlayer;
 import com.terturl.MMO.Player.MMOClasses.MMOClass;
+import com.terturl.MMO.Quests.Quest;
+import com.terturl.MMO.Quests.Subquests.MMOEntityKillQuest;
 import com.terturl.MMO.Util.SoundInformation;
 import com.terturl.MMO.Util.Events.MMOEntityDeathEvent;
 
@@ -30,6 +35,17 @@ public class MMOEntityDeathListener implements Listener {
 		Double money = me.getGivableCurrency().getRandomNumber();
 		mc.addMoney(money);
 		mc.addXP(xp);
+		
+		List<Quest> killQuests = mc.getActiveQuests().stream().filter(q -> q.getQuestType().equals("MMOKillEntity")).collect(Collectors.toList());
+		String s = e.getMMOEntity().getName();
+		for(Quest q : killQuests) {
+			MMOEntityKillQuest ekq = (MMOEntityKillQuest)q;
+			if(!ekq.getAmountToKill().containsKey(s)) continue;
+			ekq.getHasKilled().put(s, ekq.getHasKilled().get(s) + 1);
+			if(ekq.hasComplete(p)) {
+				ekq.finishQuest(p);
+			}
+		}
 		
 		World w = p.getWorld();
 		for(MMOEntityDrop med : me.getEntityDrops()) {

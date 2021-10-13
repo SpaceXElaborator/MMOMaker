@@ -35,6 +35,7 @@ import com.terturl.MMO.Quests.QuestManager;
 import com.terturl.MMO.Quests.Subquests.CustomCraftQuest;
 import com.terturl.MMO.Quests.Subquests.EntityKillQuest;
 import com.terturl.MMO.Quests.Subquests.LocationQuest;
+import com.terturl.MMO.Quests.Subquests.MMOEntityKillQuest;
 import com.terturl.MMO.Quests.Subquests.MMOItemCollectQuest;
 import com.terturl.MMO.Quests.Subquests.NPCTalkQuest;
 import com.terturl.MMO.Util.Items.CustomItemManager;
@@ -170,6 +171,7 @@ public class MinecraftMMO extends JavaPlugin {
 		questManager.registerQuest("TalkTo", new NPCTalkQuest());
 		questManager.registerQuest("CraftItem", new CustomCraftQuest());
 		questManager.registerQuest("CollectItem", new MMOItemCollectQuest());
+		questManager.registerQuest("MMOKillEntity", new MMOEntityKillQuest());
 	}
 	
 	public <T extends CraftCommand> void registerCommand(T command) {
