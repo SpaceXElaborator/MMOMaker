@@ -30,6 +30,9 @@ public class EffectInformation  {
 	private LocationType locType;
 	
 	@Getter @Setter
+	private boolean shove = false;
+	
+	@Getter @Setter
 	private long delay;
 	
 	@Getter @Setter

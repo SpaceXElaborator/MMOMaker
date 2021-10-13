@@ -21,6 +21,7 @@ import com.terturl.MMO.Effects.Sphere;
 import com.terturl.MMO.Effects.VectorDirection;
 import com.terturl.MMO.Effects.VectorPush;
 import com.terturl.MMO.Effects.VectorRelative;
+import com.terturl.MMO.Effects.WaveEffect;
 import com.terturl.MMO.Effects.EffectTypes.LimitEffect;
 import com.terturl.MMO.Effects.EffectTypes.RepeatingEffect;
 import com.terturl.MMO.Effects.Util.ConeEffect;
@@ -131,6 +132,9 @@ public class AbilityManager {
 						ef = new VectorRelative(ei);
 					} else if(effectName.equals("DirectionVector")) {
 						ef = new VectorDirection(ei);
+					} else if(effectName.equals("WaveEffect")) {
+						ef = new WaveEffect(ei);
+						((WaveEffect) ef).setDegree((effect.containsKey("Degree") ? Double.parseDouble(effect.get("Degree").toString()) : 90.0));
 					}
 					
 					if(ei.getType().equals(EffectType.REPEATING)) {
