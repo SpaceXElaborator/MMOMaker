@@ -5,10 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -34,6 +31,7 @@ public class MMOItemCollectQuest extends Quest {
 	public Object clone() {
 		MMOItemCollectQuest q = new MMOItemCollectQuest();
 		q.setName(getName());
+		q.setLoreForQuest(getLoreForQuest());
 		q.setQuestType(getQuestType());
 		q.setAcceptString(getAcceptString());
 		q.setChildQuests(getChildQuests());
@@ -63,28 +61,16 @@ public class MMOItemCollectQuest extends Quest {
 	}
 
 	@Override
-	public ItemStack questItem(Player p) {
-		ItemStack item = new ItemStack(Material.PAPER);
-		ItemMeta meta = item.getItemMeta();
-		
-		meta.setDisplayName(ChatColor.GOLD + getName());
+	public List<String> requirementsLore() {
 		List<String> lore = new ArrayList<>();
-		lore.add(ChatColor.GREEN + "Requirements: ");
-		for(String ci : amountToCollect.keySet()) {
-			lore.add("Collect " + String.valueOf(amountToCollect.get(ci)) + " " + ci);
+		for(String s : amountToCollect.keySet()) {
+			if(amountToCollect.get(s) <= hasCollected.get(s)) {
+				lore.add(ChatColor.GREEN + "" + ChatColor.BOLD + ChatColor.GREEN + "\u2714 Collected " + s);
+			} else {
+				lore.add(ChatColor.RED + "" + ChatColor.BOLD + "\u2715 " + ChatColor.RED + String.valueOf(hasCollected.get(s) + "/" + String.valueOf(amountToCollect.get(s)) + s + " Collected"));
+			}
 		}
-		lore.add(ChatColor.GREEN + "\nCompleted: ");
-		for(String ci : hasCollected.keySet()) {
-			lore.add("Collected " + String.valueOf(hasCollected.get(ci)) + " " + ci);
-		}
-		if(isCompleted()) {
-			lore.add("");
-			lore.add(ChatColor.GOLD + "Ready For Turn In");
-		}
-		meta.setLore(lore);
-		item.setItemMeta(meta);
-		
-		return item;
+		return lore;
 	}
 
 	@Override

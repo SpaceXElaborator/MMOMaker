@@ -5,10 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -30,6 +27,7 @@ public class CustomCraftQuest extends Quest {
 	public Object clone() {
 		CustomCraftQuest q = new CustomCraftQuest();
 		q.setName(getName());
+		q.setLoreForQuest(getLoreForQuest());
 		q.setQuestType(getQuestType());
 		q.setAcceptString(getAcceptString());
 		q.setChildQuests(getChildQuests());
@@ -65,24 +63,16 @@ public class CustomCraftQuest extends Quest {
 	}
 
 	@Override
-	public ItemStack questItem(Player p) {
-		ItemStack is = new ItemStack(Material.PAPER);
-		ItemMeta meta = is.getItemMeta();
-		
-		meta.setDisplayName(ChatColor.GOLD + getName());
+	public List<String> requirementsLore() {
 		List<String> lore = new ArrayList<>();
-		lore.add(ChatColor.GREEN + "Requirements: ");
 		for(String s : toCraft.keySet()) {
-			lore.add("Craft " + String.valueOf(toCraft.get(s)) + " " + s);
+			if(toCraft.get(s) <= hasCrafted.get(s)) {
+				lore.add(ChatColor.GREEN + "" + ChatColor.BOLD + ChatColor.GREEN + "\u2714 Crafted " + s);
+			} else {
+				lore.add(ChatColor.RED + "" + ChatColor.BOLD + "\u2715 " + ChatColor.RED + String.valueOf(hasCrafted.get(s) + "/" + String.valueOf(toCraft.get(s)) + s + " Crafted"));
+			}
 		}
-		lore.add(ChatColor.GREEN + "\nCompleted: ");
-		for(String s : hasCrafted.keySet()) {
-			lore.add("Has Crafted " + String.valueOf(hasCrafted.get(s)) + " " + s);
-		}
-		meta.setLore(lore);
-		is.setItemMeta(meta);
-		
-		return is;
+		return lore;
 	}
 
 	@Override

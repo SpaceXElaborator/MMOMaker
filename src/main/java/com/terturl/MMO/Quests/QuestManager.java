@@ -40,6 +40,7 @@ public class QuestManager {
 				String type = config.contains("Type") ? config.getString("Type") : "Basic";
 				Double money = config.contains("Money") ? config.getDouble("Money") : 0.0;
 				Double xp = config.contains("XP") ? config.getDouble("XP") : 0.0;
+				List<String> questLore = config.contains("Lore") ? config.getStringList("Lore") : new ArrayList<>();
 				
 				// TODO: Combine these into one Rewards JSONObject
 				List<String> customItems = config.contains("Items") ? config.getStringList("Items") : new ArrayList<>();
@@ -66,6 +67,7 @@ public class QuestManager {
 				
 				((Quest) q).loadQuest(config.getObject("Properties"));
 				((Quest) q).setName(name);
+				((Quest) q).setLoreForQuest(questLore);
 				((Quest) q).setQuestType(type);
 				((Quest) q).setRequireTurnIn(requireTurnIn);
 				((Quest) q).setDescString(descString);

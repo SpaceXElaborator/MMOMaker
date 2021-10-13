@@ -4,10 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.json.simple.JSONObject;
 
 import com.terturl.MMO.Quests.Quest;
@@ -38,6 +35,7 @@ public class LocationQuest extends Quest {
 	public Object clone() {
 		LocationQuest q = new LocationQuest();
 		q.setName(getName());
+		q.setLoreForQuest(getLoreForQuest());
 		q.setQuestType(getQuestType());
 		q.setLoc(getLoc());
 		q.setAcceptString(getAcceptString());
@@ -53,22 +51,10 @@ public class LocationQuest extends Quest {
 	}
 
 	@Override
-	public ItemStack questItem(Player p) {
-		ItemStack is = new ItemStack(Material.PAPER);
-		ItemMeta im = is.getItemMeta();
-		im.setDisplayName(ChatColor.GOLD + getName());
-		
+	public List<String> requirementsLore() {
 		List<String> lore = new ArrayList<>();
-		lore.add(ChatColor.GREEN + "Requirements: ");
-		lore.add(ChatColor.GREEN + "Move To: " + String.valueOf(getLoc().getX()) + " " + String.valueOf(getLoc().getY()) + " " + String.valueOf(getLoc().getZ()));
-		if(isCompleted()) {
-			lore.add("");
-			lore.add(ChatColor.GOLD + "Ready For Turn In");
-		}
-		im.setLore(lore);
-		is.setItemMeta(im);
-		
-		return is;
+		lore.add(ChatColor.GRAY + "Move To: " + String.valueOf(getLoc().getX()) + " " + String.valueOf(getLoc().getY()) + " " + String.valueOf(getLoc().getZ()));
+		return lore;
 	}
 
 	@Override

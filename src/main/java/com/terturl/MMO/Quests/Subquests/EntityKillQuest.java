@@ -5,11 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -34,7 +31,7 @@ public class EntityKillQuest extends Quest {
 	@Override
 	public boolean hasComplete(Player p) {
 		for(EntityType et : amountToKill.keySet()) {
-			if(amountToKill.get(et) != hasKilled.get(et)) return false;
+			if(amountToKill.get(et) > hasKilled.get(et)) return false;
 		}
 		return true;
 	}
@@ -49,6 +46,7 @@ public class EntityKillQuest extends Quest {
 	public Object clone() {
 		EntityKillQuest q = new EntityKillQuest();
 		q.setName(getName());
+		q.setLoreForQuest(getLoreForQuest());
 		q.setQuestType(getQuestType());
 		q.setAcceptString(getAcceptString());
 		q.setChildQuests(getChildQuests());
@@ -64,28 +62,16 @@ public class EntityKillQuest extends Quest {
 	}
 
 	@Override
-	public ItemStack questItem(Player p) {
-		ItemStack item = new ItemStack(Material.PAPER);
-		ItemMeta meta = item.getItemMeta();
-		
-		meta.setDisplayName(ChatColor.GOLD + getName());
+	public List<String> requirementsLore() {
 		List<String> lore = new ArrayList<>();
-		lore.add(ChatColor.GREEN + "Requirements: ");
-		for(EntityType et : amountToKill.keySet()) {
-			lore.add("Kill " + String.valueOf(amountToKill.get(et)) + " " + et.toString());
+		for(EntityType s : amountToKill.keySet()) {
+			if(amountToKill.get(s) <= hasKilled.get(s)) {
+				lore.add(ChatColor.GREEN + "" + ChatColor.BOLD + ChatColor.GREEN + "\u2714 Killed " + s);
+			} else {
+				lore.add(ChatColor.RED + "" + ChatColor.BOLD + "\u2715 " + ChatColor.RED + String.valueOf(hasKilled.get(s) + "/" + String.valueOf(amountToKill.get(s)) + " " + s + " Killed"));
+			}
 		}
-		lore.add(ChatColor.GREEN + "\nCompleted: ");
-		for(EntityType et : hasKilled.keySet()) {
-			lore.add("Killed " + String.valueOf(hasKilled.get(et)) + " " + et.toString());
-		}
-		if(isCompleted()) {
-			lore.add("");
-			lore.add(ChatColor.GOLD + "Ready For Turn In");
-		}
-		meta.setLore(lore);
-		item.setItemMeta(meta);
-		
-		return item;
+		return lore;
 	}
 
 	@SuppressWarnings("unchecked")

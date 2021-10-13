@@ -6,10 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -54,6 +51,7 @@ public class NPCTalkQuest extends Quest {
 	public Object clone() {
 		NPCTalkQuest q = new NPCTalkQuest();
 		q.setName(getName());
+		q.setLoreForQuest(getLoreForQuest());
 		q.setQuestType(getQuestType());
 		q.setAcceptString(getAcceptString());
 		q.setChildQuests(getChildQuests());
@@ -84,25 +82,16 @@ public class NPCTalkQuest extends Quest {
 	}
 	
 	@Override
-	public ItemStack questItem(Player p) {
-		ItemStack item = new ItemStack(Material.PAPER);
-		ItemMeta meta = item.getItemMeta();
-		meta.setDisplayName(ChatColor.GOLD + getName());
-		
+	public List<String> requirementsLore() {
 		List<String> lore = new ArrayList<>();
-		lore.add(ChatColor.GREEN + "Requirements: ");
 		for(String s : NPCList.keySet()) {
-			if(hasTalkedTo.contains(s)) continue;
-			lore.add(ChatColor.GREEN + "Talk To: " + s);
+			if(hasTalkedTo.contains(s)) {
+				lore.add(ChatColor.GREEN + "" + ChatColor.BOLD + ChatColor.GREEN + "\u2714 Talked To " + s);
+			} else {
+				lore.add(ChatColor.RED + "" + ChatColor.BOLD + "\u2715 " + ChatColor.RED + "Talk To " + s);
+			}
 		}
-		if(isCompleted()) {
-			lore.add("");
-			lore.add(ChatColor.GOLD + "Ready For Turn In");
-		}
-		meta.setLore(lore);
-		item.setItemMeta(meta);
-		
-		return item;
+		return lore;
 	}
 
 	@SuppressWarnings("unchecked")
