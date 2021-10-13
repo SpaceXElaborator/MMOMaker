@@ -41,7 +41,7 @@ public class LineEffect extends Effect {
 					if(loc2.getBlock().getLocation().equals(e.getLocation().getBlock().getLocation())) {
 						if(!(e instanceof Damageable)) continue;
 						Damageable dam = (Damageable)e;
-						dam.damage(getEffectInformation().getDamage());
+						dam.damage(ei.getDamage());
 						ei.getDamaged().add(e);
 						if(!penetrate) return;
 					}

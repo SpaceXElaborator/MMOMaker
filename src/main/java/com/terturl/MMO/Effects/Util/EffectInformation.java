@@ -36,7 +36,7 @@ public class EffectInformation  {
 	private long delay;
 	
 	@Getter @Setter
-	private double damage;
+	private double damage = 0.0;
 	
 	@Getter @Setter
 	private Location loc;

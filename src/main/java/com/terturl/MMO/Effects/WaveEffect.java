@@ -51,13 +51,15 @@ public class WaveEffect extends Effect {
 					v_2.setY(0.2);
 					loc.add(v_2);
 					
-					for(Entity e : ei.getPlayer().getNearbyEntities(10, 10, 10)) {
-						if(ei.getDamaged().contains(e)) continue;
-						if(loc.getBlock().getLocation().equals(e.getLocation().getBlock().getLocation())) {
-							if(!(e instanceof Damageable)) continue;
-							Damageable dam = (Damageable)e;
-							dam.damage(getEffectInformation().getDamage());
-							ei.getDamaged().add(e);
+					if(ei.getDamage() > 0) {
+						for(Entity e : ei.getPlayer().getNearbyEntities(ei.getRange(),ei.getRange(),ei.getRange())) {
+							if(ei.getDamaged().contains(e)) continue;
+							if(loc.getBlock().getLocation().equals(e.getLocation().getBlock().getLocation())) {
+								if(!(e instanceof Damageable)) continue;
+								Damageable dam = (Damageable)e;
+								dam.damage(ei.getDamage());
+								ei.getDamaged().add(e);
+							}
 						}
 					}
 					

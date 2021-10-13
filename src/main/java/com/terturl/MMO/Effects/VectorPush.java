@@ -22,12 +22,14 @@ public class VectorPush extends Effect {
 			ei.getPlayer().playSound(ei.getPlayer().getLocation(), s.getSound(), s.getVolume(), s.getPitch());
 		}
 		
-		for(Entity e : ei.getPlayer().getNearbyEntities(2, 2, 2)) {
-			if(ei.getDamaged().contains(e)) continue;
-			if(!(e instanceof Damageable)) continue;
-			Damageable dam = (Damageable)e;
-			dam.damage(getEffectInformation().getDamage());
-			ei.getDamaged().add(e);
+		if(ei.getDamage() > 0) {
+			for(Entity e : ei.getPlayer().getNearbyEntities(2, 2, 2)) {
+				if(ei.getDamaged().contains(e)) continue;
+				if(!(e instanceof Damageable)) continue;
+				Damageable dam = (Damageable)e;
+				dam.damage(ei.getDamage());
+				ei.getDamaged().add(e);
+			}
 		}
 		
 		RelativeLocation rl = new RelativeLocation(ei.getYOff(), ei.getXOff(), ei.getZOff());

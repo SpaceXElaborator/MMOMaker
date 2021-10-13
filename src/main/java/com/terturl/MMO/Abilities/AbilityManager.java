@@ -16,7 +16,9 @@ import com.terturl.MMO.Effects.Effect;
 import com.terturl.MMO.Effects.Effect.EffectType;
 import com.terturl.MMO.Effects.Effect.LocationType;
 import com.terturl.MMO.Effects.FireProjectile;
+import com.terturl.MMO.Effects.JumpTo;
 import com.terturl.MMO.Effects.LineEffect;
+import com.terturl.MMO.Effects.PullTo;
 import com.terturl.MMO.Effects.Sphere;
 import com.terturl.MMO.Effects.VectorDirection;
 import com.terturl.MMO.Effects.VectorPush;
@@ -135,6 +137,10 @@ public class AbilityManager {
 					} else if(effectName.equals("WaveEffect")) {
 						ef = new WaveEffect(ei);
 						((WaveEffect) ef).setDegree((effect.containsKey("Degree") ? Double.parseDouble(effect.get("Degree").toString()) : 90.0));
+					} else if(effectName.equals("JumpTo")) {
+						ef = new JumpTo(ei);
+					} else if(effectName.equals("PullTo")) {
+						ef = new PullTo(ei);
 					}
 					
 					if(ei.getType().equals(EffectType.REPEATING)) {

@@ -4,6 +4,7 @@ import org.bukkit.util.Vector;
 
 import com.terturl.MMO.Effects.Util.EffectInformation;
 import com.terturl.MMO.Util.ParticleManager;
+import com.terturl.MMO.Util.SoundInformation;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -20,6 +21,9 @@ public class Sphere extends Effect {
 	@Override
 	public void run() {
 		EffectInformation ei = getEffectInformation().clone();
+		for(SoundInformation s : ei.getSounds()) {
+			ei.getPlayer().playSound(ei.getPlayer().getLocation(), s.getSound(), s.getVolume(), s.getPitch());
+		}
 		ei.setLoc(ei.getLoc().add(ei.getXOff(), ei.getYOff(), ei.getZOff()));
 		for(long i = 0; i < ei.getParticleAmount(); i++) {
 			Vector v = ParticleManager.getRandomVector().multiply(getRadius());
