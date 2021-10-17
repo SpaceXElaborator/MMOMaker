@@ -26,6 +26,9 @@ public class BBOCube {
 	@Getter
 	private double[] rotation = new double[] {0.0D, 0.0D, 0.0D};
 	
+	@Getter
+	private Double inflate = 0.0D;
+	
 	@Getter @Setter
 	private UUID uuid;
 	
@@ -54,6 +57,14 @@ public class BBOCube {
 		rotation[0] = x;
 		rotation[1] = y;
 		rotation[2] = z;
+	}
+	
+	public String getAxis() {
+		if(rotation.length == 0) return "x";
+		if(rotation[0] != 0.0D) return "x";
+		if(rotation[1] != 0.0D) return "y";
+		if(rotation[2] != 0.0D) return "z";
+		return "x";
 	}
 	
 }

@@ -2,6 +2,7 @@ package com.terturl.MMO.MMOEntity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import com.terturl.MMO.MMOEntity.BlockBenchObjects.BBOCube;
 import com.terturl.MMO.MMOEntity.BlockBenchObjects.BBOOutliner;
@@ -18,7 +19,13 @@ public class BlockBenchFile {
 	private String name;
 	
 	@Getter @Setter
-	private String parent;
+	private Integer width;
+	
+	@Getter @Setter
+	private Integer height;
+	
+	@Getter @Setter
+	private Double eyeHeight;
 	
 	@Getter
 	private List<BBOCube> elements = new ArrayList<>();
@@ -28,5 +35,9 @@ public class BlockBenchFile {
 	
 	@Getter
 	private List<BBOTexture> textures = new ArrayList<>();
+	
+	public BBOCube findCubeByUUID(UUID uuid) {
+		return elements.stream().filter(e -> e.getUuid().equals(uuid)).findFirst().orElse(null);
+	}
 	
 }

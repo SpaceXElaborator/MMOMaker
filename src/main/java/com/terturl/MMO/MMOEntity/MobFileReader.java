@@ -12,6 +12,7 @@ import com.terturl.MMO.MMOEntity.BlockBenchObjects.BBOCube;
 import com.terturl.MMO.MMOEntity.BlockBenchObjects.BBOFace;
 import com.terturl.MMO.MMOEntity.BlockBenchObjects.BBOOutliner;
 import com.terturl.MMO.MMOEntity.BlockBenchObjects.BBOTexture;
+import com.terturl.MMO.MMOEntity.ResourcePack.ResourcePackGenerator;
 import com.terturl.MMO.Util.ImageCreator;
 import com.terturl.MMO.Util.JsonFileInterpretter;
 
@@ -19,7 +20,10 @@ import net.md_5.bungee.api.ChatColor;
 
 public class MobFileReader {
 
+	private ResourcePackGenerator rpg;
+	
 	public MobFileReader() {
+		rpg = new ResourcePackGenerator();
 		Bukkit.getConsoleSender().sendMessage(ChatColor.BLUE + "[MMO-RPG] Registering Mobs...");
 		File f = new File(MinecraftMMO.getInstance().getDataFolder(), "mmo-entity");
 		if(!f.exists()) f.mkdir();
@@ -31,6 +35,7 @@ public class MobFileReader {
 				}
 			}
 		}
+		rpg.createItemJSONFile();
 		Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "[MMO-RPG] Done");
 	}
 	
@@ -40,6 +45,13 @@ public class MobFileReader {
 		if(!mobFile.contains("name")) {
 			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Unable to locate name of mob");
 			return;
+		}
+		bbf.setName(mobFile.getString("name").toLowerCase());
+		
+		if(mobFile.contains("resolution")) {
+			JsonFileInterpretter element = new JsonFileInterpretter(mobFile.getObject("resolution"));
+			bbf.setHeight(element.getInt("height"));
+			bbf.setWidth(element.getInt("width"));
 		}
 		
 		if(mobFile.contains("elements")) {
@@ -66,8 +78,7 @@ public class MobFileReader {
 				bbf.getTextures().add(createTexture(element));
 			}
 		}
-		
-		Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + bbf.toString());
+		rpg.addMob(bbf);
 	}
 	
 	private BBOTexture createTexture(JSONObject jo) {
@@ -83,6 +94,7 @@ public class MobFileReader {
 	private void addOutliners(String parent, JSONObject jo, BlockBenchFile bbf) {
 		JsonFileInterpretter element = new JsonFileInterpretter(jo);
 		BBOOutliner outliner = new BBOOutliner();
+		
 		outliner.setName(element.getString("name"));
 		outliner.setUuid(UUID.fromString(element.getString("uuid")));
 		outliner.setParent(parent);
@@ -109,7 +121,6 @@ public class MobFileReader {
 				outliner.getChildren().add(UUID.fromString(uuid));
 			}
 		}
-		
 		bbf.getOutliner().add(outliner);
 	}
 	

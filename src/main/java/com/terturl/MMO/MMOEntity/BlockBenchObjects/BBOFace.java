@@ -7,7 +7,11 @@ import lombok.ToString;
 @ToString
 public class BBOFace {
 
+	@Getter
 	private double[] uv = new double[4];
+	
+	@Getter @Setter
+	private Integer rotation = 0;
 	
 	@Getter @Setter
 	private Integer texture;
