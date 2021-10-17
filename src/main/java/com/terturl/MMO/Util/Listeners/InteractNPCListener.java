@@ -82,7 +82,7 @@ public class InteractNPCListener implements Listener {
 		// p.sendMessage("Want to select " + npc.getDisplayName() + " as your class?");
 		MinecraftMMO.getInstance().getClassHandler().selectClass(p, npc.getDisplayName());
 		MinecraftMMO.getInstance().getPlayerHandler().createPlayerFile(p);
-		MinecraftMMO.getInstance().getPlayerHandler().addQuestItem(p);
+		MinecraftMMO.getInstance().getPlayerHandler().giveBasicItems(p);
 		p.sendMessage("You have selected the class: " + npc.getDisplayName());
 		MinecraftMMO.getInstance().getPlayerHandler().getPlayer(p).updateNPCQuests();
 	}

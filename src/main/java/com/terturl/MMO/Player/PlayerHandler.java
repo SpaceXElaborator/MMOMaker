@@ -57,11 +57,6 @@ public class PlayerHandler {
 		return players.stream().filter(e -> e.getProjectileMapping().containsKey(p.getUniqueId())).findFirst().orElse(null);
 	}
 	
-	public void addQuestItem(Player p) {
-		p.getInventory().setItem(8, new ItemStack(Material.COMPASS));
-		p.updateInventory();
-	}
-	
 	public boolean PlayerExists(Player p) {
 		File f = new File(playersFolder, p.getUniqueId() + ".json");
 		if(f.exists()) return true;

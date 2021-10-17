@@ -32,6 +32,10 @@ public class JsonFileInterpretter {
 		}
 	}
 	
+	public JSONObject getBase() {
+		return json;
+	}
+	
 	public Boolean contains(String key) {
 		return json.containsKey(key);
 	}

@@ -14,10 +14,6 @@ public class CustomArmor extends CustomItem {
 	@Getter
 	@Setter
 	private Color color;
-	
-	//@Getter
-	//@Setter
-	//private boolean ranged = false;
 
 	public CustomArmor(String name, Material mat, Integer itemDamage, Integer level, Rarity rarity, SlotType st) {
 		super(name, mat, itemDamage, level, rarity);

@@ -199,10 +199,8 @@ public class ClassHandler {
 			p.getInventory().setLeggings(cim.getCustomItems().get(mc.getStartItems().get(SlotType.LEGS)).makeItem());
 			p.getInventory().setHelmet(cim.getCustomItems().get(mc.getStartItems().get(SlotType.HELMET)).makeItem());
 			p.getInventory().setItemInOffHand(cim.getCustomItems().get(mc.getStartItems().get(SlotType.OFF_HAND)).makeItem());
-			
 			p.getInventory().setItem(0, cim.getCustomItems().get(mc.getStartItems().get(SlotType.MAIN_HAND)).makeItem());
 			p.getInventory().setItem(1, cim.getCustomItems().get(mc.getStartItems().get(SlotType.OFF_HAND)).makeItem());
-			
 			p.updateInventory();
 		}
 	}
