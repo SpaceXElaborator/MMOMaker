@@ -36,6 +36,10 @@ public class JsonFileInterpretter {
 		json = jo;
 	}
 	
+	public Object get(String key) {
+		return json.get(key);
+	}
+	
 	public JSONObject getBase() {
 		return json;
 	}

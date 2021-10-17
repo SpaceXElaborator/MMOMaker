@@ -10,6 +10,7 @@ import org.json.simple.JSONObject;
 import com.terturl.MMO.MinecraftMMO;
 import com.terturl.MMO.MMOEntity.BlockBenchObjects.BBOCube;
 import com.terturl.MMO.MMOEntity.BlockBenchObjects.BBOFace;
+import com.terturl.MMO.MMOEntity.BlockBenchObjects.BBOOutliner;
 import com.terturl.MMO.Util.JsonFileInterpretter;
 
 import net.md_5.bungee.api.ChatColor;
@@ -47,6 +48,47 @@ public class MobFileReader {
 				bbf.getElements().add(cube);
 			}
 		}
+		
+		if(mobFile.contains("outliner")) {
+			JSONArray ja = mobFile.getArray("outliner");
+			for(Object elements : ja) {
+				JSONObject element = (JSONObject)elements;
+				addOutliners(null, element, bbf);
+			}
+		}
+		
+	}
+	
+	private void addOutliners(String parent, JSONObject jo, BlockBenchFile bbf) {
+		JsonFileInterpretter element = new JsonFileInterpretter(jo);
+		BBOOutliner outliner = new BBOOutliner();
+		outliner.setName(element.getString("name"));
+		outliner.setUuid(UUID.fromString(element.getString("uuid")));
+		
+		if(element.contains("origin")) {
+			JSONArray origin = element.getArray("origin");
+			outliner.setOrigin(Double.valueOf(origin.get(0).toString()), Double.valueOf(origin.get(1).toString()), Double.valueOf(origin.get(2).toString()));
+		}
+		
+		if(element.contains("rotation")) {
+			JSONArray rotation = element.getArray("rotation");
+			outliner.setRotation(Double.valueOf(rotation.get(0).toString()), Double.valueOf(rotation.get(1).toString()), Double.valueOf(rotation.get(2).toString()));
+		}
+		
+		if(element.contains("children")) {
+			JSONArray children = element.getArray("children");
+			for(Object o : children) {
+				if(o instanceof JSONObject) {
+					JSONObject jo2 = (JSONObject)o;
+					addOutliners(outliner.getName(), jo2, bbf);
+					continue;
+				}
+				String uuid = o.toString();
+				outliner.getChildren().add(UUID.fromString(uuid));
+			}
+		}
+		
+		bbf.getOutliner().add(outliner);
 	}
 	
 	private BBOCube createCube(JSONObject jo) {
@@ -86,7 +128,7 @@ public class MobFileReader {
 		JsonFileInterpretter f = new JsonFileInterpretter(jo);
 		JSONArray uv = f.getArray("uv");
 		face.setUV(Double.parseDouble(uv.get(0).toString()), Double.parseDouble(uv.get(1).toString()), Double.parseDouble(uv.get(2).toString()), Double.parseDouble(uv.get(3).toString()));
-		face.setTexture(f.getInt("texture"));
+		face.setTexture((f.get("texture") == null) ? null : f.getInt("texture"));
 		return face;
 	}
 	
