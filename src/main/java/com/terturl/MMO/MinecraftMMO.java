@@ -18,7 +18,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.terturl.MMO.Abilities.AbilityManager;
 import com.terturl.MMO.Commands.TestCommand;
-import com.terturl.MMO.CustomArmorStandMobs.ArmorStandMobController;
 import com.terturl.MMO.Entity.MMOEntityManager;
 import com.terturl.MMO.Entity.NPC.NPCManager;
 import com.terturl.MMO.Files.Configuration;
@@ -71,8 +70,6 @@ public class MinecraftMMO extends JavaPlugin {
 	@Getter
 	private QuestManager questManager;
 	@Getter
-	private ArmorStandMobController mobController;
-	@Getter
 	private ShopManager shopManager;
 	@Getter
 	private RecipeManager recipeManager;
@@ -124,8 +121,6 @@ public class MinecraftMMO extends JavaPlugin {
 		
 		this.getServer().getConsoleSender().sendMessage("Enabling MMO Plugin");
 		registerCommand(new TestCommand());
-		
-		mobController = new ArmorStandMobController();
 		
 		registerListeners();
 	}
