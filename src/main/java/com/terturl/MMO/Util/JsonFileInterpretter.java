@@ -32,6 +32,10 @@ public class JsonFileInterpretter {
 		}
 	}
 	
+	public JsonFileInterpretter(JSONObject jo) {
+		json = jo;
+	}
+	
 	public JSONObject getBase() {
 		return json;
 	}
