@@ -18,8 +18,10 @@ import com.terturl.MMO.MMOEntity.ResourcePack.Elements.Rotation;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import net.md_5.bungee.api.ChatColor;
 
+@ToString
 public class MMOMobEntity {
 
 	@Getter
@@ -55,6 +57,10 @@ public class MMOMobEntity {
 			if(bone == null) continue;
 			bones.put(outliner.getName().toLowerCase(), bone);
 		}
+		bones.values().forEach(bone -> {
+			bone.setRelativeOffset(new Double[] { 0.0D, 0.0D, 0.0D });
+			bone.updateChildren();
+		});
 	}
 	
 	private BBOBone createBone(String parent, BBOOutliner outliner) {

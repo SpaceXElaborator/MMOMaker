@@ -7,6 +7,7 @@ import java.util.TreeMap;
 
 import javax.imageio.ImageIO;
 
+import org.bukkit.Bukkit;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -21,6 +22,7 @@ import com.terturl.MMO.MMOEntity.ResourcePack.Elements.RPPredicate;
 import com.terturl.MMO.Util.JSONHelpers.ResourcePackJSON;
 
 import lombok.Getter;
+import net.md_5.bungee.api.ChatColor;
 
 public class ResourcePackGenerator {
 
@@ -69,7 +71,7 @@ public class ResourcePackGenerator {
 		for(MobBoneFile mbf : mob.getBoneFiles()) {
 			generateMobFile(mbf, f);
 		}
-		
+		Bukkit.getConsoleSender().sendMessage(ChatColor.BLUE + mob.toString());
 		updateTexturePack(mob);
 	}
 	

@@ -12,6 +12,7 @@ import com.terturl.MMO.Commands.Debug.ShopCommand;
 import com.terturl.MMO.Commands.Debug.SpawnClass;
 import com.terturl.MMO.Commands.Debug.SpawnItem;
 import com.terturl.MMO.Commands.Debug.SpawnMMOEntity;
+import com.terturl.MMO.Commands.Debug.SpawnMob;
 import com.terturl.MMO.Commands.Debug.SpawnSkull;
 import com.terturl.MMO.Commands.Debug.TestParticles;
 import com.terturl.MMO.Commands.Debug.UseAbility;
@@ -23,7 +24,7 @@ public class TestCommand extends CraftCommand {
 		super("mmo-test");
 		addSubCommand(new SpawnClass(), new RemoveClass(), new SpawnItem(), new SpawnSkull(),
 				new TestParticles(), new UseAbility(), new ShowItems(), new ShowAbilities(), new ShopCommand(),
-				new Crafting(), new SpawnMMOEntity(), new GetRecipe(), new GetSkill());
+				new Crafting(), new SpawnMMOEntity(), new GetRecipe(), new GetSkill(), new SpawnMob());
 	}
 
 	public void handleCommand(Player p, String[] args) {
