@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -16,6 +17,7 @@ import com.terturl.MMO.Util.Items.CustomItem;
 import com.terturl.MMO.Util.Items.CustomItemManager;
 
 import lombok.Getter;
+import net.md_5.bungee.api.ChatColor;
 
 public class RecipeManager {
 
@@ -26,6 +28,7 @@ public class RecipeManager {
 	private File warnings;
 	
 	public RecipeManager() throws IOException {
+		Bukkit.getConsoleSender().sendMessage(ChatColor.BLUE + "[MMO-RPG] Registering Recipes...");
 		File skillsDir = new File(MinecraftMMO.getInstance().getDataFolder(), "skills");
 		if(!skillsDir.exists()) skillsDir.mkdir();
 		
@@ -64,6 +67,7 @@ public class RecipeManager {
 				}
 			}
 		}
+		Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "[MMO-RPG] Done");
 	}
 	
 	public void addRecipe(MMORecipe mr) {

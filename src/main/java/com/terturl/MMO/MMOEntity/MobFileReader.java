@@ -17,6 +17,7 @@ import net.md_5.bungee.api.ChatColor;
 public class MobFileReader {
 
 	public MobFileReader() {
+		Bukkit.getConsoleSender().sendMessage(ChatColor.BLUE + "[MMO-RPG] Registering Mobs...");
 		File f = new File(MinecraftMMO.getInstance().getDataFolder(), "mmo-entity");
 		if(!f.exists()) f.mkdir();
 		File[] files = f.listFiles();
@@ -27,6 +28,7 @@ public class MobFileReader {
 				}
 			}
 		}
+		Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "[MMO-RPG] Done");
 	}
 	
 	private void generateMob(File f) {

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Particle;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -40,6 +41,7 @@ public class AbilityManager {
 	private Map<String, Ability> abilities = new HashMap<String, Ability>();
 	
 	public AbilityManager() {
+		Bukkit.getConsoleSender().sendMessage(ChatColor.BLUE + "[MMO-RPG] Registering Abilities...");
 		File abDir = new File(MinecraftMMO.getInstance().getDataFolder(), "abilities");
 		if(!abDir.exists()) abDir.mkdir();
 		for(File f : abDir.listFiles()) {
@@ -66,6 +68,7 @@ public class AbilityManager {
 				abilities.put(name, a);
 			}
 		}
+		Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "[MMO-RPG] Done");
 	}
 	
 	@SuppressWarnings("unchecked")

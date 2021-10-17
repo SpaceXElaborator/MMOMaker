@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.json.simple.JSONObject;
 
@@ -20,6 +21,7 @@ import com.terturl.MMO.Util.Items.CustomItem.SlotType;
 import com.terturl.MMO.Util.Items.CustomItemManager;
 
 import lombok.Getter;
+import net.md_5.bungee.api.ChatColor;
 
 public class ClassHandler {
 
@@ -32,6 +34,7 @@ public class ClassHandler {
 	private File warnings;
 	
 	public ClassHandler() {
+		Bukkit.getConsoleSender().sendMessage(ChatColor.BLUE + "[MMO-RPG] Registering Classes...");
 		File classDir = new File(MinecraftMMO.getInstance().getDataFolder(), "classes");
 		if(!classDir.exists()) classDir.mkdir();
 		warnings = new File(classDir, "Warnings.txt");
@@ -83,7 +86,7 @@ public class ClassHandler {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+		Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "[MMO-RPG] Done");
 	}
 	
 	private Boolean checkStarterValues(File f) throws IOException {

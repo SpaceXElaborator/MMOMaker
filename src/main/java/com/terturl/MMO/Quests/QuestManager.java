@@ -7,10 +7,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
+import org.bukkit.Bukkit;
+
 import com.terturl.MMO.MinecraftMMO;
 import com.terturl.MMO.Util.JsonFileInterpretter;
 
 import lombok.Getter;
+import net.md_5.bungee.api.ChatColor;
 
 public class QuestManager {
 
@@ -27,6 +30,7 @@ public class QuestManager {
 	}
 	
 	public void loadQuests() {
+		Bukkit.getConsoleSender().sendMessage(ChatColor.BLUE + "[MMO-RPG] Registering Quests...");
 		for(File f : questDir.listFiles()) {
 			if(f.getName().endsWith(".json")) {
 				Object q = null;
@@ -83,6 +87,7 @@ public class QuestManager {
 				allQuests.add((Quest) q);
 			}
 		}
+		Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "[MMO-RPG] Done");
 	}
 	
 	public void registerQuest(String type, Quest baseClass) {

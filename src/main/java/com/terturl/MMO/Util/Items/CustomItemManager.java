@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
 
@@ -19,6 +20,7 @@ import com.terturl.MMO.Util.Items.CustomItem.SlotType;
 import com.terturl.MMO.Util.Strings.StringUtils;
 
 import lombok.Getter;
+import net.md_5.bungee.api.ChatColor;
 
 public class CustomItemManager {
 
@@ -47,6 +49,7 @@ public class CustomItemManager {
 			Material.LEATHER_LEGGINGS, Material.LEATHER_HELMET };
 
 	public CustomItemManager() throws IOException {
+		Bukkit.getConsoleSender().sendMessage(ChatColor.BLUE + "[MMO-RPG] Registering Items...");
 		customItems.put("MMO_ITEM_EMPTY_SLOT_ITEM", new CustomItem("MMO_ITEM_EMPTY_SLOT_ITEM", Material.AIR, 0, 0, Rarity.COMMON));
 
 		List<Material> armor = new ArrayList<>();
@@ -192,6 +195,7 @@ public class CustomItemManager {
 				}
 			}
 		}
+		Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "[MMO-RPG] Done");
 	}
 
 	public CustomItem getItem(String name) {

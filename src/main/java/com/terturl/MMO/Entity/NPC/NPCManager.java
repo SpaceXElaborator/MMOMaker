@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
 import com.google.common.base.Objects;
@@ -16,6 +17,7 @@ import com.terturl.MMO.Util.JsonFileInterpretter;
 import com.terturl.MMO.Util.JSONHelpers.LocationUtils;
 
 import lombok.Getter;
+import net.md_5.bungee.api.ChatColor;
 
 public class NPCManager {
 	
@@ -28,6 +30,7 @@ public class NPCManager {
 	private Map<String, String> npcSkin = new HashMap<>();
 	
 	public NPCManager() {
+		Bukkit.getConsoleSender().sendMessage(ChatColor.BLUE + "[MMO-RPG] Registering NPCs...");
 		File npcDir = new File(MinecraftMMO.getInstance().getDataFolder(), "npcs");
 		if(!npcDir.exists()) npcDir.mkdir();
 		for(File f : npcDir.listFiles()) {
@@ -53,6 +56,7 @@ public class NPCManager {
 				npcs.add(npc);
 			}
 		}
+		Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "[MMO-RPG] Done...");
 	}
 	
 	public NPC findNpcWithQuest(Quest q) {
