@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.terturl.MMO.MMOEntity.BlockBenchObjects.BBOCube;
 import com.terturl.MMO.MMOEntity.BlockBenchObjects.BBOOutliner;
+import com.terturl.MMO.MMOEntity.BlockBenchObjects.BBOTexture;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -24,5 +25,8 @@ public class BlockBenchFile {
 	
 	@Getter
 	private List<BBOOutliner> outliner = new ArrayList<>();
+	
+	@Getter
+	private List<BBOTexture> textures = new ArrayList<>();
 	
 }

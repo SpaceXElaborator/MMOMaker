@@ -6,11 +6,16 @@ import java.util.UUID;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
+@ToString
 public class BBOOutliner {
 
 	@Getter @Setter
 	private String name;
+	
+	@Getter @Setter
+	private String parent;
 	
 	@Getter
 	private double[] origin = new double[] {0.0D, 0.0D, 0.0D};

@@ -11,6 +11,8 @@ import com.terturl.MMO.MinecraftMMO;
 import com.terturl.MMO.MMOEntity.BlockBenchObjects.BBOCube;
 import com.terturl.MMO.MMOEntity.BlockBenchObjects.BBOFace;
 import com.terturl.MMO.MMOEntity.BlockBenchObjects.BBOOutliner;
+import com.terturl.MMO.MMOEntity.BlockBenchObjects.BBOTexture;
+import com.terturl.MMO.Util.ImageCreator;
 import com.terturl.MMO.Util.JsonFileInterpretter;
 
 import net.md_5.bungee.api.ChatColor;
@@ -57,6 +59,25 @@ public class MobFileReader {
 			}
 		}
 		
+		if(mobFile.contains("textures")) {
+			JSONArray ja = mobFile.getArray("textures");
+			for(Object elements : ja) {
+				JSONObject element = (JSONObject)elements;
+				bbf.getTextures().add(createTexture(element));
+			}
+		}
+		
+		Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + bbf.toString());
+	}
+	
+	private BBOTexture createTexture(JSONObject jo) {
+		JsonFileInterpretter element = new JsonFileInterpretter(jo);
+		BBOTexture texture = new BBOTexture();
+		texture.setName(element.getString("name"));
+		texture.setUuid(UUID.fromString(element.getString("uuid")));
+		texture.setTexture(ImageCreator.fromString(element.getString("source")));
+		texture.setId(element.getInt("id"));
+		return texture;
 	}
 	
 	private void addOutliners(String parent, JSONObject jo, BlockBenchFile bbf) {
@@ -64,6 +85,7 @@ public class MobFileReader {
 		BBOOutliner outliner = new BBOOutliner();
 		outliner.setName(element.getString("name"));
 		outliner.setUuid(UUID.fromString(element.getString("uuid")));
+		outliner.setParent(parent);
 		
 		if(element.contains("origin")) {
 			JSONArray origin = element.getArray("origin");

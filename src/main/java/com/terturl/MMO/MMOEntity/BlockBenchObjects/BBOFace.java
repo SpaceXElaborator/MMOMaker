@@ -2,7 +2,9 @@ package com.terturl.MMO.MMOEntity.BlockBenchObjects;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
+@ToString
 public class BBOFace {
 
 	private double[] uv = new double[4];
