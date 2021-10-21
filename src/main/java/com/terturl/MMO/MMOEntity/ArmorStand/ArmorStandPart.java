@@ -106,6 +106,10 @@ public class ArmorStandPart {
 		stand.setMeta(itemModel);
 	}
 	
+	public void rotate(Float yaw, Float pitch) {
+		stand.rotateHead(yaw, pitch);
+	}
+	
 	public void showModel(Player p) {
 		stand.spawn(p);
 		for(ArmorStandPart asp : children) {

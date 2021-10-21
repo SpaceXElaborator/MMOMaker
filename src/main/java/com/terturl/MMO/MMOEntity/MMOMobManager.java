@@ -23,8 +23,10 @@ public class MMOMobManager {
 		Bukkit.getScheduler().scheduleSyncRepeatingTask(MinecraftMMO.getInstance(), new Runnable() {
 			@Override
 			public void run() {
-				for(MMOMob m : aliveMobs) {
-					m.tick();
+				if(!aliveMobs.isEmpty()) {
+					for(MMOMob m : aliveMobs) {
+						m.tick();
+					}
 				}
 			}
 		}, 0, 1L);

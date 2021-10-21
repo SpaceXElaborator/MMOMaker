@@ -39,9 +39,6 @@ public class MMOMob {
 	@Getter @Setter
 	private Location location;
 	
-	@Getter @Setter
-	private Double headAngle = 0.0D;
-	
 	public MMOMob(String s, MMOMobEntity entity) {
 		entityName = s;
 		uuid = UUID.randomUUID();
@@ -54,10 +51,9 @@ public class MMOMob {
 	public void tick() {
 		Player p = getClosestPlayer(10.0, 10.0, 10.0);
 		if(p != null) {
-			ArmorStandPart asp = parts.stream().filter(e -> e.isHead() == true).findFirst().orElse(null);
+			ArmorStandPart asp = getHead();
 			if(asp != null) {
-				// TODO: Need to figure out the math for the head rotation to get the nearest Player and look at it when walking aroud.
-				asp.getStand().getEnt().setHeadRotation(0);
+				lookAtPlayer(p, asp);
 			}
 		}
 		// TODO: Start working on entity AI. When will it move? When will it target a player? Does it even target a player? How does the walking animation player? Things like that
@@ -76,7 +72,7 @@ public class MMOMob {
 		List<Entity> nearby = getNearEntities(x, y, z);
 		List<Entity> nearbyP = nearby.stream().filter(e -> e instanceof Player).collect(Collectors.toList());
 		if(nearbyP.size() <= 0) return null;
-		Entity p = null;
+		Entity p = nearbyP.get(0);
 		for(Entity e2 : nearbyP) {
 			if(e2.getLocation().distanceSquared(location) < p.getLocation().distanceSquared(location)) {
 				p = e2;
@@ -130,6 +126,34 @@ public class MMOMob {
 				parts.add(part);
 			}
 		});
+	}
+	
+	private ArmorStandPart getHead() {
+		for(ArmorStandPart asp : parts) {
+			if(!asp.isHead()) {
+				return checkChildren(asp);
+			}
+			return asp;
+		}
+		return null;
+	}
+	
+	private ArmorStandPart checkChildren(ArmorStandPart asp) {
+		for(ArmorStandPart child : asp.getChildren()) {
+			if(child.isHead()) return child;
+		}
+		return null;
+	}
+	
+	private void lookAtPlayer(Player e, ArmorStandPart asp) {
+		Location eyeLocation = location.add(0, asp.getLocalPosition().getY(), 0);
+		Location loc = e.getEyeLocation();
+		float yaw = (float) Math.toDegrees(Math.atan2(loc.getZ() - eyeLocation.getZ(), loc.getX()-eyeLocation.getX())) - 90;
+        yaw = (float) (yaw + Math.ceil( -yaw / 360 ) * 360);
+        float deltaXZ = (float) Math.sqrt(Math.pow(eyeLocation.getX()-loc.getX(), 2) + Math.pow(eyeLocation.getZ()-loc.getZ(), 2));
+        float pitch = (float) Math.toDegrees(Math.atan2(deltaXZ, loc.getY()-eyeLocation.getY())) - 90;
+        pitch = (float) (pitch + Math.ceil( -pitch / 360 ) * 360);
+		asp.rotate(yaw, pitch);
 	}
 	
 }
