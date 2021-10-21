@@ -9,6 +9,7 @@ import java.util.TreeMap;
 
 import javax.imageio.ImageIO;
 
+import org.bukkit.Bukkit;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -59,8 +60,8 @@ public class ResourcePackGenerator {
 	}
 	
 	public void addMob(BlockBenchFile bbf) {
-		MMOMobEntity mob = new MMOMobEntity(bbf);
-		
+		MMOMobEntity mob = new MMOMobEntity(bbf.getName(), bbf);
+		Bukkit.getConsoleSender().sendMessage(mob.getName());
 		File f = new File(mobModels, mob.getBbf().getName().toLowerCase());
 		f.mkdir();
 		
@@ -72,7 +73,7 @@ public class ResourcePackGenerator {
 			generateMobFile(mbf, f);
 		}
 		updateTexturePack(mob);
-		MinecraftMMO.getInstance().getMobManager().registerMob(mob);
+		MinecraftMMO.getInstance().getMobManager().registerMobEntity(mob);
 	}
 	
 	private void writeTextureFile(BBOTexture tex) {

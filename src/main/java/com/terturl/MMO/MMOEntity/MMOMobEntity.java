@@ -39,6 +39,9 @@ public class MMOMobEntity {
 	@Getter @Setter
 	private Double eyeHeight = 0.0D;
 	
+	@Getter @Setter
+	private String name;
+	
 	@Getter
 	private BlockBenchFile bbf;
 	
@@ -51,8 +54,9 @@ public class MMOMobEntity {
 	@Getter @Setter
 	private Map<String, Integer> textureMapping = new HashMap<>();
 	
-	public MMOMobEntity(BlockBenchFile block) {
+	public MMOMobEntity(String n, BlockBenchFile block) {
 		bbf = block;
+		name = n;
 		resWidth = block.getWidth();
 		resHeight = block.getHeight();
 		for(BBOOutliner outliner : block.getOutliner()) {

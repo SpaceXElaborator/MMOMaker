@@ -18,6 +18,7 @@ import com.mojang.datafixers.util.Pair;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.md_5.bungee.api.ChatColor;
 import net.minecraft.core.Vector3f;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -95,6 +96,8 @@ public class MMOMobArmorStand {
 		im.setCustomModelData(i);
 		item.setItemMeta(im);
 		setSlot(EnumItemSlot.f, CraftItemStack.asNMSCopy(item));
+		Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + part.getPartId());
+		Bukkit.getConsoleSender().sendMessage(ChatColor.BLUE + String.valueOf(i));
 		PacketPlayOutEntityEquipment p1 = new PacketPlayOutEntityEquipment(ent.getId(), items);
 		for(Player p : Bukkit.getOnlinePlayers()) {
 			sendPackets(p, p1);
