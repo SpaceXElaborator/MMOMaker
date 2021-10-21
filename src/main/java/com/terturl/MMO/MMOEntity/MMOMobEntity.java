@@ -48,6 +48,9 @@ public class MMOMobEntity {
 	@Getter
 	private List<MobBoneFile> boneFiles = new ArrayList<>();
 	
+	@Getter @Setter
+	private Map<String, Integer> textureMapping = new HashMap<>();
+	
 	public MMOMobEntity(BlockBenchFile block) {
 		bbf = block;
 		resWidth = block.getWidth();
@@ -83,10 +86,17 @@ public class MMOMobEntity {
 		}
 		MobBoneFile mbf = new MobBoneFile(this, outliner.getName().toLowerCase());
 		for(UUID uuid : outliner.getChildren()) {
-			BBOCube cube = bbf.findCubeByUUID(uuid);
-			Cube c = createCube(cube, outliner);
-			mbf.getElements().add(c);
-			hasCube = true;
+			if(bbf.isOutliner(uuid)) {
+				BBOOutliner bChild = bbf.findOutlinerByUUID(uuid);
+				BBOBone b = createBone(outliner.getName(), bChild);
+				b.setRelativeOffset(new Double[] {outliner.getOrigin()[0], outliner.getOrigin()[1], outliner.getOrigin()[2]});
+				bone.addChild(bChild.getName(), b);
+			} else {
+				BBOCube cube = bbf.findCubeByUUID(uuid);
+				Cube c = createCube(cube, outliner);
+				mbf.getElements().add(c);
+				hasCube = true;
+			}
 		}
 		
 		if(hasCube) {

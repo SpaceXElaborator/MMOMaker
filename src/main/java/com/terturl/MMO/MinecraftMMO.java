@@ -24,6 +24,7 @@ import com.terturl.MMO.Files.Configuration;
 import com.terturl.MMO.Files.MathConfiguration;
 import com.terturl.MMO.Framework.CommandMeta;
 import com.terturl.MMO.Framework.CraftCommand;
+import com.terturl.MMO.MMOEntity.MMOMobManager;
 import com.terturl.MMO.MMOEntity.MobFileReader;
 import com.terturl.MMO.Player.PlayerHandler;
 import com.terturl.MMO.Player.MMOClasses.ClassHandler;
@@ -79,6 +80,8 @@ public class MinecraftMMO extends JavaPlugin {
 	
 	@Getter
 	private MobFileReader mobReader;
+	@Getter
+	private MMOMobManager mobManager;
 	
 	// Skills
 	@Getter
@@ -112,6 +115,7 @@ public class MinecraftMMO extends JavaPlugin {
 		playerHandler = new PlayerHandler();
 		mmoConfiguration = new Configuration();
 		
+		mobManager = new MMOMobManager();
 		mobReader = new MobFileReader();
 		
 		shopManager = new ShopManager();

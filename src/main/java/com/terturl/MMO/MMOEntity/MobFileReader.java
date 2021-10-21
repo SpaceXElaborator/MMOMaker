@@ -67,7 +67,8 @@ public class MobFileReader {
 			JSONArray ja = mobFile.getArray("outliner");
 			for(Object elements : ja) {
 				JSONObject element = (JSONObject)elements;
-				addOutliners(null, element, bbf);
+				BBOOutliner outliner = addOutliners(null, element, bbf);
+				bbf.getOutliner().add(outliner);
 			}
 		}
 		
@@ -91,7 +92,7 @@ public class MobFileReader {
 		return texture;
 	}
 	
-	private void addOutliners(String parent, JSONObject jo, BlockBenchFile bbf) {
+	private BBOOutliner addOutliners(String parent, JSONObject jo, BlockBenchFile bbf) {
 		JsonFileInterpretter element = new JsonFileInterpretter(jo);
 		BBOOutliner outliner = new BBOOutliner();
 		
@@ -114,14 +115,17 @@ public class MobFileReader {
 			for(Object o : children) {
 				if(o instanceof JSONObject) {
 					JSONObject jo2 = (JSONObject)o;
-					addOutliners(outliner.getName(), jo2, bbf);
+					BBOOutliner outliner2 = addOutliners(outliner.getName(), jo2, bbf);
+					bbf.getOutliner().add(outliner2);
+					outliner.getChildren().add(outliner2.getUuid());
 					continue;
 				}
 				String uuid = o.toString();
 				outliner.getChildren().add(UUID.fromString(uuid));
 			}
 		}
-		bbf.getOutliner().add(outliner);
+		
+		return outliner;
 	}
 	
 	private BBOCube createCube(JSONObject jo) {

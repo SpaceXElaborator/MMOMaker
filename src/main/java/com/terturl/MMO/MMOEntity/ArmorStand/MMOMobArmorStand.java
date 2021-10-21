@@ -35,8 +35,9 @@ import net.minecraft.world.level.World;
 
 public class MMOMobArmorStand {
 
-	private static List<Pair<EnumItemSlot, net.minecraft.world.item.ItemStack>> items = new ArrayList<>();
+	private List<Pair<EnumItemSlot, net.minecraft.world.item.ItemStack>> items = new ArrayList<>();
 	
+	@Getter
 	private EntityArmorStand ent;
 	private ItemStack item = new ItemStack(Material.SADDLE);
 	
@@ -89,12 +90,9 @@ public class MMOMobArmorStand {
 		}
 	}
 	
-	public void setItem(ItemStack i) {
-		item = i;
-		setMeta(i.getItemMeta());
-	}
-	
-	public void setMeta(ItemMeta im) {
+	public void setMeta(Integer i) {
+		ItemMeta im = item.getItemMeta();
+		im.setCustomModelData(i);
 		item.setItemMeta(im);
 		setSlot(EnumItemSlot.f, CraftItemStack.asNMSCopy(item));
 		PacketPlayOutEntityEquipment p1 = new PacketPlayOutEntityEquipment(ent.getId(), items);
@@ -110,7 +108,7 @@ public class MMOMobArmorStand {
 		PacketPlayOutUpdateAttributes p4 = new PacketPlayOutUpdateAttributes(ent.getId(), ent.getAttributeMap().b());
 		if(getItemVisible()) {
 			PacketPlayOutEntityEquipment p5 = new PacketPlayOutEntityEquipment(ent.getId(), items);
-			sendPackets(p, p1, p2, p3, p4, p5);
+			sendPackets(p, p1, p2, p3, p5, p4);
 		} else {
 			sendPackets(p, p1, p2, p3, p4);
 		}

@@ -11,7 +11,7 @@ import lombok.ToString;
 public class BBOBone {
 
 	@Getter @Setter
-	private String parent;
+	private String parent = "";
 	
 	@Getter
 	private Double[] globalOffset = new Double[3];

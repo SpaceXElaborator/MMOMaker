@@ -3,11 +3,12 @@ package com.terturl.MMO.MMOEntity.ResourcePack;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.TreeMap;
 
 import javax.imageio.ImageIO;
 
-import org.bukkit.Bukkit;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -22,7 +23,6 @@ import com.terturl.MMO.MMOEntity.ResourcePack.Elements.RPPredicate;
 import com.terturl.MMO.Util.JSONHelpers.ResourcePackJSON;
 
 import lombok.Getter;
-import net.md_5.bungee.api.ChatColor;
 
 public class ResourcePackGenerator {
 
@@ -71,8 +71,8 @@ public class ResourcePackGenerator {
 		for(MobBoneFile mbf : mob.getBoneFiles()) {
 			generateMobFile(mbf, f);
 		}
-		Bukkit.getConsoleSender().sendMessage(ChatColor.BLUE + mob.toString());
 		updateTexturePack(mob);
+		MinecraftMMO.getInstance().getMobManager().registerMob(mob);
 	}
 	
 	private void writeTextureFile(BBOTexture tex) {
@@ -119,9 +119,12 @@ public class ResourcePackGenerator {
 	}
 	
 	public void updateTexturePack(MMOMobEntity mfr) {
+		Map<String, Integer> partTextureId = new HashMap<>(); 
 		mfr.getBones().forEach((k, v) -> {
 			item.addOverride(mfr.getBbf().getName(), k);
+			partTextureId.put(k.toLowerCase(), item.getData());
 		});
+		mfr.setTextureMapping(partTextureId);
 	}
 	
 	@SuppressWarnings("unchecked")

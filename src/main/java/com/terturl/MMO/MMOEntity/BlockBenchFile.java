@@ -40,4 +40,15 @@ public class BlockBenchFile {
 		return elements.stream().filter(e -> e.getUuid().equals(uuid)).findFirst().orElse(null);
 	}
 	
+	public BBOOutliner findOutlinerByUUID(UUID uuid) {
+		return outliner.stream().filter(e -> e.getUuid().equals(uuid)).findFirst().orElse(null);
+	}
+	
+	public boolean isOutliner(UUID uuid) {
+		for(BBOOutliner outliner : outliner) {
+			if(outliner.getUuid().equals(uuid)) return true;
+		}
+		return false;
+	}
+	
 }
