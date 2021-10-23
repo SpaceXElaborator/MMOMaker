@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.terturl.MMO.MMOEntity.Animation.Animation;
 import com.terturl.MMO.MMOEntity.BlockBenchObjects.BBOCube;
 import com.terturl.MMO.MMOEntity.BlockBenchObjects.BBOOutliner;
 import com.terturl.MMO.MMOEntity.BlockBenchObjects.BBOTexture;
@@ -35,6 +36,9 @@ public class BlockBenchFile {
 	
 	@Getter
 	private List<BBOTexture> textures = new ArrayList<>();
+	
+	@Getter
+	private List<Animation> animations = new ArrayList<>();
 	
 	public BBOCube findCubeByUUID(UUID uuid) {
 		return elements.stream().filter(e -> e.getUuid().equals(uuid)).findFirst().orElse(null);

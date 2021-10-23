@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 
+import com.terturl.MMO.MMOEntity.Animation.Animation;
 import com.terturl.MMO.MMOEntity.BlockBenchObjects.BBOBone;
 import com.terturl.MMO.MMOEntity.BlockBenchObjects.BBOCube;
 import com.terturl.MMO.MMOEntity.BlockBenchObjects.BBOOutliner;
@@ -51,6 +52,9 @@ public class MMOMobEntity {
 	@Getter
 	private List<MobBoneFile> boneFiles = new ArrayList<>();
 	
+	@Getter 
+	private List<Animation> animations = new ArrayList<>();
+	
 	@Getter @Setter
 	private Map<String, Integer> textureMapping = new HashMap<>();
 	
@@ -68,6 +72,9 @@ public class MMOMobEntity {
 			bone.setRelativeOffset(new Double[] { 0.0D, 0.0D, 0.0D });
 			bone.updateChildren();
 		});
+		for(Animation a : block.getAnimations()) {
+			animations.add(a);
+		}
 	}
 	
 	private BBOBone createBone(String parent, BBOOutliner outliner) {

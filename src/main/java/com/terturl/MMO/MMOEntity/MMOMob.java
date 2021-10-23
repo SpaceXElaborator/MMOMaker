@@ -13,6 +13,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
 
+import com.terturl.MMO.MMOEntity.Animation.Animation;
+import com.terturl.MMO.MMOEntity.Animation.AnimationManager;
 import com.terturl.MMO.MMOEntity.ArmorStand.ArmorStandPart;
 import com.terturl.MMO.MMOEntity.BlockBenchObjects.BBOBone;
 
@@ -39,6 +41,9 @@ public class MMOMob {
 	@Getter @Setter
 	private Location location;
 	
+	@Getter @Setter
+	private AnimationManager walkingAnimation;
+	
 	public MMOMob(String s, MMOMobEntity entity) {
 		entityName = s;
 		uuid = UUID.randomUUID();
@@ -46,6 +51,10 @@ public class MMOMob {
 			bones.put(k, v);
 		});
 		textureIds = entity.getTextureMapping();
+		Animation animWalking = entity.getAnimations().stream().filter(e -> e.getName().equalsIgnoreCase("walking")).findFirst().orElse(null);
+		if(animWalking != null) {
+			walkingAnimation = new AnimationManager(this, animWalking);
+		}
 	}
 	
 	public void tick() {
@@ -56,6 +65,10 @@ public class MMOMob {
 				lookAtPlayer(p, asp);
 			}
 		}
+		if(walkingAnimation != null) {
+			walkingAnimation.tick();
+		}
+		for(ArmorStandPart part : parts) part.update();
 		// TODO: Start working on entity AI. When will it move? When will it target a player? Does it even target a player? How does the walking animation player? Things like that
 	}
 	
@@ -92,6 +105,28 @@ public class MMOMob {
 			}
 		}
 		return e;
+	}
+	
+	public ArmorStandPart getArmorStandPart(String s) {
+		ArmorStandPart part = null;
+		for(ArmorStandPart asp : parts) {
+			if(asp.getPartId().equalsIgnoreCase(s)) {
+				part = asp;
+				break;
+			}
+			part = getArmorStandPartChild(asp, s);
+			if(part != null) break;
+		}
+		return part;
+	}
+	
+	private ArmorStandPart getArmorStandPartChild(ArmorStandPart part, String s) {
+		for(ArmorStandPart parts : part.getChildren()) {
+			if(parts.getPartId().equalsIgnoreCase(s)) {
+				return parts;
+			}
+		}
+		return null;
 	}
 	
 	public void spawnEntity(Player p) {

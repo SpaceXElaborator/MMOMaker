@@ -19,6 +19,7 @@ import com.mojang.datafixers.util.Pair;
 import io.netty.buffer.Unpooled;
 import lombok.Getter;
 import lombok.Setter;
+import net.md_5.bungee.api.ChatColor;
 import net.minecraft.core.Vector3f;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -91,13 +92,16 @@ public class MMOMobArmorStand {
 
 	public void setRotation(EulerAngle rot) {
 		Vector3f headPose = toNMS(rot);
-		if (ent.cg.equals(headPose))
+		if (ent.cg.equals(headPose)) {
+			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Equals");
 			return;
+		}
 		ent.setHeadPose(headPose);
 		PacketPlayOutEntityMetadata p1 = new PacketPlayOutEntityMetadata(ent.getId(), ent.getDataWatcher(), true);
 		for (Player p : Bukkit.getOnlinePlayers()) {
 			sendPackets(p, p1);
 		}
+		
 	}
 
 	public void setMeta(Integer i) {

@@ -1,6 +1,7 @@
 package com.terturl.MMO.MMOEntity;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -8,11 +9,15 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.terturl.MMO.MinecraftMMO;
+import com.terturl.MMO.MMOEntity.Animation.Animation;
+import com.terturl.MMO.MMOEntity.Animation.Animator;
+import com.terturl.MMO.MMOEntity.Animation.KeyFrame;
 import com.terturl.MMO.MMOEntity.BlockBenchObjects.BBOCube;
 import com.terturl.MMO.MMOEntity.BlockBenchObjects.BBOFace;
 import com.terturl.MMO.MMOEntity.BlockBenchObjects.BBOOutliner;
 import com.terturl.MMO.MMOEntity.BlockBenchObjects.BBOTexture;
 import com.terturl.MMO.MMOEntity.ResourcePack.ResourcePackGenerator;
+import com.terturl.MMO.MMOEntity.ResourcePack.Elements.Rotation;
 import com.terturl.MMO.Util.ImageCreator;
 import com.terturl.MMO.Util.JsonFileInterpretter;
 
@@ -79,6 +84,16 @@ public class MobFileReader {
 				bbf.getTextures().add(createTexture(element));
 			}
 		}
+		
+		if(mobFile.contains("animations")) {
+			JSONArray anims = mobFile.getArray("animations");
+			for(Object elements : anims) {
+				JSONObject animation = (JSONObject)elements;
+				Animation anim = createAnimation(animation);
+				bbf.getAnimations().add(anim);
+			}
+		}
+		
 		rpg.addMob(bbf);
 	}
 	
@@ -167,6 +182,62 @@ public class MobFileReader {
 		face.setUV(Double.parseDouble(uv.get(0).toString()), Double.parseDouble(uv.get(1).toString()), Double.parseDouble(uv.get(2).toString()), Double.parseDouble(uv.get(3).toString()));
 		face.setTexture((f.get("texture") == null) ? null : f.getInt("texture"));
 		return face;
+	}
+	
+	private Animation createAnimation(JSONObject jo) {
+		Animation anim = new Animation();
+		JsonFileInterpretter f = new JsonFileInterpretter(jo);
+		anim.setUuid(UUID.fromString(f.getString("uuid")));
+		anim.setName(f.getString("name").replaceAll("animation.model.", "").toLowerCase());
+		anim.setLoop((f.getString("loop").equalsIgnoreCase("loop")) ? true : false);
+		anim.setIsOverride(f.getBoolean("override"));
+		anim.setLength(new BigDecimal(f.getString("length")));
+		
+		if(f.contains("animators")) {
+			JSONObject animators = f.getObject("animators");
+			for(Object animator : animators.keySet()) {
+				String s = animator.toString();
+				JSONObject animatorInformation = (JSONObject) animators.get(s);
+				Animator an = createAnimator(s, animatorInformation);
+				anim.getFrames().add(an);
+			}
+		}
+		
+		return anim;
+	}
+	
+	private Animator createAnimator(String uuid, JSONObject jo) {
+		Animator anim = new Animator();
+		JsonFileInterpretter f = new JsonFileInterpretter(jo);
+		anim.setPartId(UUID.fromString(uuid));
+		
+		JSONArray keyframes = f.getArray("keyframes");
+		for(Object o : keyframes) {
+			JSONObject keyframe = (JSONObject)o;
+			KeyFrame frame = createKeyFrame(f.getString("name").toLowerCase(), keyframe);
+			anim.getKeyFrames().add(frame);
+		}
+		
+		return anim;
+	}
+	
+	private KeyFrame createKeyFrame(String s, JSONObject jo) {
+		KeyFrame frame = new KeyFrame();
+		JsonFileInterpretter f = new JsonFileInterpretter(jo);
+		
+		frame.setPartName(s);
+		String channel = f.getString("channel");
+		if(!channel.equalsIgnoreCase("rotation")) return null;
+		frame.setTime(new BigDecimal(f.getString("time")));
+		frame.setUuid(UUID.fromString(f.getString("uuid")));
+		JSONArray dataPoints = f.getArray("data_points");
+		JSONObject dataPoint = (JSONObject) dataPoints.get(0);
+		JsonFileInterpretter dataPointF = new JsonFileInterpretter(dataPoint);
+		Rotation rot = new Rotation();
+		rot.setOrigin(dataPointF.getDouble("x"), dataPointF.getDouble("y"), dataPointF.getDouble("z"));
+		frame.setRot(rot);
+		
+		return frame;
 	}
 	
 }

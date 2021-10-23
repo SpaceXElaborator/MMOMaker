@@ -88,7 +88,19 @@ public class ArmorStandPart {
 		itemModel = customI;
 	}
 	
+	public void setPartRotate(EulerAngle ea) {
+//		worldPosition.setYaw(0.0F);
+//		worldRotation = Quaternion.combine(worldRotation, ea);
+		stand.setRotation(ea);
+	}
+	
+	public void update() {
+		worldPosition = mob.getLocation().clone().add(globalPosition);
+		worldRotation = globalRotation;
+	}
+	
 	public void generateASParts(MMOMob me, Map<String, BBOBone> bones) {
+		update();
 		bones.forEach((k, v) -> {
 			Vector pos = new Vector(v.getLocalOffset()[0], v.getLocalOffset()[1], v.getLocalOffset()[2]);
 			EulerAngle rot = new EulerAngle(v.getLocalRotation()[0], v.getLocalRotation()[1], v.getLocalRotation()[2]);

@@ -54,6 +54,19 @@ public class Quaternion {
 		return new EulerAngle(ex, -ey, ez);
 	}
 
+	public static Quaternion multiply(Quaternion a, Quaternion b) {
+		double qax = a.getVec().getX(), qay = a.getVec().getY(), qaz = a.getVec().getZ(), qaw = a.getW();
+		double qbx = b.getVec().getX(), qby = b.getVec().getY(), qbz = b.getVec().getZ(), qbw = b.getW();
+		Vector vec = new Vector(qax * qbw + qaw * qbx + qay * qbz - qaz * qby,
+				qay * qbw + qaw * qby + qaz * qbx - qax * qbz, qaz * qbw + qaw * qbz + qax * qby - qay * qbx);
+		double w = qaw * qbw - qax * qbx - qay * qby - qaz * qbz;
+		return new Quaternion(w, vec);
+	}
+
+	public static EulerAngle combine(EulerAngle origin, EulerAngle delta) {
+		return toEuler(multiply(toQuaternion(origin), toQuaternion(delta)));
+	}
+
 	private static double clamp(double value, double min, double max) {
 		return Math.min(Math.max(value, min), max);
 	}

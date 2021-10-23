@@ -1,5 +1,8 @@
 package com.terturl.MMO.MMOEntity.Animation;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import lombok.Getter;
@@ -17,13 +20,12 @@ public class Animation {
 	private Boolean isOverride;
 	
 	@Getter @Setter
-	private Integer length;
+	private BigDecimal length;
 	
 	@Getter @Setter
-	private String loop;
+	private Boolean loop;
 	
-	public Animation() {
-		
-	}
+	@Getter
+	private List<Animator> frames = new ArrayList<>();
 	
 }

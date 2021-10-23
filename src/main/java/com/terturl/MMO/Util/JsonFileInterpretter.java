@@ -60,6 +60,10 @@ public class JsonFileInterpretter {
 		return Double.parseDouble(json.get(key).toString());
 	}
 	
+	public Float getFloat(String key) {
+		return Float.parseFloat(json.get(key).toString());
+	}
+	
 	public Integer getInt(String key) {
 		return Integer.parseInt(json.get(key).toString());
 	}

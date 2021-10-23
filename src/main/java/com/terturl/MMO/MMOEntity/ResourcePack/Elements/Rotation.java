@@ -2,7 +2,9 @@ package com.terturl.MMO.MMOEntity.ResourcePack.Elements;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
+@ToString
 public class Rotation {
 
 	@Getter @Setter
