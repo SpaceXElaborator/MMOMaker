@@ -3,6 +3,7 @@ package com.terturl.MMO.Effects.EffectTypes;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -12,10 +13,12 @@ import com.terturl.MMO.MinecraftMMO;
 import com.terturl.MMO.Effects.Effect;
 import com.terturl.MMO.Effects.FireProjectile;
 import com.terturl.MMO.Effects.Util.EffectInformation;
+import com.terturl.MMO.Util.ProjectileClassFinder;
 import com.terturl.MMO.Util.SoundInformation;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.md_5.bungee.api.ChatColor;
 
 /**
  * A special kind of effect that fires multiple effects in a cone around the
@@ -75,17 +78,15 @@ public class ConeEffect extends Effect {
 				EffectInformation ei2 = e.getEffectInformation().clone();
 				Player p = ei.getPlayer();
 
-				// TODO: Make this cleaner, ugly to look at and hard to read
 				if (e instanceof FireProjectile) {
 					// If it is a projectile, create a new instance of the projectile and launch it
 					// from the player based on the vector from the arc
 					FireProjectile fp = (FireProjectile) e;
-					Class<? extends Projectile> projToSpawn = null;
-					try {
-						projToSpawn = Class.forName("org.bukkit.entity." + fp.getProjectile())
-								.asSubclass(Projectile.class);
-					} catch (ClassNotFoundException e1) {
-						e1.printStackTrace();
+					Class<? extends Projectile> projToSpawn = ProjectileClassFinder.findProjectile(fp.getProjectile());
+					
+					if(projToSpawn == null) {
+						Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Unable to find Projectile: " + fp.getProjectile());
+						break;
 					}
 					
 					Projectile proj = p.launchProjectile(projToSpawn,
