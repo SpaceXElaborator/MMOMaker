@@ -14,6 +14,7 @@ import lombok.Getter;
  * 
  * @author Sean Rahman
  * @since 0.43.0
+ * @see com.terturl.MMO.Util.Items.CustomItem
  *
  */
 public class MMOItemCraftEvent extends Event implements Cancellable {

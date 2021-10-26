@@ -14,6 +14,7 @@ import lombok.Getter;
  * 
  * @author Sean Rahman
  * @since 0.48.0
+ * @see com.terturl.MMO.Util.Items.CustomItem
  *
  */
 public class PickUpMMOItemEvent extends Event implements Cancellable {

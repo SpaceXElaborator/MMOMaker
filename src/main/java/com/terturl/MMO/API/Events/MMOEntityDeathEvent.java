@@ -10,9 +10,11 @@ import com.terturl.MMO.Entity.MMOEntity;
 import lombok.Getter;
 
 /**
+ * Event to handle when a player kills a named MMOEntity
  * 
  * @author Sean Rahman
  * @since 0.37.0
+ * @see com.terturl.MMO.Entity.MMOEntity
  * 
  */
 public class MMOEntityDeathEvent extends Event implements Cancellable {
