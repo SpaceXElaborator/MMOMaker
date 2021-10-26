@@ -8,6 +8,12 @@ import com.terturl.MMO.MinecraftMMO;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Abstract class that handles almost everything about a skill
+ * @author Sean Rahman
+ * @since 0.32.0
+ *
+ */
 public abstract class Skill implements Cloneable {
 	
 	@Getter
@@ -23,6 +29,12 @@ public abstract class Skill implements Cloneable {
 		skillName = name;
 	}
 	
+	/**
+	 * Uses a string value from MathConfiguration to perform math for the leveling system.
+	 * Allows for finer tuning for others to configure
+	 * @see com.terturl.MMO.Files.MathConfiguration
+	 * @return double
+	 */
 	public double getXPToLevelUp() {
 		Argument CL = new Argument("CL = " + String.valueOf(level));
 		Argument NL = new Argument("NL = " + String.valueOf(level + 1));

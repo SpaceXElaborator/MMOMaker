@@ -8,24 +8,37 @@ import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Java representation of BlockBenches Animation taken from the .bbmodel/.json
+ * file
+ * 
+ * @author Sean Rahman
+ * @since 0.61.0
+ *
+ */
 public class Animation {
 
-	@Getter @Setter
+	@Getter
+	@Setter
 	private UUID uuid;
-	
-	@Getter @Setter
+
+	@Getter
+	@Setter
 	private String name;
-	
-	@Getter @Setter
+
+	@Getter
+	@Setter
 	private Boolean isOverride;
-	
-	@Getter @Setter
+
+	@Getter
+	@Setter
 	private BigDecimal length;
-	
-	@Getter @Setter
+
+	@Getter
+	@Setter
 	private Boolean loop;
-	
+
 	@Getter
 	private List<Animator> frames = new ArrayList<>();
-	
+
 }

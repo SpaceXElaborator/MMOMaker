@@ -15,60 +15,85 @@ import com.terturl.MMO.Util.SoundInformation;
 import lombok.Getter;
 import lombok.Setter;
 
-public class EffectInformation  {
+/**
+ * A helper that to hold information about an Effect to be processed by the
+ * Effect in its creation
+ * 
+ * @author Sean Rahman
+ * @since 0.25.0
+ *
+ */
+public class EffectInformation {
 
 	@Getter
 	private List<Entity> damaged = new ArrayList<>();
-	
-	@Getter @Setter
+
+	@Getter
+	@Setter
 	private List<SoundInformation> sounds = new ArrayList<>();
-	
-	@Getter @Setter
+
+	@Getter
+	@Setter
 	private EffectType type;
-	
-	@Getter @Setter
+
+	@Getter
+	@Setter
 	private LocationType locType;
-	
-	@Getter @Setter
+
+	@Getter
+	@Setter
 	private boolean shove = false;
-	
-	@Getter @Setter
+
+	@Getter
+	@Setter
 	private long delay;
-	
-	@Getter @Setter
+
+	@Getter
+	@Setter
 	private double damage = 0.0;
-	
-	@Getter @Setter
+
+	@Getter
+	@Setter
 	private Location loc;
-	
-	@Getter @Setter
+
+	@Getter
+	@Setter
 	private long every;
-	
-	@Getter @Setter
+
+	@Getter
+	@Setter
 	private int particleAmount;
-	
-	@Getter @Setter
+
+	@Getter
+	@Setter
 	private long duration;
-	
-	@Getter @Setter
+
+	@Getter
+	@Setter
 	private Player player;
-	
-	@Getter @Setter
+
+	@Getter
+	@Setter
 	private Particle particle;
-	
-	@Getter @Setter
+
+	@Getter
+	@Setter
 	private double xOff = 0.0;
-	@Getter @Setter
+	@Getter
+	@Setter
 	private double yOff = 0.0;
-	@Getter @Setter
+	@Getter
+	@Setter
 	private double zOff = 0.0;
-	
-	@Getter @Setter
+
+	@Getter
+	@Setter
 	private double range = 0.0;
-	
-	@Getter @Setter
+
+	@Getter
+	@Setter
 	private int limitTimes;
-	
+
 	public EffectInformation clone() {
 		EffectInformation ei = new EffectInformation();
 		ei.getDamaged().clear();
@@ -92,5 +117,5 @@ public class EffectInformation  {
 		ei.setLimitTimes(ei.getLimitTimes());
 		return ei;
 	}
-	
+
 }

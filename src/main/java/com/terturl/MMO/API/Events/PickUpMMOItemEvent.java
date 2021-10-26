@@ -1,4 +1,4 @@
-package com.terturl.MMO.Util.Events;
+package com.terturl.MMO.API.Events;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -9,41 +9,73 @@ import com.terturl.MMO.Util.Items.CustomItem;
 
 import lombok.Getter;
 
+/**
+ * Listener class to handle when a player picks up CustomItem
+ * 
+ * @author Sean Rahman
+ * @since 0.48.0
+ *
+ */
 public class PickUpMMOItemEvent extends Event implements Cancellable {
 
 	private static final HandlerList HANDLERS = new HandlerList();
 
 	@Getter
 	private final CustomItem customItem;
-	
+
 	@Getter
 	private final Integer amount;
-	
+
 	@Getter
 	private final Player player;
-	
+
 	private Boolean cancelled = false;
 
+	/**
+	 * @param p  The player that picked up the CustomItem
+	 * @param ci The CustomItem the player picked up
+	 * @param a  The amount of the CustomItem the player picked up
+	 */
 	public PickUpMMOItemEvent(Player p, CustomItem ci, Integer a) {
 		player = p;
 		customItem = ci;
 		amount = a;
 	}
 
+	/**
+	 * Required class from Spigot/Bukkit
+	 * 
+	 * @return
+	 */
 	public static HandlerList getHandlerList() {
 		return HANDLERS;
 	}
 
+	/**
+	 * Required class from Spigot/Bukkit
+	 * 
+	 * @return
+	 */
 	@Override
 	public HandlerList getHandlers() {
 		return HANDLERS;
 	}
 
+	/**
+	 * Gets if the event was cancelled for if it should call or not
+	 * 
+	 * @return
+	 */
 	@Override
 	public boolean isCancelled() {
 		return cancelled;
 	}
 
+	/**
+	 * Set the cancelled status of the event
+	 * 
+	 * @param arg0 Boolean to set cancelled to
+	 */
 	@Override
 	public void setCancelled(boolean arg0) {
 		cancelled = arg0;

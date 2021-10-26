@@ -7,9 +7,16 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import com.terturl.MMO.Framework.ClickAction;
 import com.terturl.MMO.Framework.InventoryButton;
 import com.terturl.MMO.Framework.InventoryUI;
 
+/**
+ * Handles the inventory and what will eventually happen when clicking on a ShopItem in the inventory
+ * @author Sean Rahman
+ * @since 0.31.0
+ *
+ */
 public class ShopInventory extends InventoryUI {
 
 	public ShopInventory(Player p, List<ShopItem> itemsForSale) {
@@ -23,7 +30,12 @@ public class ShopInventory extends InventoryUI {
 			im.setLore(lore);
 			is.setItemMeta(im);
 			
-			addButton(new InventoryButton(is) {});
+			addButton(new InventoryButton(is) {
+				@Override
+				public void onPlayerClick(Player p, ClickAction action) {
+					
+				}
+			});
 		}
 		updateInventory();
 	}

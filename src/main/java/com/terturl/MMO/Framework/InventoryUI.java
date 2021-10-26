@@ -1,6 +1,5 @@
 package com.terturl.MMO.Framework;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -24,157 +23,287 @@ import org.bukkit.inventory.InventoryView;
 
 import com.terturl.MMO.MinecraftMMO;
 
+import lombok.Getter;
+
+/**
+ * Handles the creation of Spigot Inventories much easier and faster
+ * 
+ * @author Sean Rahman
+ * @since 0.25.0
+ *
+ */
 public class InventoryUI implements Listener {
 
-	protected final Set<UUID> players = new HashSet<UUID>();
-	protected final Map<Integer, InventoryButton> buttons = new HashMap<Integer, InventoryButton>();
-	protected Set<Integer> updatedSlots = new HashSet<Integer>();
-	protected final Inventory inv;
-	protected boolean registered = false;
-	protected final String title;
-	
+	@Getter
+	private String name;
+
+	@Getter
+	private Set<UUID> players = new HashSet<UUID>();
+
+	@Getter
+	private final Map<Integer, InventoryButton> buttons = new HashMap<Integer, InventoryButton>();
+
+	@Getter
+	private Set<Integer> updatedSlots = new HashSet<Integer>();
+
+	@Getter
+	private Inventory inv;
+
+	@Getter
+	private boolean registered = false;
+
+	/**
+	 * Creates an InventoryUI of the specified InventoryType and Title
+	 * 
+	 * @param type  InventoryType to be displayed
+	 * @param title Title of the inventory
+	 */
 	public InventoryUI(InventoryType type, String title) {
 		inv = Bukkit.createInventory(null, type, title);
-		this.title = title;
+		this.name = title;
 	}
-	
-	public String getName() {
-		return title;
-	}
-	
+
+	/**
+	 * Creates an InventoryUI of the specified size and title (Chest Inventory)
+	 * 
+	 * @param size  Size (% 9)
+	 * @param title Title of the inventory
+	 */
 	public InventoryUI(int size, String title) {
 		inv = Bukkit.createInventory(null, size, title);
-		this.title = title;
+		this.name = title;
 	}
-	
+
+	/**
+	 * Opens the inventory for the following Player
+	 * 
+	 * @param p Player to open
+	 */
 	public void open(Player p) {
-		if(players.contains(p.getUniqueId())) return;
+		if (players.contains(p.getUniqueId()))
+			return;
 		players.add(p.getUniqueId());
-		if(players.size() == 1 && !registered) MinecraftMMO.getInstance().registerListener(this);
+		if (players.size() == 1 && !registered)
+			MinecraftMMO.getInstance().registerListener(this);
 		registered = true;
 		p.openInventory(inv);
 	}
-	
+
+	/**
+	 * Opens the inventory for all of the given players
+	 * 
+	 * @param pls Players to open
+	 */
 	public void open(Iterable<Player> pls) {
-		for(Player p : pls) open(p);
+		for (Player p : pls)
+			open(p);
 	}
-	
+
+	/**
+	 * Close the inventory for all of of the given players
+	 * 
+	 * @param pls Players to close
+	 */
 	public void close(Iterable<Player> pls) {
-		for(Player p : pls) close(p);
+		for (Player p : pls)
+			close(p);
 	}
-	
+
+	/**
+	 * Properly closes Inventory for the given player and calls the onClose method.
+	 * But can be skipped by just closing the players inventory
+	 * 
+	 * @param p Player to close
+	 */
 	public void close(Player p) {
-		if(!players.contains(p.getUniqueId())) return;
+		if (!players.contains(p.getUniqueId()))
+			return;
 		players.remove(p.getUniqueId());
-		if(players.size() == 0 && this.registered) {
+		if (players.size() == 0 && this.registered) {
 			HandlerList.unregisterAll(this);
 			registered = false;
 		}
 		p.closeInventory();
 		onClose(p);
 	}
-	
-	public Set<UUID> getCurrentPlayers() {
-		return players;
-	}
-	
+
+	/**
+	 * Add an InventoryButton at the next available open slot if there are any slots
+	 * open
+	 * 
+	 * @param but InventoryButton to add
+	 */
 	public void addButton(InventoryButton but) {
 		Integer nextOpenSlot = getNextOpenSlot();
-		if(nextOpenSlot == null) throw new IllegalStateException("Unable to place the button! No room!");
+		if (nextOpenSlot == null)
+			throw new IllegalStateException("Unable to place the button! No room!");
 		addButton(but, nextOpenSlot);
 	}
-	
+
+	/**
+	 * Add an InventoryButton at the current slot
+	 * 
+	 * @param but  InventoryButton to add
+	 * @param slot Index to put InventoryButton
+	 */
 	public void addButton(InventoryButton but, int slot) {
 		buttons.put(slot, but);
 	}
-	
+
+	/**
+	 * Removes the suppled InventoryButton from the InventoryUI
+	 * 
+	 * @param but InventoryButton to remove
+	 */
 	public void removeButton(InventoryButton but) {
 		clearSlot(getSlotFor(but));
 	}
-	
+
+	/**
+	 * Removes the InventoryButton at the given slot
+	 * 
+	 * @param slot Index of slot to remove
+	 */
 	public void clearSlot(int slot) {
 		buttons.remove(slot);
 		markForUpdate(slot);
 	}
-	
+
+	/**
+	 * Will move the button and mark it for update
+	 * 
+	 * @param but  InventoryButton to move
+	 * @param slot New index to set InventoryButton
+	 */
 	public void moveButton(InventoryButton but, int slot) {
 		removeButton(but);
 		addButton(but, slot);
 	}
-	
+
+	/**
+	 * Makes the slot of the InventoryButton for update
+	 * 
+	 * @param button InventoryButton to get Index of
+	 */
 	public void markForUpdate(InventoryButton button) {
 		markForUpdate(getSlotFor(button));
 	}
-	
+
+	/**
+	 * Used for when calling updating to make sure that editing of button maps does
+	 * not take place when iterating through it
+	 * 
+	 * @param slot Index to mark for update
+	 */
 	public void markForUpdate(int slot) {
 		updatedSlots.add(slot);
 	}
-	
+
+	/**
+	 * Get the index of the supplied InventoryButton
+	 * 
+	 * @param but InventoryButton to search for
+	 * @return Index of button
+	 */
 	public Integer getSlotFor(InventoryButton but) {
-		for(Entry<Integer, InventoryButton> buttonEnt : buttons.entrySet()) {
-			if(((InventoryButton)buttonEnt.getValue()).equals(but)) return buttonEnt.getKey();
+		for (Entry<Integer, InventoryButton> buttonEnt : buttons.entrySet()) {
+			if (((InventoryButton) buttonEnt.getValue()).equals(but))
+				return buttonEnt.getKey();
 		}
 		return Integer.valueOf(-1);
 	}
-	
-	public void onClose(Player p) {}
-	
+
+	/**
+	 * Abstract class that can be used to perform an action when the slot is closed
+	 * 
+	 * @param p Player that will handle the closing
+	 */
+	public void onClose(Player p) {
+	}
+
+	/**
+	 * Checks of the following slot already has an item in it
+	 * 
+	 * @param slot Index of slot
+	 * @return If slot has an item
+	 */
 	public boolean isFilled(int slot) {
 		return buttons.containsKey(slot);
 	}
-	
+
+	/**
+	 * Will update and set items from the buttons mappings
+	 */
 	public void updateInventory() {
-		for(int x = 0; x < inv.getSize(); x++) {
+		for (int x = 0; x < inv.getSize(); x++) {
 			InventoryButton but = buttons.get(Integer.valueOf(x));
-			if(but == null && inv.getItem(x) != null) inv.setItem(x, null);
-			else if((inv.getItem(x) == null && but != null) || updatedSlots.contains(Integer.valueOf(x))) {
+			if (but == null && inv.getItem(x) != null)
+				inv.setItem(x, null);
+			else if ((inv.getItem(x) == null && but != null) || updatedSlots.contains(Integer.valueOf(x))) {
 				assert but != null;
 				inv.setItem(x, but.getItem());
 			}
 		}
-		for(UUID u : players) {
+		for (UUID u : players) {
 			Player p = Bukkit.getPlayer(u);
 			p.updateInventory();
 		}
 		updatedSlots = new HashSet<Integer>();
 	}
-	
+
+	/**
+	 * Will return the value of the next slot that can place an item
+	 * 
+	 * @return Integer of next open slot
+	 */
 	public Integer getNextOpenSlot() {
 		Integer nextSlot = Integer.valueOf(0);
-		for(Integer ints : buttons.keySet()) {
-			if(ints.equals(nextSlot)) nextSlot = Integer.valueOf(ints.intValue() + 1);
+		for (Integer ints : buttons.keySet()) {
+			if (ints.equals(nextSlot))
+				nextSlot = Integer.valueOf(ints.intValue() + 1);
 		}
 		return (nextSlot.intValue() >= inv.getSize()) ? null : nextSlot;
 	}
-	
+
+	// Everything below here handles what happens inside of inventory in terms of
+	// events
+
 	@EventHandler(priority = EventPriority.HIGH)
 	public final void onPlayerLeave(PlayerQuitEvent e) {
 		Player p = e.getPlayer();
-		if(players.contains(p.getUniqueId())) players.remove(p.getUniqueId());
+		if (players.contains(p.getUniqueId()))
+			players.remove(p.getUniqueId());
 	}
-	
+
 	@EventHandler
 	public final void onInvClose(InventoryCloseEvent e) {
-		if(!(e.getPlayer() instanceof Player)) return;
-		if(!e.getInventory().equals(inv)) return;
-		Player p = (Player)e.getPlayer();
+		if (!(e.getPlayer() instanceof Player))
+			return;
+		if (!e.getInventory().equals(inv))
+			return;
+		Player p = (Player) e.getPlayer();
 		players.remove(p.getUniqueId());
 		onClose(p);
 	}
-	
+
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public final void onInventoryClick(InventoryClickEvent e) {
-		if(e.getClickedInventory() == null) return;
-		if((e.getClickedInventory().getHolder() instanceof Player)) {
+		if (e.getClickedInventory() == null)
+			return;
+		if ((e.getClickedInventory().getHolder() instanceof Player)) {
 			e.setCancelled(false);
 		} else {
-			if(!(e.getWhoClicked() instanceof Player)) return;
+			if (!(e.getWhoClicked() instanceof Player))
+				return;
 			InventoryView view = e.getView();
-			if(!view.getTitle().equals(title)) return;
-			if(!players.contains(e.getWhoClicked().getUniqueId())) return;
-			Player p = (Player)e.getWhoClicked();
+			if (!view.getTitle().equals(name))
+				return;
+			if (!players.contains(e.getWhoClicked().getUniqueId()))
+				return;
+			Player p = (Player) e.getWhoClicked();
 			InventoryButton but = buttons.get(Integer.valueOf(e.getSlot()));
-			if(but == null) return;
+			if (but == null)
+				return;
 			try {
 				but.onPlayerClick(p, ClickAction.from(e.getClick()));
 			} catch (Exception ex) {
@@ -183,23 +312,17 @@ public class InventoryUI implements Listener {
 			e.setCancelled(true);
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlace(InventoryMoveItemEvent e) {
-		if(e.getDestination().equals(inv)) e.setCancelled(true);
+		if (e.getDestination().equals(inv))
+			e.setCancelled(true);
 	}
-	
+
 	public final void onPlayerInventoryMove(InventoryMoveItemEvent e) {
-		if(!(e.getDestination().getHolder() instanceof InventoryUI)) return;
+		if (!(e.getDestination().getHolder() instanceof InventoryUI))
+			return;
 		e.setCancelled(true);
 	}
-	
-	public Collection<InventoryButton> getButtons() {
-		return buttons.values();
-	}
-	
-	public Map<Integer, InventoryButton> getAllButtons() {
-		return buttons;
-	}
-	
+
 }

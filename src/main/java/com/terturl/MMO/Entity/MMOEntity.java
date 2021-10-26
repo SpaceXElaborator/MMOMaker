@@ -16,6 +16,13 @@ import net.minecraft.world.entity.ai.goal.PathfinderGoalRandomStrollLand;
 import net.minecraft.world.entity.ai.goal.target.PathfinderGoalHurtByTarget;
 import net.minecraft.world.level.World;
 
+/**
+ * An "abstract" class that extends Minecraft's EntityCreature that will soon hold more configuration
+ * to be able for people to create a lot of custom variables and PathFindingGoals
+ * @author Sean Rahman
+ * @since 0.33.0
+ *
+ */
 public class MMOEntity extends EntityCreature {
 	
 	private String name;

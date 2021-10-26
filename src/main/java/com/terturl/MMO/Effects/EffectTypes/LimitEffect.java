@@ -9,11 +9,20 @@ import com.terturl.MMO.Effects.Util.EffectInformation;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * A special class of Effect that can run x amount of times every y amount of
+ * ticks
+ * 
+ * @author Sean Rahman
+ * @since 0.25.0
+ *
+ */
 public class LimitEffect extends Effect {
 
-	@Getter @Setter
+	@Getter
+	@Setter
 	private Effect effect;
-	
+
 	public LimitEffect(EffectInformation ei, Effect e) {
 		super(ei);
 		effect = e;
@@ -23,8 +32,9 @@ public class LimitEffect extends Effect {
 	public void run() {
 		BukkitRunnable br = new BukkitRunnable() {
 			private int limit = getEffectInformation().getLimitTimes();
+
 			public void run() {
-				if(limit == 0) {
+				if (limit == 0) {
 					cancel();
 					return;
 				}
@@ -32,7 +42,8 @@ public class LimitEffect extends Effect {
 				limit--;
 			}
 		};
-		br.runTaskTimer(MinecraftMMO.getInstance(), getEffectInformation().getDelay(), getEffectInformation().getEvery());
+		br.runTaskTimer(MinecraftMMO.getInstance(), getEffectInformation().getDelay(),
+				getEffectInformation().getEvery());
 	}
-	
+
 }

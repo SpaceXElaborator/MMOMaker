@@ -8,6 +8,12 @@ import com.terturl.MMO.Util.Math.IntMinMax;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+/**
+ * Used to create a drop chance chance for an item from 0.01% to 100%
+ * @author Sean Rahman
+ * @since 0.47.0
+ *
+ */
 @AllArgsConstructor
 public class MMODropChance {
 

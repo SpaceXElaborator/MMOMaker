@@ -26,6 +26,13 @@ import com.terturl.MMO.Util.Math.MinMax;
 import lombok.Getter;
 import net.minecraft.server.level.WorldServer;
 
+/**
+ * Manager for creating MMOEntities (Not to be confused with MMOMob) from JSON files
+ * @see com.terturl.MMO.Entity.MMOEntity
+ * @author Sean Rahman
+ * @Since 0.33.0
+ *
+ */
 public class MMOEntityManager {
 
 	private Map<String, MMOEntity> MMOEntities = new HashMap<>();
@@ -40,6 +47,8 @@ public class MMOEntityManager {
 		File entityFolder = new File(MinecraftMMO.getInstance().getDataFolder(), "entities");
 		warnings = new File(entityFolder, "Warnings.txt");
 		if(getWarnings().exists()) { getWarnings().delete(); }
+		
+		// TODO: This needs to be cleaned up a lot
 		
 		if(entityFolder.listFiles().length != 0) {
 			for(File f : entityFolder.listFiles()) {
@@ -136,6 +145,11 @@ public class MMOEntityManager {
 		return load;
 	}
 	
+	/**
+	 * Check for if an entity is an MMOEntity
+	 * @param uuid The UUID of the MMOEntity being searched for
+	 * @return If the entity is an instance of MMOEntity and if it is alive or not
+	 */
 	public boolean containsUUID(UUID uuid) {
 		for(MMOEntity mo : getAliveEntities()) {
 			if(mo.getUniqueID().equals(uuid)) return true;
@@ -143,15 +157,33 @@ public class MMOEntityManager {
 		return false;
 	}
 	
+	/**
+	 * Try to obtain the MMOEntity from a string.
+	 * This will return based on the MMOEntities name from the JSON file used to create it
+	 * @param name Name of MMOEntity
+	 * @return the instance of the MMOEntity, should be cloned
+	 */
 	public MMOEntity getEntity(String name) {
 		if(!MMOEntities.containsKey(name)) return null;
 		return MMOEntities.get(name);
 	}
 	
+	/**
+	 * Get an MMOEntity based on their UUID.
+	 * Should be used in tandem with containsUUID
+	 * @param uuid UUID of the alive Entity
+	 * @return Either an MMOEntity or a null value if the MMOEntity doesn't exist by UUID
+	 */
 	public MMOEntity getEntity(UUID uuid) {
 		return getAliveEntities().stream().filter(e -> e.getUniqueID().equals(uuid)).findFirst().orElse(null);
 	}
 	
+	/**
+	 * Spawns and teleports an MMOEntity to the sepcific location based off the MMOEntity.
+	 * MMOEntity is cloned before spawning
+	 * @param loc Location to place the MMOEntity
+	 * @param me The MMOEntity to spawn to the server
+	 */
 	public void spawnEntity(Location loc, MMOEntity me) {
 		WorldServer world = ((CraftWorld)loc.getWorld()).getHandle();
 		MMOEntity mmoE = me.clone();

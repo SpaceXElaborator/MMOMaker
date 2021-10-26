@@ -8,6 +8,16 @@ import com.terturl.MMO.MMOEntity.ResourcePack.Elements.Display;
 import com.terturl.MMO.MMOEntity.ResourcePack.Elements.Face;
 import com.terturl.MMO.MMOEntity.ResourcePack.Elements.Rotation;
 
+/**
+ * Class that will turn any ResourcePack object into a JSON string to be saved to a file for the Resource Pack generation process
+ * @author Sean Rahman
+ * @since 0.58.0
+ * @see com.terturl.MMO.MMOEntity.ResourcePack.Elements.Cube
+ * @see com.terturl.MMO.MMOEntity.ResourcePack.Elements.Display
+ * @see com.terturl.MMO.MMOEntity.ResourcePack.Elements.Face
+ * @see com.terturl.MMO.MMOEntity.ResourcePack.Elements.Rotation
+ *
+ */
 public class ResourcePackJSON {
 
 	@SuppressWarnings("unchecked")

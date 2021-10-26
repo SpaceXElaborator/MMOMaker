@@ -8,6 +8,12 @@ import org.bukkit.entity.Player;
 
 import lombok.Getter;
 
+/**
+ * The manager to handle creating and removing shops from the server
+ * @author Sean Rahman
+ * @since 0.30.0
+ *
+ */
 public class ShopManager {
 	
 	@Getter

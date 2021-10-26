@@ -17,8 +17,19 @@ import com.terturl.MMO.Player.Skills.Crafting.CraftingSkill;
 
 import net.md_5.bungee.api.ChatColor;
 
+/**
+ * A basic helper class to create ItemStacks to be used for getting specific actions like Abilities
+ * @author Sean Rahman
+ * @since 0.34.0
+ *
+ */
 public class BasicInventoryItems {
 
+	/**
+	 * Returns the ItemStack that will showcase the player's information about their rpg character
+	 * @param p The player to get information from
+	 * @return Built ItemStack to display
+	 */
 	public static ItemStack getPlayerClassItem(Player p) {
 		MMOPlayer mp = MinecraftMMO.getInstance().getPlayerHandler().getPlayer(p);
 		MMOClass mc = mp.getMmoClasses().get(mp.getCurrentCharacter());
@@ -39,6 +50,10 @@ public class BasicInventoryItems {
 		return item;
 	}
 	
+	/**
+	 * Builds an empty and usable Ability ItemStack that can be used to select an ability to perform
+	 * @return Built ItemStack
+	 */
 	public static ItemStack getRegularAbilities() {
 		ItemStack item = new ItemStack(Material.BOOK);
 		ItemMeta im = item.getItemMeta();
@@ -54,6 +69,10 @@ public class BasicInventoryItems {
 		return item;
 	}
 	
+	/**
+	 * Returns the book that will allow you to scroll/press to it, use the ability, and switch back to main hand quickly
+	 * @return Built ItemStack
+	 */
 	public static ItemStack getQuickActionAbilities() {
 		ItemStack item = new ItemStack(Material.BOOK);
 		ItemMeta im = item.getItemMeta();
@@ -70,6 +89,11 @@ public class BasicInventoryItems {
 		return item;
 	}
 	
+	/**
+	 * Returns the book that will display the ability set on the quick action slot
+	 * @param a Ability that the player sets it to
+	 * @return Built ItemStack with information about that ability
+	 */
 	public static ItemStack getQuickActionAbility(Ability a) {
 		ItemStack item = new ItemStack(Material.ENCHANTED_BOOK);
 		ItemMeta im = item.getItemMeta();

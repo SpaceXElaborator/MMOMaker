@@ -18,6 +18,12 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Handles per-player shop's that contains handling clicking on the location and eventually adding items
+ * @author Sean Rahman
+ * @since 0.30.0
+ *
+ */
 @EqualsAndHashCode
 public class PlayerShop implements Listener {
 

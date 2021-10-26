@@ -15,7 +15,6 @@ import org.json.simple.JSONObject;
 
 import com.terturl.MMO.MinecraftMMO;
 import com.terturl.MMO.Player.MMOPlayer;
-import com.terturl.MMO.Quests.Quest;
 import com.terturl.MMO.Util.JsonFileInterpretter;
 import com.terturl.MMO.Util.Items.CustomItem.SlotType;
 import com.terturl.MMO.Util.Items.CustomItemManager;
@@ -23,51 +22,66 @@ import com.terturl.MMO.Util.Items.CustomItemManager;
 import lombok.Getter;
 import net.md_5.bungee.api.ChatColor;
 
+/**
+ * Handles the loading of MMOClasses from their JSON files
+ * 
+ * @author Sean Rahman
+ * @since 0.25.0
+ *
+ */
 public class ClassHandler {
 
-	// TODO: Make sure items that are put in their slots are actually items that pertain to that SlotType
-	
+	// TODO: Make sure items that are put in their slots are actually items that
+	// pertain to that SlotType
+
 	@Getter
 	private List<MMOClass> classes = new ArrayList<>();
-	
+
 	@Getter
 	private File warnings;
-	
+
+	/**
+	 * Will create instances of MMOClass from the JSON files provided at
+	 * /plugins/MinecraftMMO/classes
+	 */
 	public ClassHandler() {
 		Bukkit.getConsoleSender().sendMessage(ChatColor.BLUE + "[MMO-RPG] Registering Classes...");
 		File classDir = new File(MinecraftMMO.getInstance().getDataFolder(), "classes");
-		if(!classDir.exists()) classDir.mkdir();
+		if (!classDir.exists())
+			classDir.mkdir();
 		warnings = new File(classDir, "Warnings.txt");
-		if(getWarnings().exists()) { getWarnings().delete(); }
-		
+		if (getWarnings().exists()) {
+			getWarnings().delete();
+		}
+
 		try {
 			getWarnings().createNewFile();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		try {
 			FileWriter wfw = new FileWriter(getWarnings());
 			BufferedWriter wbw = new BufferedWriter(wfw);
-			if(classDir.listFiles().length > 0) {
-				for(File f : classDir.listFiles()) {
-					if(f.getName().endsWith(".json")) {
-						if(checkStarterValues(f)) {
+			if (classDir.listFiles().length > 0) {
+				for (File f : classDir.listFiles()) {
+					if (f.getName().endsWith(".json")) {
+						if (checkStarterValues(f)) {
 							JsonFileInterpretter config = new JsonFileInterpretter(f);
 							String name = config.getString("Name");
 							Map<SlotType, String> starterItemsMap = new HashMap<>();
 							JSONObject starterItems = config.getObject("StarterItems");
-							
-							if(containsClass(name)) {
+
+							if (containsClass(name)) {
 								wbw.write("[" + f.getName() + "] Class: " + name + " Exists");
 								wbw.newLine();
 								continue;
 							}
-							
-							if(checkStarterItems(starterItems)) {
+
+							if (checkStarterItems(starterItems)) {
 								starterItemsMap = setStarterItemMap(starterItems);
 							}
-							
+
 							MMOClass mc = new MMOClass(name);
 							mc.setStartItems(starterItemsMap);
 							mc.setHelmet(starterItemsMap.get(SlotType.HELMET));
@@ -88,134 +102,142 @@ public class ClassHandler {
 		}
 		Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "[MMO-RPG] Done");
 	}
-	
+
 	private Boolean checkStarterValues(File f) throws IOException {
 		boolean load = true;
 		JsonFileInterpretter config = new JsonFileInterpretter(f);
 		FileWriter wfw = new FileWriter(getWarnings());
 		BufferedWriter wbw = new BufferedWriter(wfw);
-		
-		if(!config.contains("Name")) {
+
+		if (!config.contains("Name")) {
 			wbw.write("[" + f.getName() + "] Does not contain 'Name'");
 			wbw.newLine();
 			load = false;
 		}
-		
-		if(!config.contains("StarterItems")) {
+
+		if (!config.contains("StarterItems")) {
 			wbw.write("[" + f.getName() + "] Does not contain JSON object 'StartItems'");
 			wbw.newLine();
 			load = false;
 		}
-		
+
 		wbw.flush();
 		wbw.close();
 		return load;
 	}
-	
+
 	private Boolean checkStarterItems(JSONObject jo) throws IOException {
 		boolean load = true;
 		FileWriter wfw = new FileWriter(getWarnings());
 		BufferedWriter wbw = new BufferedWriter(wfw);
 		CustomItemManager cim = MinecraftMMO.getInstance().getItemManager();
-		
-		for(Object o : jo.values()) {
+
+		for (Object o : jo.values()) {
 			String item = o.toString();
-			if(!cim.getCustomItems().containsKey(item)) {
+			if (!cim.getCustomItems().containsKey(item)) {
 				wbw.write(item + " Is not a valid CustomItem");
 				wbw.newLine();
 				load = false;
 			}
 		}
-		
+
 		wbw.flush();
 		wbw.close();
 		return load;
 	}
-	
+
 	private Map<SlotType, String> setStarterItemMap(JSONObject jo) {
 		Map<SlotType, String> map = new HashMap<SlotType, String>();
-		
-		if(jo.containsKey("Helmet")) {
+
+		if (jo.containsKey("Helmet")) {
 			map.put(SlotType.HELMET, jo.get("Helmet").toString());
 		} else {
 			map.put(SlotType.HELMET, "MMO_ITEM_EMPTY_SLOT_ITEM");
 		}
-		
-		if(jo.containsKey("Chestplate")) {
+
+		if (jo.containsKey("Chestplate")) {
 			map.put(SlotType.CHEST, jo.get("Chestplate").toString());
 		} else {
 			map.put(SlotType.CHEST, "MMO_ITEM_EMPTY_SLOT_ITEM");
 		}
-		
-		if(jo.containsKey("Leggings")) {
+
+		if (jo.containsKey("Leggings")) {
 			map.put(SlotType.LEGS, jo.get("Leggings").toString());
 		} else {
 			map.put(SlotType.LEGS, "MMO_ITEM_EMPTY_SLOT_ITEM");
 		}
-		
-		if(jo.containsKey("Boots")) {
+
+		if (jo.containsKey("Boots")) {
 			map.put(SlotType.BOOTS, jo.get("Boots").toString());
 		} else {
 			map.put(SlotType.BOOTS, "MMO_ITEM_EMPTY_SLOT_ITEM");
 		}
-		
-		if(jo.containsKey("MainHand")) {
+
+		if (jo.containsKey("MainHand")) {
 			map.put(SlotType.MAIN_HAND, jo.get("MainHand").toString());
 		} else {
 			map.put(SlotType.MAIN_HAND, "MMO_ITEM_EMPTY_SLOT_ITEM");
 		}
-		
-		if(jo.containsKey("OffHand")) {
+
+		if (jo.containsKey("OffHand")) {
 			map.put(SlotType.OFF_HAND, jo.get("OffHand").toString());
 		} else {
 			map.put(SlotType.OFF_HAND, "MMO_ITEM_EMPTY_SLOT_ITEM");
 		}
-		
+
 		return map;
 	}
-	
-	public void registerClass(MMOClass cl) {
-		for(MMOClass mc : classes) {
-			if(mc.equals(cl)) return;
-		}
-		classes.add(cl);
-	}
-	
-	public void addQuest(Player p, Quest q) {
-		MMOPlayer mp = MinecraftMMO.getInstance().getPlayerHandler().getPlayer(p);
-		MMOClass mc = mp.getMmoClasses().get(mp.getCurrentCharacter());
-		mc.getActiveQuests().add(q);
-		mp.updateNPCQuests();
-	}
-	
+
+	/**
+	 * Handles when a player creates a new MMOClass to add to their list of
+	 * MMOClasses
+	 * 
+	 * @param p        Player interacting
+	 * @param mmoClass MMOClass name to search for
+	 */
 	public void selectClass(Player p, String mmoClass) {
 		if (!MinecraftMMO.getInstance().getPlayerHandler().PlayerExists(p)) {
 			MMOPlayer mp = new MMOPlayer(p);
 			MMOClass mc = (MMOClass) getClass(mmoClass).clone();
 			CustomItemManager cim = MinecraftMMO.getInstance().getItemManager();
 			mp.getMmoClasses().add(mc);
-			mp.setCurrentCharacter(mp.getMmoClasses().size()-1);
+			mp.setCurrentCharacter(mp.getMmoClasses().size() - 1);
 			MinecraftMMO.getInstance().getPlayerHandler().addPlayer(mp);
 			p.getInventory().clear();
 			p.getInventory().setBoots(cim.getCustomItems().get(mc.getStartItems().get(SlotType.BOOTS)).makeItem());
 			p.getInventory().setChestplate(cim.getCustomItems().get(mc.getStartItems().get(SlotType.CHEST)).makeItem());
 			p.getInventory().setLeggings(cim.getCustomItems().get(mc.getStartItems().get(SlotType.LEGS)).makeItem());
 			p.getInventory().setHelmet(cim.getCustomItems().get(mc.getStartItems().get(SlotType.HELMET)).makeItem());
-			p.getInventory().setItemInOffHand(cim.getCustomItems().get(mc.getStartItems().get(SlotType.OFF_HAND)).makeItem());
-			p.getInventory().setItem(0, cim.getCustomItems().get(mc.getStartItems().get(SlotType.MAIN_HAND)).makeItem());
+			p.getInventory()
+					.setItemInOffHand(cim.getCustomItems().get(mc.getStartItems().get(SlotType.OFF_HAND)).makeItem());
+			p.getInventory().setItem(0,
+					cim.getCustomItems().get(mc.getStartItems().get(SlotType.MAIN_HAND)).makeItem());
 			p.getInventory().setItem(1, cim.getCustomItems().get(mc.getStartItems().get(SlotType.OFF_HAND)).makeItem());
 			p.updateInventory();
 		}
 	}
-	
+
+	/**
+	 * Get MMOClass by class name
+	 * 
+	 * @param name Name of MMOClass
+	 * @return MMOClass or Null
+	 */
 	public MMOClass getClass(String name) {
 		return classes.stream().filter(e -> e.getName().equals(name)).findFirst().orElse(null);
 	}
-	
+
+	/**
+	 * Checks to see if the name MMOClass exists or not
+	 * 
+	 * @param s Name of MMOClass
+	 * @return if the MMOClass exists
+	 */
 	public boolean containsClass(String s) {
 		MMOClass mmoClass = classes.stream().filter(e -> e.getName().equals(s)).findFirst().orElse(null);
-		if(mmoClass == null) return false;
+		if (mmoClass == null)
+			return false;
 		return true;
 	}
-	
+
 }

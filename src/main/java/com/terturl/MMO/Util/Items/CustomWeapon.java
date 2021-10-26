@@ -17,6 +17,14 @@ import com.terturl.MMO.MinecraftMMO;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * A subclass of CustomItem that will hold a lot of information about the base
+ * damage of the item and if it is ranged or not and how to handle attacking
+ * 
+ * @author Sean Rahman
+ * @since 0.53.0
+ *
+ */
 public class CustomWeapon extends CustomItem {
 
 	@Getter
@@ -35,6 +43,7 @@ public class CustomWeapon extends CustomItem {
 		setSlotType(st);
 	}
 
+	// NOT USED YET
 	protected void particleBeamWithDamage(Player player) {
 		Location startLoc = player.getEyeLocation();
 		Location particleLoc = startLoc.clone();
@@ -81,7 +90,8 @@ public class CustomWeapon extends CustomItem {
 			}
 		}.runTaskTimer(MinecraftMMO.getInstance(), 0, 1L);
 	}
-
+	
+	// NOT USED YET
 	protected void particleBeam(Player player) {
 		Location startLoc = player.getEyeLocation();
 		Location particleLoc = startLoc.clone();

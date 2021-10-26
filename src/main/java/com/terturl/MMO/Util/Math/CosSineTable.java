@@ -1,5 +1,13 @@
 package com.terturl.MMO.Util.Math;
 
+/**
+ * Helper class to help with rotation and location services for
+ * RelativeLocations
+ * 
+ * @author Sean Rahman
+ * @since
+ *
+ */
 public class CosSineTable {
 	double[] cos = new double[361];
 

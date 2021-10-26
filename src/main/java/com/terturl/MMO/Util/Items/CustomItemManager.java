@@ -345,7 +345,7 @@ public class CustomItemManager {
 		}
 
 		if (config.contains("CustomItemModel")) {
-			Integer damage = StringUtils.isInteger(config.getString("CustomItemModel"), 10)
+			Integer damage = StringUtils.isInt(config.getString("CustomItemModel"))
 					? config.getInt("CustomItemModel")
 					: null;
 			if (damage == null) {
@@ -356,7 +356,7 @@ public class CustomItemManager {
 		}
 
 		if (config.contains("Level")) {
-			Integer level = StringUtils.isInteger(config.getString("Level"), 10) ? config.getInt("Level") : null;
+			Integer level = StringUtils.isInt(config.getString("Level")) ? config.getInt("Level") : null;
 			if (level == null) {
 				wbw.write("[" + f.getName() + "] 'Level' MUST be a number!");
 				wbw.newLine();

@@ -19,6 +19,13 @@ import com.terturl.MMO.Util.Items.CustomItemManager;
 import lombok.Getter;
 import net.md_5.bungee.api.ChatColor;
 
+/**
+ * Has all the methods to be able to create and save MMORecipes from JSON files
+ * @author Sean Rahman
+ * @see com.terturl.MMO.Player.Crafting.MMORecipe
+ * @since 0.32.0
+ *
+ */
 public class RecipeManager {
 
 	@Getter
@@ -70,11 +77,20 @@ public class RecipeManager {
 		Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "[MMO-RPG] Done");
 	}
 	
+	/**
+	 * Add a recipe to the plugin for crafting information
+	 * @param mr The MMORecipe to add to the manager
+	 */
 	public void addRecipe(MMORecipe mr) {
 		if(recipes.contains(mr)) return;
 		recipes.add(mr);
 	}
 	
+	/**
+	 * Obtain an MMORecipe by name from the recipes List
+	 * @param s The name of an MMORecipe for searching
+	 * @return The MMORecipe gotten from the name
+	 */
 	public MMORecipe getRecipeByName(String s) {
 		return recipes.stream().filter(e -> e.getName().equalsIgnoreCase(s)).findFirst().orElse(null);
 	}
@@ -82,6 +98,7 @@ public class RecipeManager {
 	private boolean checkRecipe(File f) throws IOException {
 		boolean load = true;
 		
+		// Create a new json config derived from the file and create a new filewriter and bufferedwriter to write to the errors file
 		JsonFileInterpretter config = new JsonFileInterpretter(f);
 		FileWriter wfw = new FileWriter(getWarnings());
 		BufferedWriter wbw = new BufferedWriter(wfw);

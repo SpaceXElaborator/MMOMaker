@@ -2,88 +2,94 @@ package com.terturl.MMO.Util.Math;
 
 import org.bukkit.Location;
 
+import lombok.Getter;
+import lombok.Setter;
+
+/**
+ * Helper Location used to get a location in relation to the player no matter
+ * where they are facing
+ * 
+ * @author Sean Rahman
+ * @since 0.25.0
+ *
+ */
 public class RelativeLocation implements Cloneable {
+
+	@Getter
 	private double upDown;
 
+	@Getter
 	private double leftRight;
 
+	@Getter
 	private double forwardBackward;
 
-	public double getUpDown() {
-		return this.upDown;
-	}
-
-	public double getLeftRight() {
-		return this.leftRight;
-	}
-
-	public double getForwardBackward() {
-		return this.forwardBackward;
-	}
-
+	@Getter
+	@Setter
 	private boolean backward = false;
 
-	public boolean isBackward() {
-		return this.backward;
-	}
-
-	public RelativeLocation setBackward(boolean paramBoolean) {
-		this.backward = paramBoolean;
-		return this;
-	}
-
+	@Getter
+	@Setter
 	private float yaw = 0.0F;
 
-	public float getYaw() {
-		return this.yaw;
+	/**
+	 * Create a new RelativeLocation
+	 * 
+	 * @param x Y cord in relation to a location
+	 * @param y X cord in relation to a location
+	 * @param z Z cord in relation to a location
+	 * @param d Yaw in relation to player
+	 */
+	public RelativeLocation(double x, double y, double z, float d) {
+		this.upDown = x;
+		this.leftRight = y;
+		this.forwardBackward = z;
+		this.yaw = d;
 	}
 
-	public RelativeLocation setYaw(float paramFloat) {
-		this.yaw = paramFloat;
-		return this;
+	/**
+	 * Create a new RelativeLocation
+	 * 
+	 * @param x Y cord in relation to a location
+	 * @param y X cord in relation to a location
+	 * @param z Z cord in relation to a location
+	 */
+	public RelativeLocation(double x, double y, double z) {
+		this(x, y, z, 0.0F);
 	}
 
-	public RelativeLocation(double paramDouble1, double paramDouble2, double paramDouble3, float paramFloat) {
-		this.upDown = paramDouble1;
-		this.leftRight = paramDouble2;
-		this.forwardBackward = paramDouble3;
-		this.yaw = paramFloat;
-	}
-
-	public RelativeLocation(double paramDouble1, double paramDouble2, double paramDouble3) {
-		this(paramDouble1, paramDouble2, paramDouble3, 0.0F);
-	}
-
-	public String toString() {
-		return String.format("Up : %.2f , leftRight : %.2f , forwardBack : %.2f , Yaw : " + this.yaw, new Object[] {
-				Double.valueOf(this.upDown), Double.valueOf(this.leftRight), Double.valueOf(this.forwardBackward) });
-	}
-
-	public RelativeLocation clone() {
-		return (new RelativeLocation(getUpDown(), getLeftRight(), getForwardBackward())).setYaw(getYaw())
-				.setBackward(isBackward());
-	}
-
-	private static Location getLocation(Location paramLocation, double paramDouble1, double paramDouble2,
-			double paramDouble3) {
-		Location location = paramLocation.clone();
+	private static Location getLocation(Location loc, double x, double y, double z) {
+		Location location = loc.clone();
 		float f = location.getYaw();
 		if (location.getYaw() < 0.0F)
 			f = Math.abs(f) + 180.0F;
 		double d1 = f;
 		double d2 = CosSineTable.getTable().getCos((int) d1);
 		double d3 = CosSineTable.getTable().getSine((int) d1);
-		location = location.add(d2 * paramDouble1, paramDouble2, d3 * paramDouble1);
-		location = location.add(-d3 * paramDouble3, 0.0D, d2 * paramDouble3);
+		location = location.add(d2 * x, y, d3 * x);
+		location = location.add(-d3 * z, 0.0D, d2 * z);
 		return location;
 	}
 
-	public Location getFromRelative(Location paramLocation) {
-		Location location = getLocation(paramLocation, getLeftRight(), getUpDown(), getForwardBackward()).clone();
+	/**
+	 * Get the location from the relative location
+	 * 
+	 * @param loc Location to get relative from
+	 * @return
+	 */
+	public Location getFromRelative(Location loc) {
+		Location location = getLocation(loc, getLeftRight(), getUpDown(), getForwardBackward()).clone();
 		if (getYaw() != 0.0F)
 			location.setYaw(location.getYaw() + getYaw());
 		if (isBackward())
 			location.setYaw(-location.getYaw());
 		return location;
+	}
+
+	public RelativeLocation clone() {
+		RelativeLocation rl = new RelativeLocation(getUpDown(), getLeftRight(), getForwardBackward(), getYaw());
+		rl.setBackward(isBackward());
+
+		return rl;
 	}
 }

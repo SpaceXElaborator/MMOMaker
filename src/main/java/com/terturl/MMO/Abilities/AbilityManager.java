@@ -25,9 +25,9 @@ import com.terturl.MMO.Effects.VectorDirection;
 import com.terturl.MMO.Effects.VectorPush;
 import com.terturl.MMO.Effects.VectorRelative;
 import com.terturl.MMO.Effects.WaveEffect;
+import com.terturl.MMO.Effects.EffectTypes.ConeEffect;
 import com.terturl.MMO.Effects.EffectTypes.LimitEffect;
 import com.terturl.MMO.Effects.EffectTypes.RepeatingEffect;
-import com.terturl.MMO.Effects.Util.ConeEffect;
 import com.terturl.MMO.Effects.Util.EffectInformation;
 import com.terturl.MMO.Util.JsonFileInterpretter;
 import com.terturl.MMO.Util.SoundInformation;
@@ -35,34 +35,42 @@ import com.terturl.MMO.Util.SoundInformation;
 import lombok.Getter;
 import net.md_5.bungee.api.ChatColor;
 
+/**
+ * Handles the loading of effects and creation of abilities into the Java memory
+ * 
+ * @author Sean Rahman
+ * @since 0.25.0
+ *
+ */
 public class AbilityManager {
-	
+
 	@Getter
 	private Map<String, Ability> abilities = new HashMap<String, Ability>();
-	
+
 	public AbilityManager() {
 		Bukkit.getConsoleSender().sendMessage(ChatColor.BLUE + "[MMO-RPG] Registering Abilities...");
 		File abDir = new File(MinecraftMMO.getInstance().getDataFolder(), "abilities");
-		if(!abDir.exists()) abDir.mkdir();
-		for(File f : abDir.listFiles()) {
-			if(f.getName().endsWith(".json")) {
-				
+		if (!abDir.exists())
+			abDir.mkdir();
+		for (File f : abDir.listFiles()) {
+			if (f.getName().endsWith(".json")) {
+
 				JsonFileInterpretter config = new JsonFileInterpretter(f);
 				String name = config.getString("Name");
 				Integer levelRequied = config.getInt("Level");
 				Map<AbilityCosts, Double> costs = new HashMap<>();
 				JSONObject jo = config.getObject("Cost");
-				if(jo.containsKey("Mana")) {
-					costs.put(AbilityCosts.MANA, (Double)jo.get("Mana"));
+				if (jo.containsKey("Mana")) {
+					costs.put(AbilityCosts.MANA, (Double) jo.get("Mana"));
 				}
-				if(jo.containsKey("Health")) {
-					costs.put(AbilityCosts.HEALTH, (Double)jo.get("Health"));
+				if (jo.containsKey("Health")) {
+					costs.put(AbilityCosts.HEALTH, (Double) jo.get("Health"));
 				}
-				
+
 				Ability a = new Ability(name);
 				a.setRequiredLevel(levelRequied);
 				a.setCosts(costs);
-				
+
 				JSONArray ja = config.getArray("Activate");
 				a.getEffects().addAll(getEffects(ja, name));
 				abilities.put(name, a);
@@ -70,135 +78,169 @@ public class AbilityManager {
 		}
 		Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "[MMO-RPG] Done");
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private List<Effect> getEffects(JSONArray ja, String name) {
 		List<Effect> effectsList = new ArrayList<>();
-		
-		for(int i = 0; i < ja.size(); i++) {
-			JSONObject temp = (JSONObject)ja.get(i);
+
+		for (int i = 0; i < ja.size(); i++) {
+			JSONObject temp = (JSONObject) ja.get(i);
 			temp.forEach((k, v) -> {
 				Object ef = null;
 				JSONObject effect = (JSONObject) temp.get(k);
 				String effectName = k.toString();
 				EffectInformation ei = new EffectInformation();
-				
+
 				// Set basic information for the effect
-				ei.setType((effect.containsKey("EffectType") ? EffectType.valueOf((String) effect.get("EffectType")) : EffectType.SINGLE));
+				ei.setType((effect.containsKey("EffectType") ? EffectType.valueOf((String) effect.get("EffectType"))
+						: EffectType.SINGLE));
 				ei.setDelay((effect.containsKey("Delay") ? (long) effect.get("Delay") : 0));
-				ei.setParticle((effect.containsKey("Particle") ? Particle.valueOf((String)effect.get("Particle")) : Particle.FLAME));
-				ei.setParticleAmount((effect.containsKey("ParticleAmount") ? Integer.parseInt(effect.get("ParticleAmount").toString()) : 200));
-				ei.setLocType((effect.containsKey("LocationType") ? LocationType.valueOf((String)effect.get("LocationType")) : LocationType.PLAYER));
-				ei.setDamage((effect.containsKey("Damage") ? Double.parseDouble(effect.get("Damage").toString()) : 0.0));
+				ei.setParticle((effect.containsKey("Particle") ? Particle.valueOf((String) effect.get("Particle"))
+						: Particle.FLAME));
+				ei.setParticleAmount((effect.containsKey("ParticleAmount")
+						? Integer.parseInt(effect.get("ParticleAmount").toString())
+						: 200));
+				ei.setLocType(
+						(effect.containsKey("LocationType") ? LocationType.valueOf((String) effect.get("LocationType"))
+								: LocationType.PLAYER));
+				ei.setDamage(
+						(effect.containsKey("Damage") ? Double.parseDouble(effect.get("Damage").toString()) : 0.0));
 				ei.setRange((effect.containsKey("Range") ? Double.parseDouble(effect.get("Range").toString()) : 10.0));
-				
-				if(effect.containsKey("Sounds")) {
+
+				// Get the sounds and add them into the EffectInformation
+				if (effect.containsKey("Sounds")) {
 					JSONArray sounds = (JSONArray) effect.get("Sounds");
-					
-					for(int x = 0; x < sounds.size(); x++) {
+
+					for (int x = 0; x < sounds.size(); x++) {
 						JSONObject sound = (JSONObject) sounds.get(x);
 						SoundInformation si = new SoundInformation();
-						si.setSound((sound.containsKey("Sound") ? sound.get("Sound").toString() : "minecraft:block.glass.hit"));
-						si.setVolume((sound.containsKey("Volume") ? Float.valueOf(sound.get("Volume").toString()) : 1.0f));
+						si.setSound((sound.containsKey("Sound") ? sound.get("Sound").toString()
+								: "minecraft:block.glass.hit"));
+						si.setVolume(
+								(sound.containsKey("Volume") ? Float.valueOf(sound.get("Volume").toString()) : 1.0f));
 						si.setPitch((sound.containsKey("Pitch") ? Float.valueOf(sound.get("Pitch").toString()) : 1.0f));
 						ei.getSounds().add(si);
 					}
 				}
-				
+
 				// Check for location offset
-				if(effect.containsKey("Location")) {
+				if (effect.containsKey("Location")) {
 					JSONObject loc = (JSONObject) effect.get("Location");
-					ei.setXOff((loc.containsKey("X") ? (Double)loc.get("X") : 0.0));
-					ei.setYOff((loc.containsKey("Y") ? (Double)loc.get("Y") : 0.0));
-					ei.setZOff((loc.containsKey("Z") ? (Double)loc.get("Z") : 0.0));
+					ei.setXOff((loc.containsKey("X") ? (Double) loc.get("X") : 0.0));
+					ei.setYOff((loc.containsKey("Y") ? (Double) loc.get("Y") : 0.0));
+					ei.setZOff((loc.containsKey("Z") ? (Double) loc.get("Z") : 0.0));
 				}
-				
-				if(performEffectTypeCheck(ei, effect, name, effectName)) {
-					if(effectName.equals("Sphere")) {
+
+				// Make sure the ability is valid
+				if (performEffectTypeCheck(ei, effect, name, effectName)) {
+
+					// Create the ability based on their name
+					// TODO: Change this to work like how Quests are made now
+
+					if (effectName.equals("Sphere")) {
 						ef = new Sphere(ei);
 						((Sphere) ef).setRadius((effect.containsKey("Size") ? (double) effect.get("Size") : 1.0));
-					} else if(effectName.equals("Line")) {
+					} else if (effectName.equals("Line")) {
 						ef = new LineEffect(ei);
-						((LineEffect) ef).setPenetrate((effect.containsKey("Penetrate") ? Boolean.parseBoolean(effect.get("Penetrate").toString()) : false));
-					} else if(effectName.equals("Projectile")) {
+						((LineEffect) ef).setPenetrate((effect.containsKey("Penetrate")
+								? Boolean.parseBoolean(effect.get("Penetrate").toString())
+								: false));
+					} else if (effectName.equals("Projectile")) {
 						ef = new FireProjectile(ei);
-						((FireProjectile) ef).setProjectile((effect.containsKey("Projectile") ? effect.get("Projectile").toString() : "Egg"));
-					} else if(effectName.equals("Cone")) {
+						((FireProjectile) ef).setProjectile(
+								(effect.containsKey("Projectile") ? effect.get("Projectile").toString() : "Egg"));
+					} else if (effectName.equals("Cone")) {
 						ef = new ConeEffect(ei);
-						((ConeEffect)ef).setDegree((effect.containsKey("Degree") ? Double.parseDouble(effect.get("Degree").toString()) : 90.0));
+						((ConeEffect) ef).setDegree(
+								(effect.containsKey("Degree") ? Double.parseDouble(effect.get("Degree").toString())
+										: 90.0));
 						JSONArray jo = (JSONArray) effect.get("Effects");
 						List<Effect> coneEffects = getEffects(jo, name);
-						for(Effect e : coneEffects) {
-							((ConeEffect)ef).getEffects().add(e);
+						for (Effect e : coneEffects) {
+							((ConeEffect) ef).getEffects().add(e);
 						}
-					} else if(effectName.equals("Vector")) {
+					} else if (effectName.equals("Vector")) {
 						ef = new VectorPush(ei);
-					} else if(effectName.equals("VelocityVector")) {
+					} else if (effectName.equals("VelocityVector")) {
 						ef = new VectorRelative(ei);
-					} else if(effectName.equals("DirectionVector")) {
+					} else if (effectName.equals("DirectionVector")) {
 						ef = new VectorDirection(ei);
-					} else if(effectName.equals("WaveEffect")) {
+					} else if (effectName.equals("WaveEffect")) {
 						ef = new WaveEffect(ei);
-						((WaveEffect) ef).setDegree((effect.containsKey("Degree") ? Double.parseDouble(effect.get("Degree").toString()) : 90.0));
-					} else if(effectName.equals("JumpTo")) {
+						((WaveEffect) ef).setDegree(
+								(effect.containsKey("Degree") ? Double.parseDouble(effect.get("Degree").toString())
+										: 90.0));
+					} else if (effectName.equals("JumpTo")) {
 						ef = new JumpTo(ei);
-					} else if(effectName.equals("PullTo")) {
+					} else if (effectName.equals("PullTo")) {
 						ef = new PullTo(ei);
 					}
-					
-					if(ei.getType().equals(EffectType.REPEATING)) {
+
+					// Since these are special, they are created using the ability created above and
+					// then used instead
+					if (ei.getType().equals(EffectType.REPEATING)) {
 						RepeatingEffect re = new RepeatingEffect(ei, (Effect) ef);
 						effectsList.add(re);
-					} else if(ei.getType().equals(EffectType.LIMIT)) {
-						LimitEffect le = new LimitEffect(ei, (Effect)ef);
+					} else if (ei.getType().equals(EffectType.LIMIT)) {
+						LimitEffect le = new LimitEffect(ei, (Effect) ef);
 						effectsList.add(le);
 					} else {
 						effectsList.add((Effect) ef);
 					}
 				}
 			});
-			
+
 		}
-		
+
 		return effectsList;
 	}
-	
+
 	private boolean performEffectTypeCheck(EffectInformation ei, JSONObject effect, String name, String k) {
-		// Checks for missing values in repeating
-		if(ei.getType().equals(EffectType.REPEATING)) {
-			if(!effect.containsKey("Duration")) {	
-				MinecraftMMO.getInstance().getServer().getConsoleSender().sendMessage(ChatColor.RED + "[" + name + "] - Missing value `Duration` for repeating effect " + k.toString());
+		// Reapting requires having Duration and Every
+		if (ei.getType().equals(EffectType.REPEATING)) {
+			// How long the effect will happen for
+			if (!effect.containsKey("Duration")) {
+				MinecraftMMO.getInstance().getServer().getConsoleSender().sendMessage(ChatColor.RED + "[" + name
+						+ "] - Missing value `Duration` for repeating effect " + k.toString());
 				return false;
 			}
-			if(!effect.containsKey("Every")) {
-				MinecraftMMO.getInstance().getServer().getConsoleSender().sendMessage(ChatColor.RED + "[" + name + "] - Missing value `Every` for repeating effect " + k.toString());
+			// EVERY {x} amount the ability will fire. 20 duration with every 2 means the
+			// ability will fire 10 times
+			if (!effect.containsKey("Every")) {
+				MinecraftMMO.getInstance().getServer().getConsoleSender().sendMessage(
+						ChatColor.RED + "[" + name + "] - Missing value `Every` for repeating effect " + k.toString());
 				return false;
 			}
 			ei.setDuration((long) effect.get("Duration"));
 			ei.setEvery((long) effect.get("Every"));
 		}
-		
-		if(k.equalsIgnoreCase("Cone")) {
-			if(!effect.containsKey("Effects")) {
-				MinecraftMMO.getInstance().getServer().getConsoleSender().sendMessage(ChatColor.RED + "[" + name + "] - Missing value `Effects` for Cone effect " + k.toString());
+
+		// Cone requires additional effects for the cone to happen
+		if (k.equalsIgnoreCase("Cone")) {
+			if (!effect.containsKey("Effects")) {
+				MinecraftMMO.getInstance().getServer().getConsoleSender().sendMessage(
+						ChatColor.RED + "[" + name + "] - Missing value `Effects` for Cone effect " + k.toString());
 				return false;
 			}
 		}
-		
-		if(ei.getType().equals(EffectType.LIMIT)) {
-			if(!effect.containsKey("Limit")) {	
-				MinecraftMMO.getInstance().getServer().getConsoleSender().sendMessage(ChatColor.RED + "[" + name + "] - Missing value `Limit` for Limited effect " + k.toString());
+
+		// Limit requires the limit (amount) and every for running
+		if (ei.getType().equals(EffectType.LIMIT)) {
+			if (!effect.containsKey("Limit")) {
+				MinecraftMMO.getInstance().getServer().getConsoleSender().sendMessage(
+						ChatColor.RED + "[" + name + "] - Missing value `Limit` for Limited effect " + k.toString());
 				return false;
 			}
-			if(!effect.containsKey("Every")) {
-				MinecraftMMO.getInstance().getServer().getConsoleSender().sendMessage(ChatColor.RED + "[" + name + "] - Missing value `Every` for repeating effect " + k.toString());
+			if (!effect.containsKey("Every")) {
+				MinecraftMMO.getInstance().getServer().getConsoleSender().sendMessage(
+						ChatColor.RED + "[" + name + "] - Missing value `Every` for repeating effect " + k.toString());
 				return false;
 			}
 			ei.setLimitTimes(Integer.valueOf(effect.get("Limit").toString()));
 			ei.setEvery((long) effect.get("Every"));
 		}
-		
+
 		return true;
 	}
-	
+
 }

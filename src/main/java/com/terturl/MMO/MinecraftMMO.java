@@ -77,36 +77,37 @@ public class MinecraftMMO extends JavaPlugin {
 	private RecipeManager recipeManager;
 	@Getter
 	private MMOEntityManager entityManager;
-	
+
 	@Getter
 	private MobFileReader mobReader;
 	@Getter
 	private MMOMobManager mobManager;
-	
+
 	// Skills
 	@Getter
 	private HerbalismManager herbalismManager;
-	
+
 	private static MinecraftMMO instance;
-	
+
 	public void onLoad() {
 		instance = this;
-		if(!getDataFolder().exists()) getDataFolder().mkdir();
+		if (!getDataFolder().exists())
+			getDataFolder().mkdir();
 		questManager = new QuestManager();
 	}
-	
+
 	// CustomMobs {Level} | {Name} | {Health}
 	// Test 2
 	public void onEnable() {
 		mathConfig = new MathConfiguration();
-		
+
 		try {
 			itemManager = new CustomItemManager();
 			recipeManager = new RecipeManager();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		abilityManager = new AbilityManager();
 		classHandler = new ClassHandler();
 		registerQuestTypes();
@@ -114,47 +115,47 @@ public class MinecraftMMO extends JavaPlugin {
 		npcHandler = new NPCManager();
 		playerHandler = new PlayerHandler();
 		mmoConfiguration = new Configuration();
-		
+
 		mobManager = new MMOMobManager();
 		mobReader = new MobFileReader();
-		
+
 		shopManager = new ShopManager();
-		
+
 		// Skills
 		herbalismManager = new HerbalismManager();
-		
+
 		try {
 			entityManager = new MMOEntityManager();
-		} catch(IOException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		this.getServer().getConsoleSender().sendMessage("Enabling MMO Plugin");
 		registerCommand(new TestCommand());
-		
+
 		registerListeners();
 	}
-	
+
 	public void onDisable() {
 		entityManager.getAliveEntities().forEach(e -> {
 			e.killEntity();
 		});
-		
+
 		Bukkit.getOnlinePlayers().stream().forEach(e -> {
 			playerHandler.savePlayerInfo(e);
 			e.kickPlayer("Maintenence has been initiated, sorry for the inconvience");
 		});
 	}
-	
+
 	public static MinecraftMMO getInstance() {
 		return instance;
 	}
-	
+
 	public <T extends Listener> T registerListener(T listener) {
 		Bukkit.getPluginManager().registerEvents((Listener) listener, (Plugin) this);
 		return listener;
 	}
-	
+
 	private void registerListeners() {
 		registerListener(new PlayerJoinListener());
 		registerListener(new InteractNPCListener());
@@ -166,10 +167,10 @@ public class MinecraftMMO extends JavaPlugin {
 		registerListener(new MMOEntityDeathListener());
 		registerListener(new PlayerDropItemListener());
 		registerListener(new MMOItemPickUpListener());
-		
+
 		registerListener(new HerbalismInteract());
 	}
-	
+
 	private void registerQuestTypes() {
 		questManager.registerQuest("Location", new LocationQuest());
 		questManager.registerQuest("KillEntity", new EntityKillQuest());
@@ -178,7 +179,15 @@ public class MinecraftMMO extends JavaPlugin {
 		questManager.registerQuest("CollectItem", new MMOItemCollectQuest());
 		questManager.registerQuest("MMOKillEntity", new MMOEntityKillQuest());
 	}
-	
+
+	/**
+	 * Method used to programmically add commands to the plugin.yml instead of
+	 * having to do it manually. Mainly since I always forget to do it, this allows
+	 * me to be lazy and add the command automatically
+	 * 
+	 * @param <T> Command to register
+	 * @param command
+	 */
 	public <T extends CraftCommand> void registerCommand(T command) {
 		PluginCommand pg = getCommand(command.getName());
 		if (pg == null) {

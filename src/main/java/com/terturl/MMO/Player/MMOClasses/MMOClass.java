@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -23,6 +24,13 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Handles the level, quests, abilities, recipes, and skills of a players
+ * selected class
+ * 
+ * @author Sean Rahman
+ *
+ */
 @EqualsAndHashCode
 public class MMOClass implements Cloneable {
 
@@ -36,90 +44,156 @@ public class MMOClass implements Cloneable {
 	private List<Quest> activeQuests = new ArrayList<>();
 	@Getter
 	private List<Quest> completedableQuests = new ArrayList<>();
-	
+
 	@Getter
 	private CraftingSkill craftSkill = new CraftingSkill();
-	
+
 	@Getter
 	private List<String> craftingRecipes = new ArrayList<>();
-	
+
 	@Getter
 	private List<String> playerAbilities = new ArrayList<>();
-	
+
 	@Getter
 	private List<Skill> playerSkills = new ArrayList<>();
-	
-	@Getter @Setter
+
+	@Getter
+	@Setter
 	private Ability hotAbility1, hotAbility2, hotAbility3;
-	
-	@Getter @Setter
+
+	@Getter
+	@Setter
 	private Double money = 0.0;
-	@Getter @Setter
+	@Getter
+	@Setter
 	private Double xp = 0.0;
-	
-	@Getter @Setter
+
+	@Getter
+	@Setter
 	private Location classLocation;
-	
+
 	@Getter
 	private String name;
-	
-	@Getter @Setter
+
+	@Getter
+	@Setter
 	private Map<SlotType, String> startItems = new HashMap<>();
-	
-	@Getter @Setter
+
+	@Getter
+	@Setter
 	private String helmet, chest, legs, boots, mainH, offH;
-	
+
+	/**
+	 * Creates a new MMOClass with the given name
+	 * 
+	 * @param name Name of new MMOClass
+	 */
 	public MMOClass(String name) {
 		this.name = name;
 	}
-	
+
+	/**
+	 * Checks if a Quest is within the players active quest list
+	 * 
+	 * @param q Quest to check for
+	 * @return Quests present or not
+	 */
 	public boolean hasActiveQuest(Quest q) {
 		return activeQuests.contains(q);
 	}
-	
+
+	/**
+	 * Checks if a Quest is within the players completedable quest list
+	 * 
+	 * @param q Quest to check for
+	 * @return Quest is present or not
+	 */
 	public boolean hasCompletableQuest(Quest q) {
 		return completedableQuests.contains(q);
 	}
-	
+
+	/**
+	 * Removes a quest from the completedable quest list
+	 * 
+	 * @param q Quest to remove
+	 */
 	public void removeCompletableQuest(Quest q) {
 		int toRemove = -1;
-		for(int i = 0; i < completedableQuests.size(); i++) {
-			if(q.getName().equalsIgnoreCase(completedableQuests.get(i).getName())) {
+		for (int i = 0; i < completedableQuests.size(); i++) {
+			if (q.getName().equalsIgnoreCase(completedableQuests.get(i).getName())) {
 				toRemove = i;
 				break;
 			}
 		}
-		
-		if(toRemove != -1) {
+
+		if (toRemove != -1) {
 			completedableQuests.remove(toRemove);
 		}
 	}
 
+	/**
+	 * Adds a Quest to the players Active Quest list
+	 * 
+	 * @param q Quest to add
+	 */
+	public void addQuest(Quest q) {
+		getActiveQuests().add(q);
+	}
+
+	/**
+	 * Checks if the player has completed a quest
+	 * 
+	 * @param q Quest to check for
+	 * @return If the player has completed the Quest or not
+	 */
 	public boolean hasCompletedQuest(Quest q) {
 		return completedQuests.contains(q.getName());
 	}
-	
+
+	/**
+	 * Checks of the player has completed all parent quests for a specified quest
+	 * 
+	 * @param q Quest to check parents of
+	 * @return If player has completed parent quests
+	 */
 	public boolean hasParentQuestsCompleted(Quest q) {
-		for(String quest : q.getParentQuests()) {
-			if(!completedQuests.contains(quest)) return false;
+		for (String quest : q.getParentQuests()) {
+			if (!completedQuests.contains(quest))
+				return false;
 		}
 		return true;
 	}
-	
+
+	/**
+	 * Add the specified money to the players currency
+	 * 
+	 * @param b Double to add to Money
+	 */
 	public void addMoney(Double b) {
 		money += b;
 	}
-	
+
+	/**
+	 * Adds the specified amount of XP to the player and levels them up if need be
+	 * 
+	 * @param d Double to add to XP
+	 */
 	public void addXP(Double d) {
 		Double finalXP = getNextLevelXP();
-		if(xp+d >= finalXP) {
-			Double rollOver = (xp+d) - finalXP;
+		if (xp + d >= finalXP) {
+			Double rollOver = (xp + d) - finalXP;
 			setLevel(getLevel() + 1);
 			addXP(rollOver);
 		}
 		xp += d;
 	}
-	
+
+	/**
+	 * Checks for how much XP is needed to level up based on the math configuration
+	 * string
+	 * 
+	 * @return Amount of XP needed in Double
+	 */
 	public double getNextLevelXP() {
 		Argument CL = new Argument("CL = " + String.valueOf(getLevel()));
 		Argument NL = new Argument("NL = " + String.valueOf(getLevel() + 1));
@@ -128,29 +202,60 @@ public class MMOClass implements Cloneable {
 		Double finalXP = e.calculate();
 		return finalXP;
 	}
-	
+
+	/**
+	 * Updates the players inventory to show the new stats on the item in the upper
+	 * left of their inventory
+	 * 
+	 * @param p Player to get inventory of
+	 */
 	public void updateClassInformation(Player p) {
 		ItemStack is = BasicInventoryItems.getPlayerClassItem(p);
 		p.getInventory().setItem(9, is);
 		p.updateInventory();
 	}
-	
+
+	/**
+	 * Checks if the MMOClass contains a specific skill or not
+	 * 
+	 * @param s Name of Skill to check for
+	 * @return If the MMOClass contains a skill or not
+	 */
 	public boolean containsSkill(String s) {
-		for(Skill skill : playerSkills) {
-			if(skill.getSkillName().equalsIgnoreCase(s)) return true;
+		for (Skill skill : playerSkills) {
+			if (skill.getSkillName().equalsIgnoreCase(s))
+				return true;
 		}
 		return false;
 	}
-	
-	public void addXp(String s, Double xp) {
-		if(!containsSkill(s)) return;
+
+	/**
+	 * Adds the specified XP to the specified skill
+	 * 
+	 * @param s  Name of Skill
+	 * @param xp XP to add to skill
+	 */
+	public void addXpToSkill(String s, Double xp) {
+		if (!containsSkill(s))
+			return;
 		playerSkills.forEach(e -> {
-			if(e.getSkillName().equalsIgnoreCase(s)) {
+			if (e.getSkillName().equalsIgnoreCase(s)) {
 				e.addXP(xp);
 			}
 		});
 	}
-	
+
+	/**
+	 * Get all quests with the specified type
+	 * 
+	 * @param s Type of Quest
+	 * @return
+	 */
+	public List<Quest> getQuestsWithType(String s) {
+		return getActiveQuests().stream().filter(q -> q.getQuestType().equals("CollectItem"))
+				.collect(Collectors.toList());
+	}
+
 	public Object clone() {
 		try {
 			return super.clone();

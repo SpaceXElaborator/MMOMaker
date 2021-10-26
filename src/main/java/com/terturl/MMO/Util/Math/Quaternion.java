@@ -5,6 +5,14 @@ import org.bukkit.util.Vector;
 
 import lombok.Getter;
 
+/**
+ * Class to handle all Quaternion math for placement and rotation of
+ * ArmorStandParts
+ * 
+ * @author Sean Rahman
+ * @since 0.59.0
+ *
+ */
 public class Quaternion {
 
 	@Getter

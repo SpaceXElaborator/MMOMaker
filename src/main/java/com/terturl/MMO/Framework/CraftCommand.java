@@ -16,7 +16,14 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
-public abstract class CraftCommand implements CommandExecutor, TabCompleter {
+/**
+ * Helper class to create Spigot commands much easier and faster
+ * 
+ * @author Sean Rahman
+ * @since 0.25.0
+ *
+ */
+public class CraftCommand implements CommandExecutor, TabCompleter {
 
 	private final Map<String, CraftCommand> subCommands = new HashMap<String, CraftCommand>();
 
@@ -24,15 +31,19 @@ public abstract class CraftCommand implements CommandExecutor, TabCompleter {
 	private CraftCommand levelUp = null;
 
 	/**
-	 * Creates a command with the given / string (/{name}). Should be used with super()
+	 * Creates a command with the given / string (/{name}). Should be used with
+	 * super()
+	 * 
 	 * @param command
 	 */
 	protected CraftCommand(String command) {
 		this.name = command;
 	}
-	
+
 	/**
-	 * Creates a command with the given / string as well as adds the subcommands (i.e /{name} {subcommand string name})
+	 * Creates a command with the given / string as well as adds the subcommands
+	 * (i.e /{name} {subcommand string name})
+	 * 
 	 * @param command
 	 * @param subCommands
 	 */
@@ -42,7 +53,9 @@ public abstract class CraftCommand implements CommandExecutor, TabCompleter {
 	}
 
 	/**
-	 * Can be used to add subcommands in the init function of the command if not wanting to put in the super()
+	 * Can be used to add subcommands in the init function of the command if not
+	 * wanting to put in the super()
+	 * 
 	 * @param subCommands
 	 */
 	public final void addSubCommand(CraftCommand... subCommands) {
@@ -61,9 +74,10 @@ public abstract class CraftCommand implements CommandExecutor, TabCompleter {
 	public boolean finalCommand() {
 		return false;
 	}
-	
+
 	/**
-	 * Should never be called directly, needed to handle commands from CommandExecutor
+	 * Should never be called directly, needed to handle commands from
+	 * CommandExecutor
 	 */
 	public final boolean onCommand(final CommandSender cs, Command cmd, String label, String[] args) {
 		try {
@@ -73,7 +87,7 @@ public abstract class CraftCommand implements CommandExecutor, TabCompleter {
 				subCommand = getSubCommand(args[0]);
 			}
 			if (subCommand != null) {
-				if(finalCommand()) {
+				if (finalCommand()) {
 					try {
 						dispatchHandler(cs, args);
 					} catch (Exception e) {
@@ -86,7 +100,7 @@ public abstract class CraftCommand implements CommandExecutor, TabCompleter {
 			}
 			try {
 				dispatchHandler(cs, args);
-			} catch (Exception e)  {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		} catch (Exception e) {
@@ -97,7 +111,8 @@ public abstract class CraftCommand implements CommandExecutor, TabCompleter {
 	}
 
 	/**
-	 * Should never be called directly, needed to handle tab completion from TabCompletor
+	 * Should never be called directly, needed to handle tab completion from
+	 * TabCompletor
 	 */
 	public List<String> onTabComplete(CommandSender cs, Command cmd, String label, String[] args) {
 		if (args.length > 1) {
@@ -116,7 +131,9 @@ public abstract class CraftCommand implements CommandExecutor, TabCompleter {
 	}
 
 	/**
-	 * Changes the handle command based on the CommandSender and sends the command to appropriate handleCommand() function
+	 * Changes the handle command based on the CommandSender and sends the command
+	 * to appropriate handleCommand() function
+	 * 
 	 * @param cs
 	 * @param args
 	 */
@@ -130,7 +147,9 @@ public abstract class CraftCommand implements CommandExecutor, TabCompleter {
 	}
 
 	/**
-	 * Needed to find the subcommands from the list and append them when hitting tab in-game for TabCompletion
+	 * Needed to find the subcommands from the list and append them when hitting tab
+	 * in-game for TabCompletion
+	 * 
 	 * @param s
 	 * @return
 	 */
@@ -151,24 +170,30 @@ public abstract class CraftCommand implements CommandExecutor, TabCompleter {
 
 	/**
 	 * Handles commands when the Player calls them
+	 * 
 	 * @param p
 	 * @param args
 	 */
-	protected void handleCommand(Player p, String[] args) {}
-	
+	protected void handleCommand(Player p, String[] args) {
+	}
+
 	/**
 	 * Handles commands when the Console calls them
+	 * 
 	 * @param ccs
 	 * @param args
 	 */
-	protected void handleCommand(ConsoleCommandSender ccs, String[] args) {}
-	
+	protected void handleCommand(ConsoleCommandSender ccs, String[] args) {
+	}
+
 	/**
 	 * Handles commands when a CommandBlock calls them
+	 * 
 	 * @param bcs
 	 * @param args
 	 */
-	protected void handleCommand(BlockCommandSender bcs, String[] args) {}
+	protected void handleCommand(BlockCommandSender bcs, String[] args) {
+	}
 
 	protected List<String> handleTabComplete(CommandSender sender, Command command, String alias, String[] args) {
 		if (this.subCommands.size() > 0)

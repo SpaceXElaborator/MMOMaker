@@ -15,6 +15,13 @@ import lombok.Getter;
 import lombok.Setter;
 import net.md_5.bungee.api.ChatColor;
 
+/**
+ * MMOEntityKillQuest focuses on the killing of specifically named entities created from the Entity package
+ * @see com.terturl.MMO.Entity.MMOEntity
+ * @author Sean Rahman
+ * @since 0.52.0
+ *
+ */
 public class MMOEntityKillQuest extends Quest {
 
 	@Getter @Setter
@@ -27,6 +34,9 @@ public class MMOEntityKillQuest extends Quest {
 		hasKilled.put(et, 0);
 	}
 	
+	/**
+	 * @see Quest#hasComplete(Player)
+	 */
 	@Override
 	public boolean hasComplete(Player p) {
 		for(String et : amountToKill.keySet()) {
@@ -35,6 +45,9 @@ public class MMOEntityKillQuest extends Quest {
 		return true;
 	}
 
+	/**
+	 * @see Quest#completeQuest(Player)
+	 */
 	@Override
 	public void completeQuest(Player p) {
 		p.sendMessage("You have completed the quest");
@@ -60,6 +73,9 @@ public class MMOEntityKillQuest extends Quest {
 		return q;
 	}
 
+	/**
+	 * @see Quest#requirementsLore()
+	 */
 	@Override
 	public List<String> requirementsLore() {
 		List<String> lore = new ArrayList<>();
@@ -73,6 +89,9 @@ public class MMOEntityKillQuest extends Quest {
 		return lore;
 	}
 
+	/**
+	 * @see Quest#saveQuest()
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public JSONObject saveQuest() {
@@ -88,6 +107,9 @@ public class MMOEntityKillQuest extends Quest {
 		return jo;
 	}
 	
+	/**
+	 * @see Quest#loadQuestToPlayer(JSONObject)
+	 */
 	@Override
 	public void loadQuestToPlayer(JSONObject jo) {
 		if(jo.containsKey("Entities")) {
@@ -101,6 +123,9 @@ public class MMOEntityKillQuest extends Quest {
 		}
 	}
 
+	/**
+	 * @see Quest#loadQuest(JSONObject)
+	 */
 	@Override
 	public void loadQuest(JSONObject jo) {
 		JSONArray ja = (JSONArray) jo.get("EntityInformation");

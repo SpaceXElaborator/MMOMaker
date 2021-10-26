@@ -15,14 +15,24 @@ import lombok.Getter;
 import lombok.Setter;
 import net.md_5.bungee.api.ChatColor;
 
+/**
+ * CustomCraftQuest holds all the CustomItems the player must craft. Will also
+ * create, load, and save information to the players save file
+ * 
+ * @author Sean Rahman
+ * @since 0.43.0
+ *
+ */
 public class CustomCraftQuest extends Quest {
 
-	@Getter @Setter
+	@Getter
+	@Setter
 	private Map<String, Integer> toCraft = new HashMap<>();
-	
-	@Getter @Setter
+
+	@Getter
+	@Setter
 	private Map<String, Integer> hasCrafted = new HashMap<>();
-	
+
 	@Override
 	public Object clone() {
 		CustomCraftQuest q = new CustomCraftQuest();
@@ -42,56 +52,78 @@ public class CustomCraftQuest extends Quest {
 		q.setHasCrafted(hasCrafted);
 		return q;
 	}
-	
+
+	/**
+	 * Adds an item by string to the craft list
+	 * @param s Name of CustomItem to craft
+	 * @param a Amount the player has to craft
+	 */
 	public void addItemToCraft(String s, Integer a) {
 		toCraft.put(s, a);
 		hasCrafted.put(s, 0);
 	}
 
+	/**
+	 * @see Quest#hasComplete(Player)
+	 */
 	@Override
 	public boolean hasComplete(Player p) {
-		for(String s : toCraft.keySet()) {
-			if(toCraft.get(s) != hasCrafted.get(s)) return false;
+		for (String s : toCraft.keySet()) {
+			if (toCraft.get(s) != hasCrafted.get(s))
+				return false;
 		}
 		return true;
 	}
 
+	/**
+	 * @see Quest#completeQuest(Player)
+	 */
 	@Override
 	public void completeQuest(Player p) {
 		giveRewards(p);
 		p.sendMessage("Completed quest");
 	}
 
+	/**
+	 * @see Quest#requirementsLore()
+	 */
 	@Override
 	public List<String> requirementsLore() {
 		List<String> lore = new ArrayList<>();
-		for(String s : toCraft.keySet()) {
-			if(toCraft.get(s) <= hasCrafted.get(s)) {
+		for (String s : toCraft.keySet()) {
+			if (toCraft.get(s) <= hasCrafted.get(s)) {
 				lore.add(ChatColor.GREEN + "" + ChatColor.BOLD + ChatColor.GREEN + "\u2714 Crafted " + s);
 			} else {
-				lore.add(ChatColor.RED + "" + ChatColor.BOLD + "\u2715 " + ChatColor.RED + String.valueOf(hasCrafted.get(s) + "/" + String.valueOf(toCraft.get(s)) + s + " Crafted"));
+				lore.add(ChatColor.RED + "" + ChatColor.BOLD + "\u2715 " + ChatColor.RED
+						+ String.valueOf(hasCrafted.get(s) + "/" + String.valueOf(toCraft.get(s)) + s + " Crafted"));
 			}
 		}
 		return lore;
 	}
 
+	/**
+	 * @see Quest#loadQuest(JSONObject)
+	 */
 	@Override
 	public void loadQuest(JSONObject jo) {
 		JSONArray ja = (JSONArray) jo.get("CraftingInformation");
-		for(Object o : ja) {
-			JSONObject entry = (JSONObject)o;
+		for (Object o : ja) {
+			JSONObject entry = (JSONObject) o;
 			String s = entry.get("Item").toString();
 			Integer amount = Integer.parseInt(entry.get("Amount").toString());
 			addItemToCraft(s, amount);
 		}
 	}
 
+	/**
+	 * @see Quest#saveQuest()
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public JSONObject saveQuest() {
 		JSONObject jo = new JSONObject();
 		JSONArray hasCrafted = new JSONArray();
-		for(String s : getHasCrafted().keySet()) {
+		for (String s : getHasCrafted().keySet()) {
 			JSONObject entry = new JSONObject();
 			entry.put("Item", s);
 			entry.put("Amount", getHasCrafted().get(s));
@@ -101,17 +133,20 @@ public class CustomCraftQuest extends Quest {
 		return jo;
 	}
 
+	/**
+	 * @see Quest#loadQuestToPlayer(JSONObject)
+	 */
 	@Override
 	public void loadQuestToPlayer(JSONObject jo) {
-		if(jo.containsKey("Crafted")) {
-			JSONArray entries = (JSONArray)jo.get("Crafted");
-			for(Object o : entries) {
-				JSONObject entity = (JSONObject)o;
+		if (jo.containsKey("Crafted")) {
+			JSONArray entries = (JSONArray) jo.get("Crafted");
+			for (Object o : entries) {
+				JSONObject entity = (JSONObject) o;
 				String et = entity.get("Item").toString();
 				Integer amount = Integer.parseInt(entity.get("Amount").toString());
 				getHasCrafted().put(et, amount);
 			}
 		}
 	}
-	
+
 }

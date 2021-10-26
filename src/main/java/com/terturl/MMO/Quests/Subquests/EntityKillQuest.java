@@ -16,26 +16,43 @@ import lombok.Getter;
 import lombok.Setter;
 import net.md_5.bungee.api.ChatColor;
 
+/**
+ * Handles the saving, loading, and creation of Entity Killing Quests. This
+ * handles only Bukkit Entity Types (Zombie, Skeleton, Creeper....)
+ * 
+ * @author Sean Rahman
+ * @since 0.29.0
+ */
 public class EntityKillQuest extends Quest {
 
-	@Getter @Setter
+	@Getter
+	@Setter
 	public Map<EntityType, Integer> amountToKill = new HashMap<>();
-	@Getter @Setter
+	@Getter
+	@Setter
 	public Map<EntityType, Integer> hasKilled = new HashMap<>();
-	
+
 	public void addEntityToKill(EntityType et, Integer amount) {
 		amountToKill.put(et, amount);
 		hasKilled.put(et, 0);
 	}
+
 	
+	/**
+	 * @see Quest#hasComplete(Player)
+	 */
 	@Override
 	public boolean hasComplete(Player p) {
-		for(EntityType et : amountToKill.keySet()) {
-			if(amountToKill.get(et) > hasKilled.get(et)) return false;
+		for (EntityType et : amountToKill.keySet()) {
+			if (amountToKill.get(et) > hasKilled.get(et))
+				return false;
 		}
 		return true;
 	}
 
+	/**
+	 * @see Quest#completeQuest(Player)
+	 */
 	@Override
 	public void completeQuest(Player p) {
 		p.sendMessage("You have completed the quest");
@@ -61,25 +78,32 @@ public class EntityKillQuest extends Quest {
 		return q;
 	}
 
+	/**
+	 * @see Quest#requirementsLore()
+	 */
 	@Override
 	public List<String> requirementsLore() {
 		List<String> lore = new ArrayList<>();
-		for(EntityType s : amountToKill.keySet()) {
-			if(amountToKill.get(s) <= hasKilled.get(s)) {
+		for (EntityType s : amountToKill.keySet()) {
+			if (amountToKill.get(s) <= hasKilled.get(s)) {
 				lore.add(ChatColor.GREEN + "" + ChatColor.BOLD + ChatColor.GREEN + "\u2714 Killed " + s);
 			} else {
-				lore.add(ChatColor.RED + "" + ChatColor.BOLD + "\u2715 " + ChatColor.RED + String.valueOf(hasKilled.get(s) + "/" + String.valueOf(amountToKill.get(s)) + " " + s + " Killed"));
+				lore.add(ChatColor.RED + "" + ChatColor.BOLD + "\u2715 " + ChatColor.RED + String
+						.valueOf(hasKilled.get(s) + "/" + String.valueOf(amountToKill.get(s)) + " " + s + " Killed"));
 			}
 		}
 		return lore;
 	}
 
+	/**
+	 * @see Quest#saveQuest()
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public JSONObject saveQuest() {
 		JSONObject jo = new JSONObject();
 		JSONArray hasKilled = new JSONArray();
-		for(EntityType et : getHasKilled().keySet()) {
+		for (EntityType et : getHasKilled().keySet()) {
 			JSONObject entry = new JSONObject();
 			entry.put("Type", et.toString());
 			entry.put("Amount", getHasKilled().get(et));
@@ -88,13 +112,16 @@ public class EntityKillQuest extends Quest {
 		jo.put("Entities", hasKilled);
 		return jo;
 	}
-	
+
+	/**
+	 * @see Quest#loadQuestToPlayer(JSONObject)
+	 */
 	@Override
 	public void loadQuestToPlayer(JSONObject jo) {
-		if(jo.containsKey("Entities")) {
-			JSONArray entries = (JSONArray)jo.get("Entities");
-			for(Object o : entries) {
-				JSONObject entity = (JSONObject)o;
+		if (jo.containsKey("Entities")) {
+			JSONArray entries = (JSONArray) jo.get("Entities");
+			for (Object o : entries) {
+				JSONObject entity = (JSONObject) o;
 				EntityType et = EntityType.valueOf(entity.get("Type").toString());
 				Integer amount = Integer.parseInt(entity.get("Amount").toString());
 				getHasKilled().put(et, amount);
@@ -102,11 +129,14 @@ public class EntityKillQuest extends Quest {
 		}
 	}
 
+	/**
+	 * @see Quest#loadQuest(JSONObject)
+	 */
 	@Override
 	public void loadQuest(JSONObject jo) {
 		JSONArray ja = (JSONArray) jo.get("EntityInformation");
-		for(Object o : ja) {
-			JSONObject entry = (JSONObject)o;
+		for (Object o : ja) {
+			JSONObject entry = (JSONObject) o;
 			EntityType et = EntityType.valueOf(entry.get("Type").toString().toUpperCase());
 			Integer amount = Integer.parseInt(entry.get("Amount").toString());
 			addEntityToKill(et, amount);

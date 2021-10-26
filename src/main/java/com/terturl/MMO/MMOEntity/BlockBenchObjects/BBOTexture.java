@@ -7,19 +7,32 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * A texture representation class that holds an integer value for determination
+ * of the texture as well as the actual BufferedImage obtained from the Base64
+ * string to be used in game for presenting the item
+ * 
+ * @author Sean Rahman
+ * @since 0.57.0
+ *
+ */
 @ToString
 public class BBOTexture {
 
-	@Getter @Setter
+	@Getter
+	@Setter
 	private String name;
-	
-	@Getter @Setter
+
+	@Getter
+	@Setter
 	private Integer id;
-	
-	@Getter @Setter
+
+	@Getter
+	@Setter
 	private UUID uuid;
-	
-	@Getter @Setter
+
+	@Getter
+	@Setter
 	private BufferedImage texture;
-	
+
 }

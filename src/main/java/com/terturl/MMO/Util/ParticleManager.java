@@ -6,8 +6,17 @@ import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.util.Vector;
 
+/**
+ * Helper class that as of right now, just stores math that I came across while
+ * testing out different things. These are not used anywhere currently but will
+ * be added in when I make the Effect for it
+ * 
+ * @author Sean Rahman
+ * @since 0.25.0
+ *
+ */
 public class ParticleManager {
-	
+
 	public static void spawnCylinder(Location loc, Integer r) {
 		for (double i = 0; i <= Math.PI; i += Math.PI / 10) {
 			double radius = r;
@@ -21,7 +30,7 @@ public class ParticleManager {
 			}
 		}
 	}
-	
+
 	public static void spawnPool(Location loc, Integer r) {
 		int rad = 0;
 		boolean goingUp = true;
@@ -34,29 +43,30 @@ public class ParticleManager {
 				loc.getWorld().spawnParticle(Particle.FLAME, loc, 0);
 				loc.subtract(x, y, z);
 			}
-			if(goingUp)
+			if (goingUp)
 				rad += 1;
 			else
 				rad -= 1;
-			if(rad == r) goingUp = false;
+			if (rad == r)
+				goingUp = false;
 		}
 	}
-	
+
 	public static void spawnSphere(Location loc, Particle p, int particleAmount, Double r) {
-		for(int i = 0; i < particleAmount; i++) {
+		for (int i = 0; i < particleAmount; i++) {
 			Vector v = getRandomVector().multiply(r);
 			loc.add(v);
 			loc.getWorld().spawnParticle(p, loc, 0);
 			loc.subtract(v);
 		}
 	}
-	
+
 	public static Vector getRandomVector() {
 		Random r = new Random(System.nanoTime());
 		double x = r.nextDouble() * 2 - 1;
 		double y = r.nextDouble() * 2 - 1;
 		double z = r.nextDouble() * 2 - 1;
-		
+
 		return new Vector(x, y, z).normalize();
 	}
 

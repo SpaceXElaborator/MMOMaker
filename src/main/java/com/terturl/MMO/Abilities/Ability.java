@@ -18,6 +18,14 @@ import com.terturl.MMO.Effects.Util.EffectInformation;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Lays out the framework for how much an ability costs, the level requirement,
+ * and what effects will be played when firing the ability
+ * 
+ * @author Sean Rahman
+ * @since 0.25.0
+ *
+ */
 public class Ability implements Cloneable {
 
 	@Getter
@@ -35,14 +43,32 @@ public class Ability implements Cloneable {
 	@Getter
 	private List<Effect> effects = new ArrayList<>();
 
+	/**
+	 * Creates an empty ability, must add effects and costs
+	 * 
+	 * @param n Name of the ability
+	 */
 	public Ability(String n) {
 		name = n;
 	}
 
+	/**
+	 * Adds specified cost and amount to the ability.
+	 * 
+	 * @param ac     AbilityCosts type
+	 * @param Amount Amount it will take
+	 * @see com.terturl.MMO.Abilities.Ability.AbilityCosts
+	 */
 	public void addCost(AbilityCosts ac, Double Amount) {
 		costs.put(ac, Amount);
 	}
 
+	/**
+	 * Fires all Effects and will eventually check if the player has the required
+	 * costs before firing
+	 * 
+	 * @param p Player that will use the ability
+	 */
 	public void useAbility(Player p) {
 		getEffects().stream().forEach(e -> {
 			EffectInformation ei = e.getEffectInformation();
@@ -57,7 +83,7 @@ public class Ability implements Cloneable {
 				ei.setLoc(p.getTargetBlock((Set<Material>) null, 10).getLocation().add(0.5, 0.5, 0.5).clone());
 			}
 			e.setEffectInformation(ei);
-			((Effect)e.clone()).run();
+			((Effect) e.clone()).run();
 		});
 	}
 
@@ -70,6 +96,12 @@ public class Ability implements Cloneable {
 		return null;
 	}
 
+	/**
+	 * Adds any effect to the list of Effects the Ability will fire when used
+	 * 
+	 * @param e Effect to add
+	 * @see com.terturl.MMO.Effects.Effect
+	 */
 	public void addEffect(Effect e) {
 		effects.add(e);
 	}

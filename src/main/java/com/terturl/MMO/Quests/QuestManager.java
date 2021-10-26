@@ -15,60 +15,84 @@ import com.terturl.MMO.Util.JsonFileInterpretter;
 import lombok.Getter;
 import net.md_5.bungee.api.ChatColor;
 
+/**
+ * Handles the creation and loading of Quests
+ * 
+ * @author Sean Rahman
+ * @since 0.25.0
+ *
+ */
 public class QuestManager {
 
 	@Getter
 	private List<Quest> allQuests = new ArrayList<>();
-	
+
 	private Map<String, Quest> questTypes = new HashMap<>();
-	
+
 	private File questDir;
-	
+
+	/**
+	 * Creates the quests folder at /plugins/MinecraftMMO/quests
+	 */
 	public QuestManager() {
 		questDir = new File(MinecraftMMO.getInstance().getDataFolder(), "quests");
-		if(!questDir.exists()) questDir.mkdir();
+		if (!questDir.exists())
+			questDir.mkdir();
 	}
-	
+
+	/**
+	 * Load quests from the quests folder
+	 */
 	public void loadQuests() {
 		Bukkit.getConsoleSender().sendMessage(ChatColor.BLUE + "[MMO-RPG] Registering Quests...");
-		for(File f : questDir.listFiles()) {
-			if(f.getName().endsWith(".json")) {
+		for (File f : questDir.listFiles()) {
+			if (f.getName().endsWith(".json")) {
 				Object q = null;
 				JsonFileInterpretter config = new JsonFileInterpretter(f);
 				String name = config.contains("Name") ? config.getString("Name") : null;
 				String descString = config.contains("Description") ? config.getString("Description") : null;
 				Boolean requireTurnIn = config.contains("RequireTurnIn") ? config.getBoolean("RequireTurnIn") : true;
-				String presentString = config.contains("Present") ? config.getString("Present") : "Would you like to ACCEPT or DENY?";
+				String presentString = config.contains("Present") ? config.getString("Present")
+						: "Would you like to ACCEPT or DENY?";
 				String denyString = config.contains("Deny") ? config.getString("Deny") : "That's Very Sad Traveller";
 				String acceptString = config.contains("Accept") ? config.getString("Accept") : "Thank you Traveller!";
 				String type = config.contains("Type") ? config.getString("Type") : "Basic";
 				Double money = config.contains("Money") ? config.getDouble("Money") : 0.0;
 				Double xp = config.contains("XP") ? config.getDouble("XP") : 0.0;
 				List<String> questLore = config.contains("Lore") ? config.getStringList("Lore") : new ArrayList<>();
-				
+
 				// TODO: Combine these into one Rewards JSONObject
 				List<String> customItems = config.contains("Items") ? config.getStringList("Items") : new ArrayList<>();
-				List<String> questRewards = config.contains("RewardQuests") ? config.getStringList("RewardQuests") : new ArrayList<>();
-				List<String> parentQuests = config.contains("Parents") ? config.getStringList("Parents") : new ArrayList<>();
-				List<String> craftingRecipes = config.contains("CraftingRecipes") ? config.getStringList("CraftingRecipes") : new ArrayList<>();
-				
+				List<String> questRewards = config.contains("RewardQuests") ? config.getStringList("RewardQuests")
+						: new ArrayList<>();
+				List<String> parentQuests = config.contains("Parents") ? config.getStringList("Parents")
+						: new ArrayList<>();
+				List<String> craftingRecipes = config.contains("CraftingRecipes")
+						? config.getStringList("CraftingRecipes")
+						: new ArrayList<>();
+
 				// TODO: Make this a check method
-				if(name == null || descString == null) continue;
-				if(!questTypes.containsKey(type)) {
-					MinecraftMMO.getInstance().getLogger().log(Level.WARNING, "Quest File: " + f.getName() + " has unknown type");
+				if (name == null || descString == null)
+					continue;
+				if (!questTypes.containsKey(type)) {
+					MinecraftMMO.getInstance().getLogger().log(Level.WARNING,
+							"Quest File: " + f.getName() + " has unknown type");
 					continue;
 				}
-				if(!config.contains("Properties")) {
-					MinecraftMMO.getInstance().getLogger().log(Level.WARNING, "Quest File: " + f.getName() + " has no properties field to load quest information");
+				if (!config.contains("Properties")) {
+					MinecraftMMO.getInstance().getLogger().log(Level.WARNING,
+							"Quest File: " + f.getName() + " has no properties field to load quest information");
 					continue;
 				}
-				
+
 				q = (Quest) questTypes.get(type).clone();
-				if(q == null) {
-					MinecraftMMO.getInstance().getLogger().log(Level.WARNING, "Quest File: " + f.getName() + " unable to create new. Check clone() method");
+				if (q == null) {
+					MinecraftMMO.getInstance().getLogger().log(Level.WARNING,
+							"Quest File: " + f.getName() + " unable to create new. Check clone() method");
 					continue;
 				}
-				
+
+				// Load the quests based on their properties to get around an ugly if/else if/else block like AbilityManager has
 				((Quest) q).loadQuest(config.getObject("Properties"));
 				((Quest) q).setName(name);
 				((Quest) q).setLoreForQuest(questLore);
@@ -89,14 +113,26 @@ public class QuestManager {
 		}
 		Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "[MMO-RPG] Done");
 	}
-	
+
+	/**
+	 * Used to register a new Quest AND quest type
+	 * 
+	 * @param type      Type of quest
+	 * @param baseClass Quest to represent
+	 */
 	public void registerQuest(String type, Quest baseClass) {
 		baseClass.setQuestType(type);
 		questTypes.put(type, baseClass);
 	}
-	
+
+	/**
+	 * Get the quest based on the quests name
+	 * 
+	 * @param s Name of Quest
+	 * @return Quest or Null
+	 */
 	public Quest getQuest(String s) {
 		return allQuests.stream().filter(e -> e.getName().equals(s)).findFirst().orElse(null);
 	}
-	
+
 }

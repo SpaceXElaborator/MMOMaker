@@ -9,6 +9,12 @@ import com.terturl.MMO.MinecraftMMO;
 
 import lombok.Getter;
 
+/**
+ * The manager of all math strings to be processed by xMparser
+ * @author Sean Rahman
+ * @since 0.32.10
+ *
+ */
 public class MathConfiguration {
 
 	@Getter
