@@ -148,7 +148,7 @@ public class QuestManager {
 		
 		JsonFileInterpretter config = new JsonFileInterpretter(f);
 		
-		FileWriter wfw = new FileWriter(getWarnings());;
+		FileWriter wfw = new FileWriter(getWarnings());
 		BufferedWriter wbw = new BufferedWriter(wfw);
 		
 		if(!config.contains("Name")) {

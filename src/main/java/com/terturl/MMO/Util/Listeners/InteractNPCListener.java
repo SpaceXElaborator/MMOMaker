@@ -50,9 +50,10 @@ public class InteractNPCListener implements Listener {
 		} else {
 			npc.lookAtPlayer(p, p);
 			Quest questToComplete = null;
-			for (Quest q : mc.getCompletedableQuests()) {
-				if (npc.getGivableQuest().contains(q)) {
-					questToComplete = q;
+			for (String q : mc.getCompletedableQuests()) {
+				Quest quest = MinecraftMMO.getInstance().getQuestManager().getQuest(q);
+				if (npc.getGivableQuest().contains(quest)) {
+					questToComplete = quest;
 					break;
 				}
 			}

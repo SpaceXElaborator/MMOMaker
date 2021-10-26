@@ -141,10 +141,10 @@ public abstract class Quest {
 		MMOPlayer mp = MinecraftMMO.getInstance().getPlayerHandler().getPlayer(p);
 		MMOClass mc = mp.getMmoClasses().get(mp.getCurrentCharacter());
 		if (requireTurnIn) {
-			if (mc.getCompletedableQuests().contains(this))
+			if (mc.getCompletedableQuests().contains(getName()))
 				return;
 			p.sendMessage("Completed Quest, go turn in");
-			mc.getCompletedableQuests().add(this);
+			mc.getCompletedableQuests().add(getName());
 			completed = true;
 		} else {
 			p.sendMessage("Completed Quest");

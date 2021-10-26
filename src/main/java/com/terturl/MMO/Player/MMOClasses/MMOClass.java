@@ -43,7 +43,7 @@ public class MMOClass implements Cloneable {
 	@Getter
 	private List<Quest> activeQuests = new ArrayList<>();
 	@Getter
-	private List<Quest> completedableQuests = new ArrayList<>();
+	private List<String> completedableQuests = new ArrayList<>();
 
 	@Getter
 	private CraftingSkill craftSkill = new CraftingSkill();
@@ -108,7 +108,7 @@ public class MMOClass implements Cloneable {
 	 * @param q Quest to check for
 	 * @return Quest is present or not
 	 */
-	public boolean hasCompletableQuest(Quest q) {
+	public boolean hasCompletableQuest(String q) {
 		return completedableQuests.contains(q);
 	}
 
@@ -118,17 +118,18 @@ public class MMOClass implements Cloneable {
 	 * @param q Quest to remove
 	 */
 	public void removeCompletableQuest(Quest q) {
-		int toRemove = -1;
-		for (int i = 0; i < completedableQuests.size(); i++) {
-			if (q.getName().equalsIgnoreCase(completedableQuests.get(i).getName())) {
-				toRemove = i;
-				break;
-			}
-		}
-
-		if (toRemove != -1) {
-			completedableQuests.remove(toRemove);
-		}
+		completedableQuests.remove(q.getName());
+//		int toRemove = -1;
+//		for (int i = 0; i < completedableQuests.size(); i++) {
+//			if (q.getName().equalsIgnoreCase(completedableQuests.get(i).getName())) {
+//				toRemove = i;
+//				break;
+//			}
+//		}
+//
+//		if (toRemove != -1) {
+//			completedableQuests.remove(toRemove);
+//		}
 	}
 
 	/**

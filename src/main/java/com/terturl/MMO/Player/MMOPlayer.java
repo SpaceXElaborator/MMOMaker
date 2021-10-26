@@ -182,7 +182,7 @@ public class MMOPlayer {
 						continue;
 					
 					// The player has yet to turn the quest in
-					if (mc.hasCompletableQuest(q) && mc.hasActiveQuest(q)) {
+					if (mc.hasCompletableQuest(q.getName()) && mc.hasActiveQuest(q)) {
 						WorldServer s = ((CraftWorld) player.getWorld()).getHandle();
 						EntityArmorStand stand = new EntityArmorStand(EntityTypes.c, s);
 						stand.setLocation(npc.getLocation().getX(), npc.getLocation().getY() + 1.0,

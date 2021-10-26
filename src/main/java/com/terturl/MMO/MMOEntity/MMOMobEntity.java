@@ -136,8 +136,13 @@ public class MMOMobEntity {
 				bone.addChild(bChild.getName(), b);
 			} else {
 				BBOCube cube = bbf.findCubeByUUID(uuid);
-				Cube c = createCube(cube, outliner);
-				mbf.getElements().add(c);
+				try {
+					Cube c = createCube(cube, outliner);
+					mbf.getElements().add(c);
+				} catch (IllegalArgumentException e) {
+					Bukkit.getConsoleSender().sendMessage(ChatColor.RED + name + " - A Cube as an invalid rotation");
+					continue;
+				}
 				hasCube = true;
 			}
 		}
@@ -150,7 +155,7 @@ public class MMOMobEntity {
 		return bone;
 	}
 
-	private Cube createCube(BBOCube bCube, BBOOutliner outliner) {
+	private Cube createCube(BBOCube bCube, BBOOutliner outliner) throws IllegalArgumentException {
 		Cube cube = new Cube();
 		cube.setName(bCube.getName().toLowerCase());
 		Double fx = bCube.getFrom()[0] - outliner.getOrigin()[0] - bCube.getInflate();
@@ -163,18 +168,20 @@ public class MMOMobEntity {
 		cube.setTo(tx + 8.0D, ty + 8.0D, tz + 8.0D);
 		Rotation rot = new Rotation();
 		switch (bCube.getAxis()) {
-		case "x":
-			rot.setAxis("x");
-			rot.setAngle(bCube.getRotation()[0]);
-			break;
-		case "y":
-			rot.setAxis("y");
-			rot.setAngle(bCube.getRotation()[1]);
-			break;
-		case "z":
-			rot.setAxis("z");
-			rot.setAngle(bCube.getRotation()[2]);
-			break;
+			case "x":
+				rot.setAxis("x");
+				rot.setAngle(bCube.getRotation()[0]);
+				break;
+			case "y":
+				rot.setAxis("y");
+				rot.setAngle(bCube.getRotation()[1]);
+				break;
+			case "z":
+				rot.setAxis("z");
+				rot.setAngle(bCube.getRotation()[2]);
+				break;
+			default:
+				throw new IllegalArgumentException();
 		}
 		rot.setOrigin(bCube.getOrigin()[0] - outliner.getOrigin()[0] + 8.0D,
 				bCube.getOrigin()[1] - outliner.getOrigin()[1] + 8.0D,
