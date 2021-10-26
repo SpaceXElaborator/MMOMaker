@@ -1,13 +1,16 @@
 package com.terturl.MMO.Quests;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
+import org.json.simple.JSONObject;
 
 import com.terturl.MMO.MinecraftMMO;
 import com.terturl.MMO.Util.JsonFileInterpretter;
@@ -29,6 +32,9 @@ public class QuestManager {
 
 	private Map<String, Quest> questTypes = new HashMap<>();
 
+	@Getter
+	private File warnings;
+	
 	private File questDir;
 
 	/**
@@ -38,6 +44,16 @@ public class QuestManager {
 		questDir = new File(MinecraftMMO.getInstance().getDataFolder(), "quests");
 		if (!questDir.exists())
 			questDir.mkdir();
+		warnings = new File(questDir, "Warnings.txt");
+		if (getWarnings().exists()) {
+			getWarnings().delete();
+		}
+
+		try {
+			getWarnings().createNewFile();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -47,73 +63,49 @@ public class QuestManager {
 		Bukkit.getConsoleSender().sendMessage(ChatColor.BLUE + "[MMO-RPG] Registering Quests...");
 		for (File f : questDir.listFiles()) {
 			if (f.getName().endsWith(".json")) {
-				Object q = null;
-				JsonFileInterpretter config = new JsonFileInterpretter(f);
-				String name = config.contains("Name") ? config.getString("Name") : null;
-				String descString = config.contains("Description") ? config.getString("Description") : null;
-				Boolean requireTurnIn = config.contains("RequireTurnIn") ? config.getBoolean("RequireTurnIn") : true;
-				String presentString = config.contains("Present") ? config.getString("Present")
-						: "Would you like to ACCEPT or DENY?";
-				String denyString = config.contains("Deny") ? config.getString("Deny") : "That's Very Sad Traveller";
-				String acceptString = config.contains("Accept") ? config.getString("Accept") : "Thank you Traveller!";
-				String type = config.contains("Type") ? config.getString("Type") : "Basic";
-				Double money = config.contains("Money") ? config.getDouble("Money") : 0.0;
-				Double xp = config.contains("XP") ? config.getDouble("XP") : 0.0;
-				List<String> questLore = config.contains("Lore") ? config.getStringList("Lore") : new ArrayList<>();
-
-				// TODO: Combine these into one Rewards JSONObject
-				List<String> customItems = config.contains("Items") ? config.getStringList("Items") : new ArrayList<>();
-				List<String> questRewards = config.contains("RewardQuests") ? config.getStringList("RewardQuests")
-						: new ArrayList<>();
-				List<String> parentQuests = config.contains("Parents") ? config.getStringList("Parents")
-						: new ArrayList<>();
-				List<String> craftingRecipes = config.contains("CraftingRecipes")
-						? config.getStringList("CraftingRecipes")
-						: new ArrayList<>();
-
-				// TODO: Make this a check method
-				if (name == null || descString == null)
-					continue;
-				if (!questTypes.containsKey(type)) {
-					MinecraftMMO.getInstance().getLogger().log(Level.WARNING,
-							"Quest File: " + f.getName() + " has unknown type");
-					continue;
+				try {
+					if(checkQuest(f)) {
+						Object q = null;
+						JsonFileInterpretter config = new JsonFileInterpretter(f);
+						String name = config.getString("Name");
+						String descString = config.getString("Description");
+						Boolean requireTurnIn = config.contains("RequireTurnIn") ? config.getBoolean("RequireTurnIn") : true;
+						String presentString = config.contains("Present") ? config.getString("Present")
+								: "Would you like to ACCEPT or DENY?";
+						String denyString = config.contains("Deny") ? config.getString("Deny") : "That's Very Sad Traveller";
+						String acceptString = config.contains("Accept") ? config.getString("Accept") : "Thank you Traveller!";
+						String type = config.contains("Type") ? config.getString("Type") : "Basic";
+						List<String> questLore = config.contains("Lore") ? config.getStringList("Lore") : new ArrayList<>();
+						List<String> parentQuests = config.contains("Parents") ? config.getStringList("Parents") : new ArrayList<>();
+						
+						// Load the quests based on their properties to get around an ugly if/else if/else block like AbilityManager has
+						q = (Quest) questTypes.get(type).clone();
+						((Quest) q).loadQuest(config.getObject("Properties"));
+						((Quest) q).setName(name);
+						((Quest) q).setLoreForQuest(questLore);
+						((Quest) q).setQuestType(type);
+						((Quest) q).setRequireTurnIn(requireTurnIn);
+						((Quest) q).setDescString(descString);
+						((Quest) q).setAcceptString(acceptString);
+						((Quest) q).setDenyString(denyString);
+						((Quest) q).setPresentString(presentString);
+						((Quest) q).setParentQuests(parentQuests);
+						
+						// Load any rewards if there are any
+						if(config.contains("Rewards")) {
+							loadRewards(config.getObject("Rewards"), (Quest) q);
+						}
+						
+						allQuests.add((Quest) q);
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
-				if (!config.contains("Properties")) {
-					MinecraftMMO.getInstance().getLogger().log(Level.WARNING,
-							"Quest File: " + f.getName() + " has no properties field to load quest information");
-					continue;
-				}
-
-				q = (Quest) questTypes.get(type).clone();
-				if (q == null) {
-					MinecraftMMO.getInstance().getLogger().log(Level.WARNING,
-							"Quest File: " + f.getName() + " unable to create new. Check clone() method");
-					continue;
-				}
-
-				// Load the quests based on their properties to get around an ugly if/else if/else block like AbilityManager has
-				((Quest) q).loadQuest(config.getObject("Properties"));
-				((Quest) q).setName(name);
-				((Quest) q).setLoreForQuest(questLore);
-				((Quest) q).setQuestType(type);
-				((Quest) q).setRequireTurnIn(requireTurnIn);
-				((Quest) q).setDescString(descString);
-				((Quest) q).setAcceptString(acceptString);
-				((Quest) q).setDenyString(denyString);
-				((Quest) q).setPresentString(presentString);
-				((Quest) q).setParentQuests(parentQuests);
-				((Quest) q).setXp(xp);
-				((Quest) q).setMoney(money);
-				((Quest) q).setItems(customItems);
-				((Quest) q).setChildQuests(questRewards);
-				((Quest) q).setRecipes(craftingRecipes);
-				allQuests.add((Quest) q);
 			}
 		}
 		Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "[MMO-RPG] Done");
 	}
-
+	
 	/**
 	 * Used to register a new Quest AND quest type
 	 * 
@@ -134,5 +126,64 @@ public class QuestManager {
 	public Quest getQuest(String s) {
 		return allQuests.stream().filter(e -> e.getName().equals(s)).findFirst().orElse(null);
 	}
+	
+	private void loadRewards(JSONObject jo, Quest q) {
+		JsonFileInterpretter config = new JsonFileInterpretter(jo);
+		
+		List<String> customItems = config.contains("Items") ? config.getStringList("Items") : new ArrayList<>();
+		List<String> questRewards = config.contains("RewardQuests") ? config.getStringList("RewardQuests") : new ArrayList<>();
+		List<String> craftingRecipes = config.contains("CraftingRecipes") ? config.getStringList("CraftingRecipes") : new ArrayList<>();
+		Double xp = config.contains("XP") ? config.getDouble("XP") : 0.0;
+		Double money = config.contains("Money") ? config.getDouble("Money") : 0.0;
+		
+		q.setXp(xp);
+		q.setMoney(money);
+		q.setItems(customItems);
+		q.setChildQuests(questRewards);
+		q.setRecipes(craftingRecipes);
+	}
 
+	private boolean checkQuest(File f) throws IOException {
+		boolean load = true;
+		
+		JsonFileInterpretter config = new JsonFileInterpretter(f);
+		
+		FileWriter wfw = new FileWriter(getWarnings());;
+		BufferedWriter wbw = new BufferedWriter(wfw);
+		
+		if(!config.contains("Name")) {
+			wbw.write("[" + f.getName() + "] 'Name' property is not set!");
+			wbw.newLine();
+			load = false;
+		}
+		
+		if(!config.contains("Description")) {
+			wbw.write("[" + f.getName() + "] 'Description' property is not set!");
+			wbw.newLine();
+			load = false;
+		}
+		
+		if (!questTypes.containsKey(config.getString("Type"))) {
+			wbw.write("[" + f.getName() + "] Has unknown type: " + config.getString("Type"));
+			wbw.newLine();
+			load = false;
+		}
+		
+		if (!config.contains("Properties")) {
+			wbw.write("[" + f.getName() + "] 'Properties' property is not set to load quest information!");
+			wbw.newLine();
+			load = false;
+		}
+
+		if ((Quest) questTypes.get(config.getString("Type")).clone() == null) {
+			wbw.write("[" + f.getName() + "] Unable to create new quest. Check clone() method!");
+			wbw.newLine();
+			load = false;
+		}
+		
+		wbw.flush();
+		wbw.close();
+		return load;
+	}
+	
 }
