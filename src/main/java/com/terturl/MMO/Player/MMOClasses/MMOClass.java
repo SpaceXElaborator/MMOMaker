@@ -98,8 +98,12 @@ public class MMOClass implements Cloneable {
 	 * @param q Quest to check for
 	 * @return Quests present or not
 	 */
-	public boolean hasActiveQuest(Quest q) {
-		return activeQuests.contains(q);
+	public boolean hasActiveQuest(String q) {
+		for (Quest quest : activeQuests) {
+			if (quest.getName().equalsIgnoreCase(q))
+				return true;
+		}
+		return false;
 	}
 
 	/**
@@ -117,19 +121,27 @@ public class MMOClass implements Cloneable {
 	 * 
 	 * @param q Quest to remove
 	 */
-	public void removeCompletableQuest(Quest q) {
-		completedableQuests.remove(q.getName());
-//		int toRemove = -1;
-//		for (int i = 0; i < completedableQuests.size(); i++) {
-//			if (q.getName().equalsIgnoreCase(completedableQuests.get(i).getName())) {
-//				toRemove = i;
-//				break;
-//			}
-//		}
-//
-//		if (toRemove != -1) {
-//			completedableQuests.remove(toRemove);
-//		}
+	public void removeCompletableQuest(String q) {
+		completedableQuests.remove(q);
+	}
+
+	/**
+	 * Remove's the Quest with the given name from the MMOClass's active Quest list
+	 * 
+	 * @param q Name of quest
+	 */
+	public void removeActiveQuest(String q) {
+		int toRemove = -1;
+		for (int i = 0; i < activeQuests.size(); i++) {
+			if (activeQuests.get(i).getName().equalsIgnoreCase(q)) {
+				toRemove = i;
+				break;
+			}
+		}
+
+		if (toRemove != -1) {
+			activeQuests.remove(toRemove);
+		}
 	}
 
 	/**
@@ -147,8 +159,8 @@ public class MMOClass implements Cloneable {
 	 * @param q Quest to check for
 	 * @return If the player has completed the Quest or not
 	 */
-	public boolean hasCompletedQuest(Quest q) {
-		return completedQuests.contains(q.getName());
+	public boolean hasCompletedQuest(String q) {
+		return completedQuests.contains(q);
 	}
 
 	/**
@@ -157,9 +169,10 @@ public class MMOClass implements Cloneable {
 	 * @param q Quest to check parents of
 	 * @return If player has completed parent quests
 	 */
-	public boolean hasParentQuestsCompleted(Quest q) {
-		for (String quest : q.getParentQuests()) {
-			if (!completedQuests.contains(quest))
+	public boolean hasParentQuestsCompleted(String q) {
+		Quest quest = MinecraftMMO.getInstance().getQuestManager().getQuest(q);
+		for (String pQuests : quest.getParentQuests()) {
+			if (!completedQuests.contains(pQuests))
 				return false;
 		}
 		return true;
@@ -253,8 +266,7 @@ public class MMOClass implements Cloneable {
 	 * @return
 	 */
 	public List<Quest> getQuestsWithType(String s) {
-		return getActiveQuests().stream().filter(q -> q.getQuestType().equals("CollectItem"))
-				.collect(Collectors.toList());
+		return getActiveQuests().stream().filter(q -> q.getQuestType().equals(s)).collect(Collectors.toList());
 	}
 
 	public Object clone() {

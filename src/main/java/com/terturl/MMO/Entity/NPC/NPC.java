@@ -47,7 +47,6 @@ import com.mojang.authlib.properties.Property;
 import com.mojang.datafixers.util.Pair;
 import com.terturl.MMO.Player.MMOPlayer;
 import com.terturl.MMO.Player.MMOClasses.MMOClass;
-import com.terturl.MMO.Quests.Quest;
 
 import io.netty.buffer.Unpooled;
 import lombok.EqualsAndHashCode;
@@ -110,7 +109,7 @@ public class NPC {
 	private String idleString;
 	@Getter
 	@Setter
-	private List<Quest> givableQuest = new ArrayList<>();
+	private List<String> givableQuest = new ArrayList<>();
 	@Getter
 	@Setter
 	private MMOClass heldClass;
@@ -141,9 +140,9 @@ public class NPC {
 	 * @param mp MMOPlayer to check for quests
 	 * @return Quest that is available next
 	 */
-	public Quest getNextAvailabeQuest(MMOPlayer mp) {
+	public String getNextAvailabeQuest(MMOPlayer mp) {
 		MMOClass currentCharacter = mp.getMmoClasses().get(mp.getCurrentCharacter());
-		for (Quest q : givableQuest) {
+		for (String q : givableQuest) {
 			if (currentCharacter.hasActiveQuest(q))
 				continue;
 			if (currentCharacter.hasCompletedQuest(q))

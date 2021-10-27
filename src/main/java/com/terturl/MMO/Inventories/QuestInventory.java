@@ -35,7 +35,7 @@ public class QuestInventory extends InventoryUI {
 				public void onPlayerClick(final Player p, ClickAction a) {
 					// Can interact with Quest to get the NPC that gave them the quest, needs to be
 					// fixed for quests that do not have an NPC that gave them the quest
-					p.setCompassTarget(MinecraftMMO.getInstance().getNpcHandler().findNpcWithQuest(q).getLocation());
+					p.setCompassTarget(MinecraftMMO.getInstance().getNpcHandler().findNpcWithQuest(q.getName()).getLocation());
 				}
 			});
 		}

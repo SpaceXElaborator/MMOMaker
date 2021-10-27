@@ -161,17 +161,18 @@ public abstract class Quest {
 			lore.add("");
 			lore.add(ChatColor.GREEN + "" + ChatColor.BOLD + "Rewards:");
 			if (getXp() > 0)
-				lore.add(ChatColor.GRAY + "\u2192 XP: " + String.valueOf(getXp()));
+				
+				lore.add(ChatColor.GRAY + "→ XP: " + String.valueOf(getXp()));
 			if (getMoney() > 0)
-				lore.add(ChatColor.GRAY + "\u2192 Money: " + String.valueOf(getMoney()));
+				lore.add(ChatColor.GRAY + "→ Money: " + String.valueOf(getMoney()));
 			if (getRecipes().size() > 0) {
 				for (String s : getRecipes()) {
-					lore.add(ChatColor.GRAY + "\u2192 Recipe: " + s);
+					lore.add(ChatColor.GRAY + "→ Recipe: " + s);
 				}
 			}
 			if (getItems().size() > 0) {
 				for (String s : getItems()) {
-					lore.add(ChatColor.GRAY + "\u2192 Item: " + s);
+					lore.add(ChatColor.GRAY + "→ Item: " + s);
 				}
 			}
 		}

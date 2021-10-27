@@ -49,35 +49,34 @@ public class InteractNPCListener implements Listener {
 			}
 		} else {
 			npc.lookAtPlayer(p, p);
-			Quest questToComplete = null;
+			String questToComplete = null;
 			for (String q : mc.getCompletedableQuests()) {
-				Quest quest = MinecraftMMO.getInstance().getQuestManager().getQuest(q);
-				if (npc.getGivableQuest().contains(quest)) {
-					questToComplete = quest;
+				if (npc.getGivableQuest().contains(q)) {
+					questToComplete = q;
 					break;
 				}
 			}
 
 			if (questToComplete != null) {
-				questToComplete.completeQuest(p);
+				MinecraftMMO.getInstance().getQuestManager().getQuest(questToComplete).completeQuest(p);
 				mc.removeCompletableQuest(questToComplete);
-				mc.getCompletedQuests().add(questToComplete.getName());
-				mc.getActiveQuests().remove(questToComplete);
+				mc.getCompletedQuests().add(questToComplete);
+				mc.removeActiveQuest(questToComplete);
 				mp.updateNPCQuests();
 				return;
 			}
 
 			if (npc.getGivableQuest().size() > 0) {
-				Quest q = npc.getNextAvailabeQuest(MinecraftMMO.getInstance().getPlayerHandler().getPlayer(p));
+				String q = npc.getNextAvailabeQuest(MinecraftMMO.getInstance().getPlayerHandler().getPlayer(p));
 
 				if (q == null) {
 					p.sendMessage(npc.getIdleString());
 					return;
 				}
 
-				mp.addQuest(q);
-				p.sendTitle(q.getName(), q.getPresentString(), 5, 10, 5);
-				p.sendMessage(q.getPresentString());
+				Quest quest = mp.addQuest(q);
+				p.sendTitle(quest.getName(), quest.getPresentString(), 5, 10, 5);
+				p.sendMessage(quest.getPresentString());
 			} else {
 				p.sendMessage(npc.getIdleString());
 			}

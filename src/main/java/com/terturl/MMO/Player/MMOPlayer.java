@@ -145,9 +145,11 @@ public class MMOPlayer {
 	 * 
 	 * @param q
 	 */
-	public void addQuest(Quest q) {
-		mmoClasses.get(currentCharacter).addQuest(q);
+	public Quest addQuest(String q) {
+		Quest quest = (Quest) MinecraftMMO.getInstance().getQuestManager().getQuest(q).clone();
+		mmoClasses.get(currentCharacter).addQuest(quest);
 		updateNPCQuests();
+		return quest;
 	}
 
 	/**
@@ -176,13 +178,13 @@ public class MMOPlayer {
 			if (npc.getGivableQuest().size() > 0) {
 				
 				// Check all quests the NPC has and see the where the player is on that Quest
-				for (Quest q : npc.getGivableQuest()) {
+				for (String q : npc.getGivableQuest()) {
 					// The player has completed the quest
 					if (mc.hasCompletedQuest(q))
 						continue;
 					
 					// The player has yet to turn the quest in
-					if (mc.hasCompletableQuest(q.getName()) && mc.hasActiveQuest(q)) {
+					if (mc.hasCompletableQuest(q) && mc.hasActiveQuest(q)) {
 						WorldServer s = ((CraftWorld) player.getWorld()).getHandle();
 						EntityArmorStand stand = new EntityArmorStand(EntityTypes.c, s);
 						stand.setLocation(npc.getLocation().getX(), npc.getLocation().getY() + 1.0,
@@ -199,7 +201,7 @@ public class MMOPlayer {
 						continue;
 					
 					// The player has completed all of the parent quests and is ready to pick up a new quest
-					if (q.getParentQuests().size() == 0 || mc.hasParentQuestsCompleted(q)) {
+					if (MinecraftMMO.getInstance().getQuestManager().getParentQuestsForQuest(q).size() == 0 || mc.hasParentQuestsCompleted(q)) {
 						WorldServer s = ((CraftWorld) player.getWorld()).getHandle();
 						EntityArmorStand stand = new EntityArmorStand(EntityTypes.c, s);
 						stand.setLocation(npc.getLocation().getX(), npc.getLocation().getY() + 1.0,

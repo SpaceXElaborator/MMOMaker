@@ -12,7 +12,6 @@ import org.bukkit.Location;
 
 import com.google.common.base.Objects;
 import com.terturl.MMO.MinecraftMMO;
-import com.terturl.MMO.Quests.Quest;
 import com.terturl.MMO.Util.JsonFileInterpretter;
 import com.terturl.MMO.Util.JSONHelpers.LocationUtils;
 
@@ -58,9 +57,9 @@ public class NPCManager {
 				}
 				npc.setIdleString(idleString);
 
-				List<Quest> givableQuests = new ArrayList<>();
+				List<String> givableQuests = new ArrayList<>();
 				quests.forEach(e -> {
-					givableQuests.add(MinecraftMMO.getInstance().getQuestManager().getQuest(e));
+					givableQuests.add(e);
 				});
 
 				npc.setGivableQuest(givableQuests);
@@ -76,7 +75,7 @@ public class NPCManager {
 	 * @param q Quest to find NPC by
 	 * @return NPC or null
 	 */
-	public NPC findNpcWithQuest(Quest q) {
+	public NPC findNpcWithQuest(String q) {
 		return npcs.stream().filter(e -> e.getGivableQuest().contains(q)).findFirst().orElse(null);
 	}
 
