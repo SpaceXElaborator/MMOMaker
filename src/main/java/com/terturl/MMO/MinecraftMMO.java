@@ -18,6 +18,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.terturl.MMO.Abilities.AbilityManager;
 import com.terturl.MMO.Commands.TestCommand;
+import com.terturl.MMO.Effects.MiscEffects.LineEffect;
 import com.terturl.MMO.Entity.MMOEntityManager;
 import com.terturl.MMO.Entity.NPC.NPCManager;
 import com.terturl.MMO.Files.Configuration;
@@ -94,6 +95,7 @@ public class MinecraftMMO extends JavaPlugin {
 		if (!getDataFolder().exists())
 			getDataFolder().mkdir();
 		questManager = new QuestManager();
+		abilityManager = new AbilityManager();
 	}
 
 	// CustomMobs {Level} | {Name} | {Health}
@@ -108,7 +110,8 @@ public class MinecraftMMO extends JavaPlugin {
 			e.printStackTrace();
 		}
 
-		abilityManager = new AbilityManager();
+		registerEffects();
+		abilityManager.addAbilities();
 		classHandler = new ClassHandler();
 		registerQuestTypes();
 		questManager.loadQuests();
@@ -178,6 +181,10 @@ public class MinecraftMMO extends JavaPlugin {
 		questManager.registerQuest("CraftItem", new CustomCraftQuest());
 		questManager.registerQuest("CollectItem", new MMOItemCollectQuest());
 		questManager.registerQuest("MMOKillEntity", new MMOEntityKillQuest());
+	}
+	
+	private void registerEffects() {
+		abilityManager.registerEffect("Line", new LineEffect());
 	}
 
 	/**

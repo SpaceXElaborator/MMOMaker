@@ -16,6 +16,7 @@ import org.bukkit.boss.BossBar;
 import org.bukkit.craftbukkit.v1_17_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -88,6 +89,9 @@ public class MMOPlayer {
 	private UUID playerUUID;
 	@Getter
 	private Player player;
+	
+	@Getter
+	private List<Entity> damaged = new ArrayList<>();
 
 	/**
 	 * Creates a new MMOPlayer from the Player provided
@@ -176,13 +180,13 @@ public class MMOPlayer {
 		// Get all NPC that have more than 0 givable quests
 		for (NPC npc : MinecraftMMO.getInstance().getNpcHandler().getNpcs()) {
 			if (npc.getGivableQuest().size() > 0) {
-				
+
 				// Check all quests the NPC has and see the where the player is on that Quest
 				for (String q : npc.getGivableQuest()) {
 					// The player has completed the quest
 					if (mc.hasCompletedQuest(q))
 						continue;
-					
+
 					// The player has yet to turn the quest in
 					if (mc.hasCompletableQuest(q) && mc.hasActiveQuest(q)) {
 						WorldServer s = ((CraftWorld) player.getWorld()).getHandle();
@@ -195,13 +199,15 @@ public class MMOPlayer {
 						completableQuestNofifiers.add(stand);
 						continue;
 					}
-					
+
 					// The player is currently working on the quest
 					if (mc.hasActiveQuest(q))
 						continue;
-					
-					// The player has completed all of the parent quests and is ready to pick up a new quest
-					if (MinecraftMMO.getInstance().getQuestManager().getParentQuestsForQuest(q).size() == 0 || mc.hasParentQuestsCompleted(q)) {
+
+					// The player has completed all of the parent quests and is ready to pick up a
+					// new quest
+					if (MinecraftMMO.getInstance().getQuestManager().getParentQuestsForQuest(q).size() == 0
+							|| mc.hasParentQuestsCompleted(q)) {
 						WorldServer s = ((CraftWorld) player.getWorld()).getHandle();
 						EntityArmorStand stand = new EntityArmorStand(EntityTypes.c, s);
 						stand.setLocation(npc.getLocation().getX(), npc.getLocation().getY() + 1.0,
@@ -215,7 +221,8 @@ public class MMOPlayer {
 			}
 		}
 
-		// Set all the ArmorStands head with a golden "?" skull and make it viewable to the player
+		// Set all the ArmorStands head with a golden "?" skull and make it viewable to
+		// the player
 		for (EntityArmorStand eas : completableQuestNofifiers) {
 			PacketPlayOutEntityEquipment equip = new PacketPlayOutEntityEquipment(eas.getId(), Arrays.asList(
 					new Pair<EnumItemSlot, ItemStack>(EnumItemSlot.f, CraftItemStack.asNMSCopy(SkullCreator.getSkull(
@@ -228,7 +235,8 @@ public class MMOPlayer {
 			((CraftPlayer) player).getHandle().b.sendPacket(equip);
 		}
 
-		// Set all the ArmorStands head with a golden "!" skull and make it viewable to the player
+		// Set all the ArmorStands head with a golden "!" skull and make it viewable to
+		// the player
 		for (EntityArmorStand eas : newQuestNotifiers) {
 			PacketPlayOutEntityEquipment equip = new PacketPlayOutEntityEquipment(eas.getId(), Arrays.asList(
 					new Pair<EnumItemSlot, ItemStack>(EnumItemSlot.f, CraftItemStack.asNMSCopy(SkullCreator.getSkull(

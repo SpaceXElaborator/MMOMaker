@@ -1,38 +1,26 @@
-package com.terturl.MMO.Effects;
+package com.terturl.MMO.Effects.VectorEffects;
 
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
+import org.json.simple.JSONObject;
 
-import com.terturl.MMO.Effects.Util.EffectInformation;
+import com.terturl.MMO.Effects.Effect;
 import com.terturl.MMO.Util.EntityUtils;
-import com.terturl.MMO.Util.SoundInformation;
 
-/**
- * Ability that will pull an entity the player is looking at to near their
- * location
- * 
- * @author Sean Rahman
- * @since 0.51.0
- *
- */
+import lombok.Getter;
+
 public class PullTo extends Effect {
 
-	public PullTo(EffectInformation ei) {
-		super(ei);
-	}
-
-	public void run() {
-		EffectInformation ei = getEffectInformation().clone();
-		for (SoundInformation s : ei.getSounds()) {
-			ei.getPlayer().playSound(ei.getPlayer().getLocation(), s.getSound(), s.getVolume(), s.getPitch());
-		}
-		Player p = ei.getPlayer();
-
-		// Check for all entities near the player by a range set in the
-		// EffectInformation
-		for (Entity e : p.getNearbyEntities(ei.getRange(), ei.getRange(), ei.getRange())) {
+	@Getter
+	private Double range;
+	
+	@Getter
+	private Double damage;
+	
+	public void run(Player p) {
+		for (Entity e : p.getNearbyEntities(getRange(), getRange(), getRange())) {
 			// Check to see if the player is looking at that entity
 			if (EntityUtils.playerIsLookingAtEntity(p, e)) {
 
@@ -45,12 +33,17 @@ public class PullTo extends Effect {
 				Vector toGo = p.getLocation().toVector().subtract(e.getLocation().toVector()).normalize();
 				double force = p.getLocation().distance(e.getLocation()) * 0.35;
 				e.setVelocity(toGo.multiply(force));
-				if (ei.getDamage() >= 0.1) {
+				if (getDamage() >= 0.1) {
 					Damageable dam = (Damageable) e;
-					dam.damage(ei.getDamage());
+					dam.damage(getDamage());
 				}
 			}
 		}
 	}
 
+	public void load(JSONObject jo) {
+		range = Double.parseDouble(jo.get("Range").toString());
+		damage = Double.parseDouble(jo.get("Damage").toString());
+	}
+	
 }

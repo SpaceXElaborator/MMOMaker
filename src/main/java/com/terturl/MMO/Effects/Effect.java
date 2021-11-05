@@ -1,32 +1,41 @@
 package com.terturl.MMO.Effects;
 
-import com.terturl.MMO.Effects.Util.EffectInformation;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
+import org.json.simple.JSONObject;
+
+import com.terturl.MMO.MinecraftMMO;
+import com.terturl.MMO.Player.MMOPlayer;
+import com.terturl.MMO.Util.SoundInformation;
 
 import lombok.Getter;
-import lombok.Setter;
 
-/**
- * Skeleton class for an effect to run
- * 
- * @author Sean Rahman
- * @since 0.25.0
- *
- */
 public abstract class Effect implements Cloneable {
 
 	@Getter
-	@Setter
-	private EffectInformation effectInformation;
-
-	public Effect(EffectInformation info) {
-		effectInformation = info;
+	private List<SoundInformation> sounds = new ArrayList<>();
+	
+	public abstract void run(Player p);
+	public abstract void load(JSONObject jo);
+	
+	public void addSound(SoundInformation si) {
+		sounds.add(si);
 	}
-
-	/**
-	 * Abstract method to be ran when the ability fires
-	 */
-	public abstract void run();
-
+	
+	public boolean hasDamaged(Player p, Entity e) {
+		MMOPlayer mp = MinecraftMMO.getInstance().getPlayerHandler().getPlayer(p);
+		if(mp.getDamaged().contains(e)) return true;
+		return false;
+	}
+	
+	public void addToDamaged(Player p, Entity e) {
+		MMOPlayer mp = MinecraftMMO.getInstance().getPlayerHandler().getPlayer(p);
+		mp.getDamaged().add(e);
+	}
+	
 	public Object clone() {
 		try {
 			return super.clone();
@@ -35,28 +44,9 @@ public abstract class Effect implements Cloneable {
 		}
 		return null;
 	}
-
-	/**
-	 * Repeating = The ability will run every x ticks for y amount of time
-	 * Infinite = Will run until the player moves or takes damage
-	 * Single = Run once
-	 * Limit = The ability will fire x amount of times every y ticks
-	 * @author Sean Rahman
-	 *
-	 */
-	public enum EffectType {
-		REPEATING, INFINITE, SINGLE, LIMIT;
-	}
-
-	/**
-	 * Player = Location is based on player
-	 * Point = Location is based at a point the player is looking at
-	 * BLOCKAT/POINTPLAYER NOT USED
-	 * @author Sean Rahman
-	 *
-	 */
+	
 	public enum LocationType {
-		PLAYER, POINT, BLOCKAT, POINTPLAYER;
+		POINT, TARGETPLAYER;
 	}
-
+	
 }

@@ -4,16 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.util.Vector;
 
 import com.terturl.MMO.Effects.Effect;
-import com.terturl.MMO.Effects.Effect.LocationType;
-import com.terturl.MMO.Effects.Util.EffectInformation;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -69,21 +63,36 @@ public class Ability implements Cloneable {
 	 * 
 	 * @param p Player that will use the ability
 	 */
+//	public void useAbility(Player p) {
+//		getEffects().stream().forEach(e -> {
+//			EffectInformation ei = e.getEffectInformation();
+//			ei.setPlayer(p);
+//			if (ei.getLocType().equals(LocationType.PLAYER)) {
+//				ei.setLoc(p.getLocation().clone());
+//			} else if (ei.getLocType().equals(LocationType.POINT)) {
+//				Location loc = p.getEyeLocation().clone();
+//				Vector inFrontOf = loc.getDirection().normalize().multiply(ei.getRange());
+//				ei.setLoc(loc.add(inFrontOf));
+//			} else if (ei.getLocType().equals(LocationType.BLOCKAT)) {
+//				ei.setLoc(p.getTargetBlock((Set<Material>) null, 10).getLocation().add(0.5, 0.5, 0.5).clone());
+//			}
+//			e.setEffectInformation(ei);
+//			((Effect) e.clone()).run(p);
+//		});
+//	}
+	
+	/**
+	 * Fires all Effects and will eventually check if the player has the required
+	 * costs before firing
+	 * 
+	 * @param p Player that will use the ability
+	 */
 	public void useAbility(Player p) {
 		getEffects().stream().forEach(e -> {
-			EffectInformation ei = e.getEffectInformation();
-			ei.setPlayer(p);
-			if (ei.getLocType().equals(LocationType.PLAYER)) {
-				ei.setLoc(p.getLocation().clone());
-			} else if (ei.getLocType().equals(LocationType.POINT)) {
-				Location loc = p.getEyeLocation().clone();
-				Vector inFrontOf = loc.getDirection().normalize().multiply(ei.getRange());
-				ei.setLoc(loc.add(inFrontOf));
-			} else if (ei.getLocType().equals(LocationType.BLOCKAT)) {
-				ei.setLoc(p.getTargetBlock((Set<Material>) null, 10).getLocation().add(0.5, 0.5, 0.5).clone());
-			}
-			e.setEffectInformation(ei);
-			((Effect) e.clone()).run();
+			e.getSounds().stream().forEach(s -> {
+				p.playSound(p.getLocation(), s.getSound(), s.getVolume(), s.getPitch());
+			});
+			((Effect) e.clone()).run(p);
 		});
 	}
 
