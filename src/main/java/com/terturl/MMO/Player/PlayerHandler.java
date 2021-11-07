@@ -264,6 +264,10 @@ public class PlayerHandler {
 			mc.setMainH(ItemUtils.JSONToItem((JSONObject) inv.get("MainHand")).getName());
 			mc.setOffH(ItemUtils.JSONToItem((JSONObject) inv.get("OffHand")).getName());
 
+			mc.setMaxHealth(Double.parseDouble(clazz.get("MaxHealth").toString()));
+			mc.setHealth(Double.parseDouble(clazz.get("Health").toString()));
+			mc.setMana(Double.parseDouble(clazz.get("Mana").toString()));
+			
 			mp.getMmoClasses().add(mc);
 		});
 

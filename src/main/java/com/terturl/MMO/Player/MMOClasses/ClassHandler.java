@@ -120,6 +120,24 @@ public class ClassHandler {
 			wbw.newLine();
 			load = false;
 		}
+		
+		if(!config.contains("StarterMana")) {
+			wbw.write("[" + f.getName() + "] Does not contain JSON object 'StarterMana'");
+			wbw.newLine();
+			load = false;
+		}
+		
+		if(!config.contains("StarterHealth")) {
+			wbw.write("[" + f.getName() + "] Does not contain JSON object 'StarterHealth'");
+			wbw.newLine();
+			load = false;
+		}
+		
+		if(!config.contains("StarterSkills")) {
+			wbw.write("[" + f.getName() + "] Does not contain JSON object 'StarterSkills'");
+			wbw.newLine();
+			load = false;
+		}
 
 		wbw.flush();
 		wbw.close();

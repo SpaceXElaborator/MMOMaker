@@ -19,6 +19,16 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.terturl.MMO.Abilities.AbilityManager;
 import com.terturl.MMO.Commands.TestCommand;
 import com.terturl.MMO.Effects.MiscEffects.LineEffect;
+import com.terturl.MMO.Effects.MiscEffects.WaveEffect;
+import com.terturl.MMO.Effects.PlayerEffects.HealEffect;
+import com.terturl.MMO.Effects.PlayerEffects.ProjectileEffect;
+import com.terturl.MMO.Effects.TimeBasedEffects.LimitEffect;
+import com.terturl.MMO.Effects.TimeBasedEffects.RepeatingEffect;
+import com.terturl.MMO.Effects.VectorEffects.JumpTo;
+import com.terturl.MMO.Effects.VectorEffects.PullTo;
+import com.terturl.MMO.Effects.VectorEffects.VectorDirection;
+import com.terturl.MMO.Effects.VectorEffects.VectorPush;
+import com.terturl.MMO.Effects.VectorEffects.VectorRelative;
 import com.terturl.MMO.Entity.MMOEntityManager;
 import com.terturl.MMO.Entity.NPC.NPCManager;
 import com.terturl.MMO.Files.Configuration;
@@ -185,6 +195,16 @@ public class MinecraftMMO extends JavaPlugin {
 	
 	private void registerEffects() {
 		abilityManager.registerEffect("Line", new LineEffect());
+		abilityManager.registerEffect("Wave", new WaveEffect());
+		abilityManager.registerEffect("Heal", new HealEffect());
+		abilityManager.registerEffect("Projectile", new ProjectileEffect());
+		abilityManager.registerEffect("Limit", new LimitEffect());
+		abilityManager.registerEffect("Repeating", new RepeatingEffect());
+		abilityManager.registerEffect("JumpTo", new JumpTo());
+		abilityManager.registerEffect("PullTo", new PullTo());
+		abilityManager.registerEffect("Direction", new VectorDirection());
+		abilityManager.registerEffect("Push", new VectorPush());
+		abilityManager.registerEffect("VectorRelative", new VectorRelative());
 	}
 
 	/**

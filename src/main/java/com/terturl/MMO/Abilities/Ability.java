@@ -7,7 +7,10 @@ import java.util.Map;
 
 import org.bukkit.entity.Player;
 
+import com.terturl.MMO.MinecraftMMO;
 import com.terturl.MMO.Effects.Effect;
+import com.terturl.MMO.Player.MMOPlayer;
+import com.terturl.MMO.Player.MMOClasses.MMOClass;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -56,30 +59,6 @@ public class Ability implements Cloneable {
 	public void addCost(AbilityCosts ac, Double Amount) {
 		costs.put(ac, Amount);
 	}
-
-	/**
-	 * Fires all Effects and will eventually check if the player has the required
-	 * costs before firing
-	 * 
-	 * @param p Player that will use the ability
-	 */
-//	public void useAbility(Player p) {
-//		getEffects().stream().forEach(e -> {
-//			EffectInformation ei = e.getEffectInformation();
-//			ei.setPlayer(p);
-//			if (ei.getLocType().equals(LocationType.PLAYER)) {
-//				ei.setLoc(p.getLocation().clone());
-//			} else if (ei.getLocType().equals(LocationType.POINT)) {
-//				Location loc = p.getEyeLocation().clone();
-//				Vector inFrontOf = loc.getDirection().normalize().multiply(ei.getRange());
-//				ei.setLoc(loc.add(inFrontOf));
-//			} else if (ei.getLocType().equals(LocationType.BLOCKAT)) {
-//				ei.setLoc(p.getTargetBlock((Set<Material>) null, 10).getLocation().add(0.5, 0.5, 0.5).clone());
-//			}
-//			e.setEffectInformation(ei);
-//			((Effect) e.clone()).run(p);
-//		});
-//	}
 	
 	/**
 	 * Fires all Effects and will eventually check if the player has the required
@@ -88,6 +67,14 @@ public class Ability implements Cloneable {
 	 * @param p Player that will use the ability
 	 */
 	public void useAbility(Player p) {
+		
+		MMOPlayer mp = MinecraftMMO.getInstance().getPlayerHandler().getPlayer(p);
+		MMOClass mc = mp.getMmoClasses().get(mp.getCurrentCharacter());
+		
+		if(costs.containsKey(AbilityCosts.MANA)) {
+			if(mc.getMana() < costs.get(AbilityCosts.MANA)) return;
+		}
+		
 		getEffects().stream().forEach(e -> {
 			e.getSounds().stream().forEach(s -> {
 				p.playSound(p.getLocation(), s.getSound(), s.getVolume(), s.getPitch());
