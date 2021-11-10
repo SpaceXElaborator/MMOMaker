@@ -1,10 +1,11 @@
 package com.terturl.MMO.Dungeon;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
 
 import lombok.Getter;
@@ -19,7 +20,7 @@ public class DungeonBlock {
 	private Location dungeonBlockLocation;
 	
 	@Getter
-	private Map<Location, BlockData> blockLocations = new HashMap<>();
+	private List<DungeonSchematicBlockInformation> dungeonSchematicBlocks = new ArrayList<>();
 	
 	public DungeonBlock(Location loc, DungeonSchematic ds) {
 		dungeonSchematic = ds;
@@ -35,8 +36,10 @@ public class DungeonBlock {
 					int b = dungeonSchematic.getBlockIds()[index] & 0xFF;
 					Location blockLoc = new Location(loc.getWorld(), loc.getX() + x, loc.getY() + y, loc.getZ() + z);
 					String s = dungeonSchematic.getPalette().get(b);
+					String mat = s.substring(s.indexOf(":"), s.indexOf("["));
+					Material m = Material.valueOf(mat.toUpperCase());
 					BlockData bd = Bukkit.getServer().createBlockData(s);
-					blockLocations.put(blockLoc, bd);
+					dungeonSchematicBlocks.add(new DungeonSchematicBlockInformation(blockLoc, m, bd));
 				}
 			}
 		}
