@@ -1,5 +1,6 @@
 package com.terturl.MMO;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -18,6 +19,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.terturl.MMO.Abilities.AbilityManager;
 import com.terturl.MMO.Commands.TestCommand;
+import com.terturl.MMO.Dungeon.Dungeon;
+import com.terturl.MMO.Dungeon.DungeonBlock;
+import com.terturl.MMO.Dungeon.DungeonSchematic;
 import com.terturl.MMO.Effects.MiscEffects.LineEffect;
 import com.terturl.MMO.Effects.MiscEffects.WaveEffect;
 import com.terturl.MMO.Effects.PlayerEffects.HealEffect;
@@ -127,8 +131,11 @@ public class MinecraftMMO extends JavaPlugin {
 		questManager.loadQuests();
 		npcHandler = new NPCManager();
 		playerHandler = new PlayerHandler();
+		DungeonSchematic dc = new DungeonSchematic(new File(getDataFolder(), "test.schem"));
+		Dungeon d = new Dungeon("Tet");
+		d.addDungeonBlock(new DungeonBlock(dc));
 		mmoConfiguration = new Configuration();
-
+		
 		mobManager = new MMOMobManager();
 		mobReader = new MobFileReader();
 
