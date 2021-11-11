@@ -21,4 +21,10 @@ public class Dungeon {
 		dungeonBlocks.add(db);
 	}
 	
+	public void pasteAll() {
+		dungeonBlocks.forEach(e -> {
+			e.pasteBlock();
+		});
+	}
+	
 }
