@@ -73,6 +73,12 @@ public class Ability implements Cloneable {
 		
 		if(costs.containsKey(AbilityCosts.MANA)) {
 			if(mc.getMana() < costs.get(AbilityCosts.MANA)) return;
+			mc.setMana(mc.getMana() - costs.get(AbilityCosts.MANA));
+		}
+		
+		if(costs.containsKey(AbilityCosts.HEALTH)) {
+			if(mc.getHealth() < costs.get(AbilityCosts.HEALTH) && ((mc.getHealth() - costs.get(AbilityCosts.HEALTH)) < 0.0)) return;
+			mc.setHealth(mc.getHealth() - costs.get(AbilityCosts.HEALTH));
 		}
 		
 		getEffects().stream().forEach(e -> {
