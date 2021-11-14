@@ -487,6 +487,10 @@ public class PlayerHandler {
 				: ItemUtils.itemToJSON(cim.getItem("MMO_ITEM_EMPTY_SLOT_ITEM")));
 		clazz.put("Inventory", inv);
 
+		clazz.put("MaxHealth", mc.getMaxHealth());
+		clazz.put("Health", mc.getHealth());
+		clazz.put("Mana", mc.getMana());
+		
 		return clazz;
 	}
 
