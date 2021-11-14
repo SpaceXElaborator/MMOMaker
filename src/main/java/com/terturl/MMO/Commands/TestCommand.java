@@ -4,6 +4,7 @@ import org.bukkit.entity.Player;
 
 import com.terturl.MMO.Commands.Console.ShowAbilities;
 import com.terturl.MMO.Commands.Console.ShowItems;
+import com.terturl.MMO.Commands.Debug.CheckAbilities;
 import com.terturl.MMO.Commands.Debug.Crafting;
 import com.terturl.MMO.Commands.Debug.GetRecipe;
 import com.terturl.MMO.Commands.Debug.GetSkill;
@@ -25,7 +26,8 @@ public class TestCommand extends CraftCommand {
 		super("mmo-test");
 		addSubCommand(new SpawnClass(), new RemoveClass(), new SpawnItem(), new SpawnSkull(),
 				new TestParticles(), new UseAbility(), new ShowItems(), new ShowAbilities(), new ShopCommand(),
-				new Crafting(), new SpawnMMOEntity(), new GetRecipe(), new GetSkill(), new SpawnMob(), new SchematicCommand());
+				new Crafting(), new SpawnMMOEntity(), new GetRecipe(), new GetSkill(), new SpawnMob(), new SchematicCommand(),
+				new CheckAbilities());
 	}
 
 	public void handleCommand(Player p, String[] args) {

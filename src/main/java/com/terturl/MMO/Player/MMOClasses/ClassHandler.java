@@ -90,6 +90,11 @@ public class ClassHandler {
 							mc.setBoots(starterItemsMap.get(SlotType.BOOTS));
 							mc.setMainH(starterItemsMap.get(SlotType.MAIN_HAND));
 							mc.setOffH(starterItemsMap.get(SlotType.OFF_HAND));
+							
+							for(String s : config.getStringList("StarterSkills")) {
+								mc.getPlayerAbilities().add(s);
+							}
+							
 							classes.add(mc);
 						}
 					}

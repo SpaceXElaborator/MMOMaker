@@ -73,6 +73,13 @@ public class AbilityManager {
 		}
 		Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "[MMO-RPG] Done");
 	}
+	
+	public Ability getAbility(String s) {
+		if(abilities.containsKey(s)) {
+			return abilities.get(s);
+		}
+		return null;
+	}
 
 	@SuppressWarnings("unchecked")
 	private List<Effect> getEffects(JSONArray ja, String name) {
