@@ -48,6 +48,9 @@ public class CustomItem implements MMOCraftable {
 	private Integer customItemModel = 0;
 	@Getter
 	@Setter
+	private SlotType slotType = SlotType.ITEM;
+	@Getter
+	@Setter
 	private Rarity rarity = Rarity.COMMON;
 	@Getter
 	@Setter
@@ -72,8 +75,6 @@ public class CustomItem implements MMOCraftable {
 	private boolean craftOnly = false;
 	
 	private Map<CustomItem, Integer> craftingRecipe = new HashMap<CustomItem, Integer>();
-	
-	private SlotType slotType = SlotType.ITEM;
 	
 	public CustomItem(String name, Material mat, Integer itemD, Rarity rare, CraftRarity cr) {
 		setName(name);

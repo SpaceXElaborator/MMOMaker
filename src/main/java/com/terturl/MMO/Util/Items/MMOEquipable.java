@@ -17,7 +17,6 @@ import com.google.gson.Gson;
 import com.terturl.MMO.Util.Items.ItemEnums.CraftRarity;
 import com.terturl.MMO.Util.Items.ItemEnums.MMOModifiers;
 import com.terturl.MMO.Util.Items.ItemEnums.Rarity;
-import com.terturl.MMO.Util.Items.ItemEnums.SlotType;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -27,10 +26,6 @@ public class MMOEquipable extends CustomItem {
 
 	@Getter @Setter
 	private List<MMORunes> runes;
-	
-	@Getter
-	@Setter
-	private SlotType slotType = SlotType.TRINKET;
 	@Getter
 	@Setter
 	private Integer itemLevel = 1;
