@@ -2,6 +2,8 @@ package com.terturl.MMO.Util.Listeners;
 
 import java.util.UUID;
 
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -71,6 +73,9 @@ public class PlayerJoinListener implements Listener {
 		} else {
 			MinecraftMMO.getInstance().getPlayerHandler().loadPlayer(e.getPlayer());
 			e.getPlayer().teleport(MinecraftMMO.getInstance().getMmoConfiguration().getMmoClassPicker());
+			AttributeInstance health = e.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH);
+			health.setBaseValue(20);
+			e.getPlayer().setHealth(20);
 		}
 	}
 

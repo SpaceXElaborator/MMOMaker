@@ -16,6 +16,8 @@ import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.inventory.ItemStack;
@@ -150,6 +152,9 @@ public class PlayerHandler {
 		p.getInventory().setItem(0, cim.getItem(mc.getMainH()).makeItem());
 		p.getInventory().setItem(1, cim.getItem(mc.getOffH()).makeItem());
 		mp.getPlayer().teleport(mc.getClassLocation());
+		AttributeInstance health = p.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+		health.setBaseValue(mc.getMaxHealth());
+		p.setHealth(mc.getHealth());
 		giveBasicItems(p);
 		Bukkit.getScheduler().runTaskLater(MinecraftMMO.getInstance(), new Runnable() {
 			public void run() {

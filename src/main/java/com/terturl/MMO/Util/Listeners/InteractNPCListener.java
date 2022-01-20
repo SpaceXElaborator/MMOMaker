@@ -2,6 +2,8 @@ package com.terturl.MMO.Util.Listeners;
 
 import java.util.List;
 
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -90,9 +92,13 @@ public class InteractNPCListener implements Listener {
 		npc.lookAtPlayer(p, p);
 		// TODO: Check confirmation before selecting class
 		// p.sendMessage("Want to select " + npc.getDisplayName() + " as your class?");
+		MMOClass clazz = MinecraftMMO.getInstance().getClassHandler().getClass(npc.getDisplayName());
 		MinecraftMMO.getInstance().getClassHandler().selectClass(p, npc.getDisplayName());
 		MinecraftMMO.getInstance().getPlayerHandler().createPlayerFile(p);
 		MinecraftMMO.getInstance().getPlayerHandler().giveBasicItems(p);
+		AttributeInstance health = p.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+		health.setBaseValue(clazz.getMaxHealth());
+		p.setHealth(clazz.getMaxHealth());
 		p.sendMessage("You have selected the class: " + npc.getDisplayName());
 		MinecraftMMO.getInstance().getPlayerHandler().getPlayer(p).updateNPCQuests();
 	}
