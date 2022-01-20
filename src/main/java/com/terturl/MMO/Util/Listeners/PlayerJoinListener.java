@@ -12,6 +12,7 @@ import com.terturl.MMO.Entity.NPC.NPC;
 import com.terturl.MMO.Player.MMOPlayer;
 import com.terturl.MMO.Player.MMOClasses.MMOClass;
 import com.terturl.MMO.Util.Items.CustomItemManager;
+import com.terturl.MMO.Util.Items.MMOEquipable;
 import com.terturl.MMO.Util.Items.ItemEnums.SlotType;
 
 /**
@@ -42,23 +43,23 @@ public class PlayerJoinListener implements Listener {
 			npc.spawnNPC(e.getPlayer());
 			npc.reloadNPC(e.getPlayer());
 		}
-
+		
 		// Get all Class NPC's and spawn the NPC to the player and set its equipment
 		for (NPC npc : MinecraftMMO.getInstance().getNpcHandler().getClassNpcs()) {
 			npc.spawnNPC(e.getPlayer());
 			MMOClass mc = MinecraftMMO.getInstance().getClassHandler().getClass(npc.getDisplayName());
 			npc.setEquipment(e.getPlayer(), NPC.ItemSlot.HELMET,
-					cim.getCustomItems().get(mc.getStartItems().get(SlotType.HELMET)).makeItem());
+					((MMOEquipable)cim.getCustomItems().get(mc.getStartItems().get(SlotType.HELMET))).makeItem());
 			npc.setEquipment(e.getPlayer(), NPC.ItemSlot.CHESTPLATE,
-					cim.getCustomItems().get(mc.getStartItems().get(SlotType.CHEST)).makeItem());
+					((MMOEquipable)cim.getCustomItems().get(mc.getStartItems().get(SlotType.CHEST))).makeItem());
 			npc.setEquipment(e.getPlayer(), NPC.ItemSlot.LEGGINGS,
-					cim.getCustomItems().get(mc.getStartItems().get(SlotType.LEGS)).makeItem());
+					((MMOEquipable)cim.getCustomItems().get(mc.getStartItems().get(SlotType.LEGS))).makeItem());
 			npc.setEquipment(e.getPlayer(), NPC.ItemSlot.BOOTS,
-					cim.getCustomItems().get(mc.getStartItems().get(SlotType.BOOTS)).makeItem());
+					((MMOEquipable)cim.getCustomItems().get(mc.getStartItems().get(SlotType.BOOTS))).makeItem());
 			npc.setEquipment(e.getPlayer(), NPC.ItemSlot.MAIN_HAND,
-					cim.getCustomItems().get(mc.getStartItems().get(SlotType.MAIN_HAND)).makeItem());
+					((MMOEquipable)cim.getCustomItems().get(mc.getStartItems().get(SlotType.MAIN_HAND))).makeItem());
 			npc.setEquipment(e.getPlayer(), NPC.ItemSlot.OFF_HAND,
-					cim.getCustomItems().get(mc.getStartItems().get(SlotType.OFF_HAND)).makeItem());
+					((MMOEquipable)cim.getCustomItems().get(mc.getStartItems().get(SlotType.OFF_HAND))).makeItem());
 		}
 
 		if (!MinecraftMMO.getInstance().getPlayerHandler().PlayerExists(e.getPlayer())) {

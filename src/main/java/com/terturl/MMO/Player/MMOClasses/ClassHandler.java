@@ -17,6 +17,7 @@ import com.terturl.MMO.MinecraftMMO;
 import com.terturl.MMO.Player.MMOPlayer;
 import com.terturl.MMO.Util.JsonFileInterpretter;
 import com.terturl.MMO.Util.Items.CustomItemManager;
+import com.terturl.MMO.Util.Items.MMOEquipable;
 import com.terturl.MMO.Util.Items.ItemEnums.SlotType;
 
 import lombok.Getter;
@@ -90,11 +91,11 @@ public class ClassHandler {
 							mc.setBoots(starterItemsMap.get(SlotType.BOOTS));
 							mc.setMainH(starterItemsMap.get(SlotType.MAIN_HAND));
 							mc.setOffH(starterItemsMap.get(SlotType.OFF_HAND));
-							
-							for(String s : config.getStringList("StarterSkills")) {
+
+							for (String s : config.getStringList("StarterSkills")) {
 								mc.getPlayerAbilities().add(s);
 							}
-							
+
 							classes.add(mc);
 						}
 					}
@@ -125,20 +126,20 @@ public class ClassHandler {
 			wbw.newLine();
 			load = false;
 		}
-		
-		if(!config.contains("StarterMana")) {
+
+		if (!config.contains("StarterMana")) {
 			wbw.write("[" + f.getName() + "] Does not contain JSON object 'StarterMana'");
 			wbw.newLine();
 			load = false;
 		}
-		
-		if(!config.contains("StarterHealth")) {
+
+		if (!config.contains("StarterHealth")) {
 			wbw.write("[" + f.getName() + "] Does not contain JSON object 'StarterHealth'");
 			wbw.newLine();
 			load = false;
 		}
-		
-		if(!config.contains("StarterSkills")) {
+
+		if (!config.contains("StarterSkills")) {
 			wbw.write("[" + f.getName() + "] Does not contain JSON object 'StarterSkills'");
 			wbw.newLine();
 			load = false;
@@ -161,6 +162,12 @@ public class ClassHandler {
 				wbw.write(item + " Is not a valid CustomItem");
 				wbw.newLine();
 				load = false;
+			} else {
+				if (!(cim.getCustomItems().get(item) instanceof MMOEquipable)) {
+					wbw.write(item + " Is not a valid MMOEquippable Item");
+					wbw.newLine();
+					load = false;
+				}
 			}
 		}
 
@@ -227,15 +234,21 @@ public class ClassHandler {
 			mp.setCurrentCharacter(mp.getMmoClasses().size() - 1);
 			MinecraftMMO.getInstance().getPlayerHandler().addPlayer(mp);
 			p.getInventory().clear();
-			p.getInventory().setBoots(cim.getCustomItems().get(mc.getStartItems().get(SlotType.BOOTS)).makeItem());
-			p.getInventory().setChestplate(cim.getCustomItems().get(mc.getStartItems().get(SlotType.CHEST)).makeItem());
-			p.getInventory().setLeggings(cim.getCustomItems().get(mc.getStartItems().get(SlotType.LEGS)).makeItem());
-			p.getInventory().setHelmet(cim.getCustomItems().get(mc.getStartItems().get(SlotType.HELMET)).makeItem());
-			p.getInventory()
-					.setItemInOffHand(cim.getCustomItems().get(mc.getStartItems().get(SlotType.OFF_HAND)).makeItem());
+
+			p.getInventory().setBoots(
+					((MMOEquipable) cim.getCustomItems().get(mc.getStartItems().get(SlotType.BOOTS))).makeItem());
+			p.getInventory().setChestplate(
+					((MMOEquipable) cim.getCustomItems().get(mc.getStartItems().get(SlotType.CHEST))).makeItem());
+			p.getInventory().setLeggings(
+					((MMOEquipable) cim.getCustomItems().get(mc.getStartItems().get(SlotType.LEGS))).makeItem());
+			p.getInventory().setHelmet(
+					((MMOEquipable) cim.getCustomItems().get(mc.getStartItems().get(SlotType.BOOTS))).makeItem());
+			p.getInventory().setItemInOffHand(
+					((MMOEquipable) cim.getCustomItems().get(mc.getStartItems().get(SlotType.OFF_HAND))).makeItem());
 			p.getInventory().setItem(0,
-					cim.getCustomItems().get(mc.getStartItems().get(SlotType.MAIN_HAND)).makeItem());
-			p.getInventory().setItem(1, cim.getCustomItems().get(mc.getStartItems().get(SlotType.OFF_HAND)).makeItem());
+					((MMOEquipable) cim.getCustomItems().get(mc.getStartItems().get(SlotType.MAIN_HAND))).makeItem());
+			p.getInventory().setItem(1,
+					((MMOEquipable) cim.getCustomItems().get(mc.getStartItems().get(SlotType.OFF_HAND))).makeItem());
 			p.updateInventory();
 		}
 	}
