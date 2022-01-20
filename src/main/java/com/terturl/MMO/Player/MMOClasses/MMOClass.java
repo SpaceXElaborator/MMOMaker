@@ -18,7 +18,7 @@ import com.terturl.MMO.Player.Skills.Skill;
 import com.terturl.MMO.Player.Skills.Crafting.CraftingSkill;
 import com.terturl.MMO.Quests.Quest;
 import com.terturl.MMO.Util.BasicInventoryItems;
-import com.terturl.MMO.Util.Items.CustomItem.SlotType;
+import com.terturl.MMO.Util.Items.ItemEnums.SlotType;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

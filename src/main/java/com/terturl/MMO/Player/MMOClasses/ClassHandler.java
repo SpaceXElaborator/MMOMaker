@@ -16,8 +16,8 @@ import org.json.simple.JSONObject;
 import com.terturl.MMO.MinecraftMMO;
 import com.terturl.MMO.Player.MMOPlayer;
 import com.terturl.MMO.Util.JsonFileInterpretter;
-import com.terturl.MMO.Util.Items.CustomItem.SlotType;
 import com.terturl.MMO.Util.Items.CustomItemManager;
+import com.terturl.MMO.Util.Items.ItemEnums.SlotType;
 
 import lombok.Getter;
 import net.md_5.bungee.api.ChatColor;
