@@ -13,6 +13,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import com.terturl.MMO.MinecraftMMO;
+import com.terturl.MMO.Util.Items.ItemEnums.CraftRarity;
+import com.terturl.MMO.Util.Items.ItemEnums.Rarity;
+import com.terturl.MMO.Util.Items.ItemEnums.SlotType;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -25,20 +28,20 @@ import lombok.Setter;
  * @since 0.53.0
  *
  */
-public class CustomWeapon extends CustomItem {
+public class CustomWeapon extends MMOEquipable {
 
 	@Getter
 	@Setter
 	private Boolean ranged;
 
-	public CustomWeapon(String name, Material mat, Integer itemDamage, Integer level, Rarity rarity, SlotType st) {
-		super(name, mat, itemDamage, level, rarity);
+	public CustomWeapon(String name, Material mat, Integer itemDamage, Integer level, Rarity rarity, CraftRarity craftingRarity, SlotType st) {
+		super(name, mat, itemDamage, rarity, craftingRarity, level);
 		setSlotType(st);
 	}
 
 	public CustomWeapon(Player p, String name, Material mat, Integer itemDamage, Integer level, Rarity rarity,
-			CraftRarity craft, SlotType st, Boolean r) {
-		super(p, name, mat, itemDamage, level, rarity, craft);
+			CraftRarity craftingRarity, SlotType st, Boolean r) {
+		super(name, mat, itemDamage, rarity, craftingRarity, level);
 		ranged = r;
 		setSlotType(st);
 	}

@@ -10,7 +10,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -75,18 +74,15 @@ public class CustomItem implements MMOCraftable {
 	private Map<CustomItem, Integer> craftingRecipe = new HashMap<CustomItem, Integer>();
 	
 	private SlotType slotType = SlotType.ITEM;
-
-	public CustomItem(String name, Material mat, Integer itemD, Rarity rare) {
+	
+	public CustomItem(String name, Material mat, Integer itemD, Rarity rare, CraftRarity cr) {
 		setName(name);
 		setItemMat(mat);
 		setCustomItemModel(itemD);
 		setRarity(rare);
-	}
-	
-	public CustomItem(Player p, String name, Material mat, Integer itemD, Rarity rare, CraftRarity cr) {
-		this(name, mat, itemD, rare);
 		setCraftingRarity(cr);
-		madeBy = p.getName();
+		// This will now be called only if the item was crafted
+		// madeBy = p.getName();
 	}
 	
 	@Override

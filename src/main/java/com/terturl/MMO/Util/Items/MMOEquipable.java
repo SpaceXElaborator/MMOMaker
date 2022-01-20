@@ -9,7 +9,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -51,13 +50,8 @@ public class MMOEquipable extends CustomItem {
 	@Setter
 	private HashMap<MMOModifiers, Double> valueAddOn = new HashMap<>();
 	
-	public MMOEquipable(String name, Material mat, Integer itemD, Rarity rare, Integer level) {
-		super(name, mat, itemD, rare);
-		setItemLevel(level);
-	}
-	
-	public MMOEquipable(Player p, String name, Material mat, Integer itemD, Rarity rare, CraftRarity cr, Integer level) {
-		super(p, name, mat, itemD, rare, cr);
+	public MMOEquipable(String name, Material mat, Integer itemD, Rarity rare, CraftRarity cr, Integer level) {
+		super(name, mat, itemD, rare, cr);
 		setItemLevel(level);
 	}
 	
