@@ -71,6 +71,8 @@ public class ClassHandler {
 						if (checkStarterValues(f)) {
 							JsonFileInterpretter config = new JsonFileInterpretter(f);
 							String name = config.getString("Name");
+							Double maxhealth = config.getDouble("StarterHealth");
+							Double startingMana = config.getDouble("StarterMana");
 							Map<SlotType, String> starterItemsMap = new HashMap<>();
 							JSONObject starterItems = config.getObject("StarterItems");
 
@@ -94,6 +96,8 @@ public class ClassHandler {
 							mc.setBoots(starterItemsMap.get(SlotType.BOOTS));
 							mc.setMainH(starterItemsMap.get(SlotType.MAIN_HAND));
 							mc.setOffH(starterItemsMap.get(SlotType.OFF_HAND));
+							mc.setMaxHealth(maxhealth);
+							mc.setMana(startingMana);
 
 							for (String s : config.getStringList("StarterSkills")) {
 								mc.getPlayerAbilities().add(s);

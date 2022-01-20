@@ -488,7 +488,7 @@ public class PlayerHandler {
 		clazz.put("Inventory", inv);
 
 		clazz.put("MaxHealth", mc.getMaxHealth());
-		clazz.put("Health", mc.getHealth());
+		clazz.put("Health", p.getHealth());
 		clazz.put("Mana", mc.getMana());
 		
 		return clazz;
