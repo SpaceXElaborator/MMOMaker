@@ -82,13 +82,13 @@ public class CustomItem {
 	private boolean craftOnly = false;
 	@Getter
 	@Setter
-	private HashMap<Modifiers, Object> mods = new HashMap<>();
+	private HashMap<MMOModifiers, Object> mods = new HashMap<>();
 	@Getter
 	@Setter
-	private HashMap<Modifiers, Double> modsOn = new HashMap<>();
+	private HashMap<MMOModifiers, Double> modsOn = new HashMap<>();
 	@Getter
 	@Setter
-	private HashMap<Modifiers, Double> valueAddOn = new HashMap<>();
+	private HashMap<MMOModifiers, Double> valueAddOn = new HashMap<>();
 
 	public CustomItem(String name, Material mat, Integer itemD, Integer level, Rarity rare) {
 		setName(name);
@@ -115,7 +115,7 @@ public class CustomItem {
 			if(getMods().size() > 1) {
 				lore.add("");
 			}
-			for (Modifiers mods : getMods().keySet()) {
+			for (MMOModifiers mods : getMods().keySet()) {
 				if (getCraftingRarity() == null) {
 					Object o = getMods().get(mods);
 					Double mult = null;
@@ -211,32 +211,6 @@ public class CustomItem {
 		int d2 = Integer.valueOf(numbers[1]);
 		int random = ThreadLocalRandom.current().nextInt(d1, d2 + 1);
 		return random;
-	}
-
-	public enum Modifiers {
-		HEALTH("Health"), DAMAGE("Damage"), LOOT("Loot"), SPEED("Speed"), DEFENSE("Defense"), MANA("Mana"),
-		RAGE("Rage");
-
-		Modifiers(String s) {
-			this.n = s;
-		}
-
-		private final String n;
-
-		public String getFriendlyName() {
-			return n;
-		}
-
-		public static boolean exists(String s) {
-
-			for (Modifiers v : values()) {
-				if (s.equalsIgnoreCase(v.toString())) {
-					return true;
-				}
-			}
-
-			return false;
-		}
 	}
 
 	public enum CraftRarity {
