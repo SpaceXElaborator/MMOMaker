@@ -11,8 +11,8 @@ import com.terturl.MMO.MinecraftMMO;
 import com.terturl.MMO.Entity.NPC.NPC;
 import com.terturl.MMO.Player.MMOPlayer;
 import com.terturl.MMO.Player.MMOClasses.MMOClass;
-import com.terturl.MMO.Util.Items.CustomItem.SlotType;
 import com.terturl.MMO.Util.Items.CustomItemManager;
+import com.terturl.MMO.Util.Items.ItemEnums.SlotType;
 
 /**
  * Handles the calling of events that will take place when the player joins the

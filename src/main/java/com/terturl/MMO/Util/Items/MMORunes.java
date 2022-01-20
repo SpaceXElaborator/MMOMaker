@@ -5,6 +5,8 @@ import java.util.Map;
 
 import org.bukkit.inventory.ItemStack;
 
+import com.terturl.MMO.Util.Items.ItemEnums.MMOModifiers;
+
 import lombok.Getter;
 import lombok.Setter;
 

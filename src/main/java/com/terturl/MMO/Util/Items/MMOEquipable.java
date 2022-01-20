@@ -15,6 +15,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import com.google.gson.Gson;
 import com.terturl.MMO.Util.Items.ItemEnums.CraftRarity;
+import com.terturl.MMO.Util.Items.ItemEnums.MMOModifiers;
 import com.terturl.MMO.Util.Items.ItemEnums.Rarity;
 import com.terturl.MMO.Util.Items.ItemEnums.SlotType;
 

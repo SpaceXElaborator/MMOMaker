@@ -1,4 +1,4 @@
-package com.terturl.MMO.Util.Items;
+package com.terturl.MMO.Util.Items.ItemEnums;
 
 public enum MMOModifiers {
 	HEALTH("Health"), DAMAGE("Damage"), LOOT("Loot"), SPEED("Speed"), DEFENSE("Defense"), MANA("Mana"),
