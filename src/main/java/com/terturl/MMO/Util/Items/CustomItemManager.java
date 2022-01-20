@@ -15,8 +15,9 @@ import org.bukkit.Material;
 
 import com.terturl.MMO.MinecraftMMO;
 import com.terturl.MMO.Util.JsonFileInterpretter;
-import com.terturl.MMO.Util.Items.CustomItem.Rarity;
-import com.terturl.MMO.Util.Items.CustomItem.SlotType;
+import com.terturl.MMO.Util.Items.ItemEnums.CraftRarity;
+import com.terturl.MMO.Util.Items.ItemEnums.Rarity;
+import com.terturl.MMO.Util.Items.ItemEnums.SlotType;
 import com.terturl.MMO.Util.Strings.StringUtils;
 
 import lombok.Getter;
@@ -50,7 +51,8 @@ public class CustomItemManager {
 
 	public CustomItemManager() throws IOException {
 		Bukkit.getConsoleSender().sendMessage(ChatColor.BLUE + "[MMO-RPG] Registering Items...");
-		customItems.put("MMO_ITEM_EMPTY_SLOT_ITEM", new CustomItem("MMO_ITEM_EMPTY_SLOT_ITEM", Material.AIR, 0, 0, Rarity.COMMON));
+		customItems.put("MMO_ITEM_EMPTY_SLOT_ITEM",
+				new CustomItem("MMO_ITEM_EMPTY_SLOT_ITEM", Material.AIR, 0, Rarity.COMMON, CraftRarity.CRUDE));
 
 		List<Material> armor = new ArrayList<>();
 		for (Material m : boots) {
@@ -97,27 +99,22 @@ public class CustomItemManager {
 						JsonFileInterpretter config = new JsonFileInterpretter(f);
 						String name = config.getString("Name");
 						String friendlyname = config.contains("FriendlyName") ? config.getString("FriendlyName") : name;
+						Integer itemModelData = config.contains("ItemModelData") ? config.getInt("ItemModelData") : 0;
+						Boolean canCraft = config.contains("CanCraft") ? config.getBoolean("CanCraft") : false;
+						Boolean craftOnly = config.contains("CraftOnly") ? config.getBoolean("CraftOnly") : false;
+						List<String> lore = config.contains("Lore") ? config.getStringList("Lore") : new ArrayList<>();
+						Boolean soulBound = config.contains("SoulBound") ? config.getBoolean("SoulBound") : false;
 						Material mat = Material.getMaterial(config.getString("Item").toUpperCase());
-						Integer durability = config.contains("CustomItemModel") ? config.getInt("CustomItemModel") : 0;
 						Rarity rare = config.contains("Rarity")
 								? Rarity.valueOf(config.getString("Rarity").toUpperCase())
 								: Rarity.COMMON;
-						Boolean canCraft = config.contains("CanCraft") ? config.getBoolean("CanCraft") : false;
-						Boolean craftOnly = config.contains("CraftOnly") ? config.getBoolean("CraftOnly") : false;
-						Integer itemLevel = config.contains("Level") ? config.getInt("Level") : 1;
-						Double itemDurability = config.contains("ItemDurability") ? config.getDouble("ItemDurability")
-								: 0.0;
-						Double itemMaxDurability = config.contains("ItemMaxDurability")
-								? config.getDouble("ItemMaxDurability")
-								: 0.0;
-						List<String> lore = config.contains("Lore") ? config.getStringList("Lore") : new ArrayList<>();
-						Boolean soulBound = config.contains("SoulBound") ? config.getBoolean("SoulBound") : false;
-						CustomItem ci = new CustomItem(name, mat, durability, itemLevel, rare);
+						CraftRarity craftRarity = config.contains("CraftRarity")
+								? CraftRarity.valueOf(config.getString("CraftRarity").toUpperCase())
+								: CraftRarity.CRUDE;
+						CustomItem ci = new CustomItem(name, mat, itemModelData, rare, craftRarity);
 						ci.setFriendlyName(friendlyname);
 						ci.setCanCraft(canCraft);
 						ci.setCraftOnly(craftOnly);
-						ci.setDurability(itemDurability);
-						ci.setMaxDurability(itemMaxDurability);
 						ci.setLore(lore);
 						ci.setSoulBound(soulBound);
 						customItems.put(name, ci);
@@ -140,6 +137,9 @@ public class CustomItemManager {
 							Rarity rare = config.contains("Rarity")
 									? Rarity.valueOf(config.getString("Rarity").toUpperCase())
 									: Rarity.COMMON;
+							CraftRarity craftRarity = config.contains("CraftRarity")
+									? CraftRarity.valueOf(config.getString("CraftRarity").toUpperCase())
+									: CraftRarity.CRUDE;
 							SlotType st = SlotType.valueOf(config.getString("SlotType").toUpperCase());
 							Boolean canCraft = config.contains("CanCraft") ? config.getBoolean("CanCraft") : false;
 							Boolean craftOnly = config.contains("CraftOnly") ? config.getBoolean("CraftOnly") : false;
@@ -156,7 +156,7 @@ public class CustomItemManager {
 							Color c = config.contains("Color")
 									? StringUtils.getColorFromString(config.getString("Color"))
 									: null;
-							CustomArmor ci = new CustomArmor(name, mat, durability, itemLevel, rare, st);
+							CustomArmor ci = new CustomArmor(name, mat, durability, itemLevel, rare, craftRarity, st);
 							ci.setFriendlyName(friendlyname);
 							ci.setCanCraft(canCraft);
 							ci.setCraftOnly(craftOnly);
@@ -174,27 +174,6 @@ public class CustomItemManager {
 			}
 		}
 
-		if (resources.listFiles().length != 0) {
-			for (File f : resources.listFiles()) {
-				if (f.getName().endsWith(".json")) {
-					if (checkResource(f)) {
-						JsonFileInterpretter config = new JsonFileInterpretter(f);
-						String name = config.getString("Name");
-						String friendlyname = config.contains("FriendlyName") ? config.getString("FriendlyName") : name;
-						Material mat = Material.getMaterial(config.getString("Item").toUpperCase());
-						Rarity rare = config.contains("Rarity")
-								? Rarity.valueOf(config.getString("Rarity").toUpperCase())
-								: Rarity.COMMON;
-						CustomItem ci = new CustomItem(name, mat, 0, 0, rare);
-						ci.setFriendlyName(friendlyname);
-						ci.setMaxDurability(0.0);
-						ci.setDurability(0.0);
-						ci.setSlotType(SlotType.DROP);
-						customItems.put(name, ci);
-					}
-				}
-			}
-		}
 		Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "[MMO-RPG] Done");
 	}
 
@@ -203,30 +182,6 @@ public class CustomItemManager {
 			return customItems.get(name);
 		}
 		return null;
-	}
-
-	private boolean checkResource(File f) throws IOException {
-		boolean load = true;
-		JsonFileInterpretter config = new JsonFileInterpretter(f);
-
-		FileWriter wfw = new FileWriter(getWarnings());
-		BufferedWriter wbw = new BufferedWriter(wfw);
-
-		if (!config.contains("Name")) {
-			wbw.write("[" + f.getName() + "] 'name' property is not set!");
-			wbw.newLine();
-			load = false;
-		}
-
-		if (!config.contains("Item")) {
-			wbw.write("[" + f.getName() + "] 'Item' property is not set!");
-			wbw.newLine();
-			load = false;
-		}
-
-		wbw.flush();
-		wbw.close();
-		return load;
 	}
 
 	private boolean checkArmor(File f, List<Material> armor) throws IOException {
@@ -345,8 +300,7 @@ public class CustomItemManager {
 		}
 
 		if (config.contains("CustomItemModel")) {
-			Integer damage = StringUtils.isInt(config.getString("CustomItemModel"))
-					? config.getInt("CustomItemModel")
+			Integer damage = StringUtils.isInt(config.getString("CustomItemModel")) ? config.getInt("CustomItemModel")
 					: null;
 			if (damage == null) {
 				wbw.write("[" + f.getName() + "] 'Durability' MUST be a number!");
@@ -372,6 +326,15 @@ public class CustomItemManager {
 				load = false;
 			}
 		}
+		
+		if (config.contains("CraftRarity")) {
+			String s = CraftRarity.exists(config.getString("CraftRarity")) ? config.getString("CraftRarity").toUpperCase() : null;
+			if (s == null) {
+				wbw.write("[" + f.getName() + "] CraftRarity: " + config.getString("CraftRarity") + " does not exist!");
+				wbw.newLine();
+				load = false;
+			}
+		}
 
 		if (config.contains("SlotType")) {
 			String s = SlotType.exists(config.getString("SlotType")) ? config.getString("SlotType").toUpperCase()
@@ -380,7 +343,7 @@ public class CustomItemManager {
 				wbw.write("[" + f.getName() + "] Slot Type: " + config.getString("SlotType") + " does not exist!");
 				wbw.newLine();
 				load = false;
-			} 
+			}
 //			else {
 //				if (!isArmor) {
 //					SlotType st = SlotType.valueOf(s);
