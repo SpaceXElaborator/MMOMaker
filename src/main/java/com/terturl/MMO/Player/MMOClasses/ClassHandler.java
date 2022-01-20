@@ -81,6 +81,8 @@ public class ClassHandler {
 
 							if (checkStarterItems(starterItems)) {
 								starterItemsMap = setStarterItemMap(starterItems);
+							} else {
+								Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Error in file: " + f.getName());
 							}
 
 							MMOClass mc = new MMOClass(name);
@@ -97,6 +99,8 @@ public class ClassHandler {
 							}
 
 							classes.add(mc);
+						} else {
+							Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Error in file: " + f.getName());
 						}
 					}
 				}
