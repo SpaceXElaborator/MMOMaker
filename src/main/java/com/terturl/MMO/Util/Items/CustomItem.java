@@ -1,9 +1,9 @@
 package com.terturl.MMO.Util.Items;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.bukkit.ChatColor;
@@ -16,6 +16,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import com.google.gson.Gson;
+import com.terturl.MMO.Util.Items.ItemEnums.CraftRarity;
+import com.terturl.MMO.Util.Items.ItemEnums.Rarity;
+import com.terturl.MMO.Util.Items.ItemEnums.SlotType;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -23,7 +26,7 @@ import lombok.Setter;
 import net.minecraft.nbt.NBTTagCompound;
 
 @EqualsAndHashCode
-public class CustomItem {
+public class CustomItem implements MMOCraftable {
 
 	// TODO: Separation of lowest items upwards.
 	// As in, CustomItem should ONLY be name, friendlyName, itemMat, itemModal, Rarity, CraftingRarity, Lore, MadeBy, CanCraft, CraftOnly, SoulBound (Resource Items)
@@ -52,18 +55,6 @@ public class CustomItem {
 	private CraftRarity craftingRarity = CraftRarity.CRUDE;
 	@Getter
 	@Setter
-	private SlotType slotType = SlotType.TRINKET;
-	@Getter
-	@Setter
-	private Integer itemLevel = 1;
-	@Getter
-	@Setter
-	private Double durability = 50.0;
-	@Getter
-	@Setter
-	private Double maxDurability = 50.0;
-	@Getter
-	@Setter
 	private List<String> lore = new ArrayList<>();
 	@Getter
 	@Setter
@@ -80,28 +71,32 @@ public class CustomItem {
 	@Getter
 	@Setter
 	private boolean craftOnly = false;
-	@Getter
-	@Setter
-	private HashMap<MMOModifiers, Object> mods = new HashMap<>();
-	@Getter
-	@Setter
-	private HashMap<MMOModifiers, Double> modsOn = new HashMap<>();
-	@Getter
-	@Setter
-	private HashMap<MMOModifiers, Double> valueAddOn = new HashMap<>();
+	
+	private Map<CustomItem, Integer> craftingRecipe = new HashMap<CustomItem, Integer>();
+	
+	private SlotType slotType = SlotType.ITEM;
 
-	public CustomItem(String name, Material mat, Integer itemD, Integer level, Rarity rare) {
+	public CustomItem(String name, Material mat, Integer itemD, Rarity rare) {
 		setName(name);
 		setItemMat(mat);
 		setCustomItemModel(itemD);
-		setItemLevel(level);
 		setRarity(rare);
 	}
 	
-	public CustomItem(Player p, String name, Material mat, Integer itemD, Integer level, Rarity rare, CraftRarity cr) {
-		this(name, mat, itemD, level, rare);
+	public CustomItem(Player p, String name, Material mat, Integer itemD, Rarity rare, CraftRarity cr) {
+		this(name, mat, itemD, rare);
 		setCraftingRarity(cr);
 		madeBy = p.getName();
+	}
+	
+	@Override
+	public Map<CustomItem, Integer> getCraftingRecipe() {
+		return craftingRecipe;
+	}
+
+	@Override
+	public void setCraftingRecipe(Map<CustomItem, Integer> recipe) {
+		craftingRecipe = recipe;
 	}
 	
 	public ItemStack makeItem(Integer amt) {
@@ -111,53 +106,6 @@ public class CustomItem {
 			m.setDisplayName(getRarity().getChatColor() + getName().replaceAll("_", " "));
 			m.setUnbreakable(true);
 			List<String> lore = new ArrayList<String>();
-			lore.add(ChatColor.GOLD + "Level: " + String.valueOf(getItemLevel()));
-			if(getMods().size() > 1) {
-				lore.add("");
-			}
-			for (MMOModifiers mods : getMods().keySet()) {
-				if (getCraftingRarity() == null) {
-					Object o = getMods().get(mods);
-					Double mult = null;
-					Double d = null;
-					if (o instanceof Double) {
-						d = (Double) getMods().get(mods);
-						getModsOn().put(mods, d);
-					} else if (o instanceof String) {
-						String s = (String) getMods().get(mods);
-						Integer in = getRandom(s);
-						d = in + 0.0D;
-						getModsOn().put(mods, d);
-					}
-					mult = d * getCraftingRarity().getMultiplier();
-					DecimalFormat df = new DecimalFormat("##.00");
-					getValueAddOn().put(mods, mult);
-					lore.add(ChatColor.GRAY + mods.getFriendlyName() + ":" + ChatColor.GREEN + " +" + getModsOn().get(mods)
-							+ " " + ChatColor.GOLD + "+" + df.format(mult));
-				}
-	
-				if (getCraftingRarity().equals(CraftRarity.CRUDE)) {
-					lore.add(ChatColor.GRAY + mods.getFriendlyName() + ":" + ChatColor.GREEN + " +" + getMods().get(mods));
-				} else {
-					Object o = getMods().get(mods);
-					Double mult = null;
-					Double d = null;
-					if (o instanceof Double) {
-						d = (Double) getMods().get(mods);
-						getModsOn().put(mods, d);
-					} else if (o instanceof String) {
-						String s = (String) getMods().get(mods);
-						Integer in = getRandom(s);
-						d = in + 0.0D;
-						getModsOn().put(mods, d);
-					}
-					mult = d * getCraftingRarity().getMultiplier();
-					DecimalFormat df = new DecimalFormat("##.00");
-					getValueAddOn().put(mods, mult);
-					lore.add(ChatColor.GRAY + mods.getFriendlyName() + ":" + ChatColor.GREEN + " +" + getModsOn().get(mods)
-							+ " " + ChatColor.GOLD + "+" + df.format(mult));
-				}
-			}
 			
 			if(getLore().size() > 0) {
 				lore.add("");
@@ -177,11 +125,6 @@ public class CustomItem {
 				lore.add(ChatColor.GRAY + "" + ChatColor.ITALIC + "Soul-Bound");
 			}
 			
-			if(getDurability() != 0.0 && getMaxDurability() != 0.0) {
-				lore.add("");
-				lore.add(ChatColor.GRAY + "Durability: " + String.valueOf(getDurability()) + "/"
-						+ String.valueOf(getMaxDurability()));
-			}
 			m.setLore(lore);
 			m.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_UNBREAKABLE);
 			for (Attribute a : Attribute.values()) {
@@ -211,87 +154,6 @@ public class CustomItem {
 		int d2 = Integer.valueOf(numbers[1]);
 		int random = ThreadLocalRandom.current().nextInt(d1, d2 + 1);
 		return random;
-	}
-
-	public enum CraftRarity {
-		CRUDE(ChatColor.DARK_GRAY, "Crude", 0.0), WELL_MADE(ChatColor.GREEN, "Well-Made", 0.1),
-		SUPER_CRAFTED(ChatColor.LIGHT_PURPLE, "Super-Crafted", 0.2),
-		MASTER_CRAFTED(ChatColor.YELLOW, "Master-Crafted", 0.3);
-
-		CraftRarity(ChatColor g, String s, Double d) {
-			this.g = g;
-			this.s = s;
-			this.d = d;
-		}
-
-		private final ChatColor g;
-		private final String s;
-		private final Double d;
-
-		public String getFriendlyName() {
-			return s;
-		}
-
-		public ChatColor getChatColor() {
-			return g;
-		}
-
-		public Double getMultiplier() {
-			return d;
-		}
-
-		public static boolean exists(String s) {
-
-			for (CraftRarity v : values()) {
-				if (s.equalsIgnoreCase(v.toString())) {
-					return true;
-				}
-			}
-
-			return false;
-		}
-	}
-
-	public enum Rarity {
-		COMMON(ChatColor.DARK_GRAY), UNCOMMON(ChatColor.DARK_GREEN), RARE(ChatColor.DARK_RED),
-		LEGENDARY(ChatColor.DARK_PURPLE), MYTHIC(ChatColor.GOLD);
-
-		Rarity(ChatColor g) {
-			this.color = g;
-		}
-
-		private final ChatColor color;
-
-		public ChatColor getChatColor() {
-			return color;
-		}
-
-		public static boolean exists(String s) {
-
-			for (Rarity v : values()) {
-				if (s.equalsIgnoreCase(v.toString())) {
-					return true;
-				}
-			}
-
-			return false;
-		}
-
-	}
-
-	public enum SlotType {
-		MAIN_HAND, OFF_HAND, HELMET, CHEST, LEGS, BOOTS, TRINKET, DROP;
-
-		public static boolean exists(String s) {
-
-			for (SlotType v : values()) {
-				if (s.equalsIgnoreCase(v.toString())) {
-					return true;
-				}
-			}
-
-			return false;
-		}
 	}
 
 }
