@@ -6,6 +6,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.ItemStack;
 
 import com.terturl.MMO.MinecraftMMO;
 import com.terturl.MMO.Entity.NPC.NPC;
@@ -48,18 +49,20 @@ public class PlayerJoinListener implements Listener {
 		for (NPC npc : MinecraftMMO.getInstance().getNpcHandler().getClassNpcs()) {
 			npc.spawnNPC(e.getPlayer());
 			MMOClass mc = MinecraftMMO.getInstance().getClassHandler().getClass(npc.getDisplayName());
-			npc.setEquipment(e.getPlayer(), NPC.ItemSlot.HELMET,
-					((MMOEquipable)cim.getCustomItems().get(mc.getStartItems().get(SlotType.HELMET))).makeItem());
-			npc.setEquipment(e.getPlayer(), NPC.ItemSlot.CHESTPLATE,
-					((MMOEquipable)cim.getCustomItems().get(mc.getStartItems().get(SlotType.CHEST))).makeItem());
-			npc.setEquipment(e.getPlayer(), NPC.ItemSlot.LEGGINGS,
-					((MMOEquipable)cim.getCustomItems().get(mc.getStartItems().get(SlotType.LEGS))).makeItem());
-			npc.setEquipment(e.getPlayer(), NPC.ItemSlot.BOOTS,
-					((MMOEquipable)cim.getCustomItems().get(mc.getStartItems().get(SlotType.BOOTS))).makeItem());
-			npc.setEquipment(e.getPlayer(), NPC.ItemSlot.MAIN_HAND,
-					((MMOEquipable)cim.getCustomItems().get(mc.getStartItems().get(SlotType.MAIN_HAND))).makeItem());
-			npc.setEquipment(e.getPlayer(), NPC.ItemSlot.OFF_HAND,
-					((MMOEquipable)cim.getCustomItems().get(mc.getStartItems().get(SlotType.OFF_HAND))).makeItem());
+			
+			ItemStack boots = (cim.getCustomItems().get(mc.getStartItems().get(SlotType.BOOTS)) instanceof MMOEquipable) ? ((MMOEquipable) cim.getCustomItems().get(mc.getStartItems().get(SlotType.BOOTS))).makeItem() : null;
+			ItemStack chest = (cim.getCustomItems().get(mc.getStartItems().get(SlotType.CHEST)) instanceof MMOEquipable) ? ((MMOEquipable) cim.getCustomItems().get(mc.getStartItems().get(SlotType.CHEST))).makeItem() : null;
+			ItemStack legs = (cim.getCustomItems().get(mc.getStartItems().get(SlotType.LEGS)) instanceof MMOEquipable) ? ((MMOEquipable) cim.getCustomItems().get(mc.getStartItems().get(SlotType.LEGS))).makeItem() : null;
+			ItemStack helmet = (cim.getCustomItems().get(mc.getStartItems().get(SlotType.HELMET)) instanceof MMOEquipable) ? ((MMOEquipable) cim.getCustomItems().get(mc.getStartItems().get(SlotType.HELMET))).makeItem() : null;
+			ItemStack off_hand = (cim.getCustomItems().get(mc.getStartItems().get(SlotType.OFF_HAND)) instanceof MMOEquipable) ? ((MMOEquipable) cim.getCustomItems().get(mc.getStartItems().get(SlotType.OFF_HAND))).makeItem() : null;
+			ItemStack main_hand = (cim.getCustomItems().get(mc.getStartItems().get(SlotType.MAIN_HAND)) instanceof MMOEquipable) ? ((MMOEquipable) cim.getCustomItems().get(mc.getStartItems().get(SlotType.MAIN_HAND))).makeItem() : null;
+			
+			npc.setEquipment(e.getPlayer(), NPC.ItemSlot.HELMET, helmet);
+			npc.setEquipment(e.getPlayer(), NPC.ItemSlot.CHESTPLATE, chest);
+			npc.setEquipment(e.getPlayer(), NPC.ItemSlot.LEGGINGS, legs);
+			npc.setEquipment(e.getPlayer(), NPC.ItemSlot.BOOTS, boots);
+			npc.setEquipment(e.getPlayer(), NPC.ItemSlot.MAIN_HAND, main_hand);
+			npc.setEquipment(e.getPlayer(), NPC.ItemSlot.OFF_HAND, off_hand);
 		}
 
 		if (!MinecraftMMO.getInstance().getPlayerHandler().PlayerExists(e.getPlayer())) {

@@ -11,6 +11,7 @@ import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.json.simple.JSONObject;
 
 import com.terturl.MMO.MinecraftMMO;
@@ -238,21 +239,21 @@ public class ClassHandler {
 			mp.setCurrentCharacter(mp.getMmoClasses().size() - 1);
 			MinecraftMMO.getInstance().getPlayerHandler().addPlayer(mp);
 			p.getInventory().clear();
-
-			p.getInventory().setBoots(
-					((MMOEquipable) cim.getCustomItems().get(mc.getStartItems().get(SlotType.BOOTS))).makeItem());
-			p.getInventory().setChestplate(
-					((MMOEquipable) cim.getCustomItems().get(mc.getStartItems().get(SlotType.CHEST))).makeItem());
-			p.getInventory().setLeggings(
-					((MMOEquipable) cim.getCustomItems().get(mc.getStartItems().get(SlotType.LEGS))).makeItem());
-			p.getInventory().setHelmet(
-					((MMOEquipable) cim.getCustomItems().get(mc.getStartItems().get(SlotType.BOOTS))).makeItem());
-			p.getInventory().setItemInOffHand(
-					((MMOEquipable) cim.getCustomItems().get(mc.getStartItems().get(SlotType.OFF_HAND))).makeItem());
-			p.getInventory().setItem(0,
-					((MMOEquipable) cim.getCustomItems().get(mc.getStartItems().get(SlotType.MAIN_HAND))).makeItem());
-			p.getInventory().setItem(1,
-					((MMOEquipable) cim.getCustomItems().get(mc.getStartItems().get(SlotType.OFF_HAND))).makeItem());
+			
+			ItemStack boots = (cim.getCustomItems().get(mc.getStartItems().get(SlotType.BOOTS)) instanceof MMOEquipable) ? ((MMOEquipable) cim.getCustomItems().get(mc.getStartItems().get(SlotType.BOOTS))).makeItem() : null;
+			ItemStack chest = (cim.getCustomItems().get(mc.getStartItems().get(SlotType.CHEST)) instanceof MMOEquipable) ? ((MMOEquipable) cim.getCustomItems().get(mc.getStartItems().get(SlotType.CHEST))).makeItem() : null;
+			ItemStack legs = (cim.getCustomItems().get(mc.getStartItems().get(SlotType.LEGS)) instanceof MMOEquipable) ? ((MMOEquipable) cim.getCustomItems().get(mc.getStartItems().get(SlotType.LEGS))).makeItem() : null;
+			ItemStack helmet = (cim.getCustomItems().get(mc.getStartItems().get(SlotType.HELMET)) instanceof MMOEquipable) ? ((MMOEquipable) cim.getCustomItems().get(mc.getStartItems().get(SlotType.HELMET))).makeItem() : null;
+			ItemStack off_hand = (cim.getCustomItems().get(mc.getStartItems().get(SlotType.OFF_HAND)) instanceof MMOEquipable) ? ((MMOEquipable) cim.getCustomItems().get(mc.getStartItems().get(SlotType.OFF_HAND))).makeItem() : null;
+			ItemStack main_hand = (cim.getCustomItems().get(mc.getStartItems().get(SlotType.MAIN_HAND)) instanceof MMOEquipable) ? ((MMOEquipable) cim.getCustomItems().get(mc.getStartItems().get(SlotType.MAIN_HAND))).makeItem() : null;
+			
+			p.getInventory().setBoots(boots);
+			p.getInventory().setChestplate(chest);
+			p.getInventory().setLeggings(legs);
+			p.getInventory().setHelmet(helmet);
+			p.getInventory().setItemInOffHand(off_hand);
+			p.getInventory().setItem(0, main_hand);
+			p.getInventory().setItem(1, off_hand);
 			p.updateInventory();
 		}
 	}
