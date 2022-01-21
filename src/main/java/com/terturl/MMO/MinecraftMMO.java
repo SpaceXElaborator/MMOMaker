@@ -56,11 +56,13 @@ import com.terturl.MMO.Util.Listeners.EntityDeathListeners;
 import com.terturl.MMO.Util.Listeners.HotbarListeners;
 import com.terturl.MMO.Util.Listeners.InteractNPCListener;
 import com.terturl.MMO.Util.Listeners.ItemInteractionListeners;
+import com.terturl.MMO.Util.Listeners.MMOArmorEquipListener;
 import com.terturl.MMO.Util.Listeners.MMOEntityDeathListener;
 import com.terturl.MMO.Util.Listeners.MMOItemPickUpListener;
 import com.terturl.MMO.Util.Listeners.PlayerDropItemListener;
 import com.terturl.MMO.Util.Listeners.PlayerJoinListener;
 import com.terturl.MMO.Util.Listeners.PlayerMoveListeners;
+import com.terturl.MMO.Util.Listeners.HelperListeners.ArmorEquipHelperListener;
 
 import lombok.Getter;
 
@@ -170,6 +172,8 @@ public class MinecraftMMO extends JavaPlugin {
 	}
 
 	private void registerListeners() {
+		registerListener(new ArmorEquipHelperListener());
+		registerListener(new MMOArmorEquipListener());
 		registerListener(new PlayerJoinListener());
 		registerListener(new InteractNPCListener());
 		registerListener(new ItemInteractionListeners());
