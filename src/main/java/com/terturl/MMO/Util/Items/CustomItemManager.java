@@ -74,13 +74,13 @@ public class CustomItemManager {
 		warnings = new File(mainItemDir, "Warnings.txt");
 		File armors = new File(mainItemDir, "armor");
 		File items = new File(mainItemDir, "items");
-		File resources = new File(mainItemDir, "resources");
+		File weapons = new File(mainItemDir, "weapons");
 		if (!armors.exists())
 			armors.mkdir();
 		if (!items.exists())
 			items.mkdir();
-		if (!resources.exists())
-			resources.mkdir();
+		if (!weapons.exists())
+			weapons.mkdir();
 
 		if (getWarnings().exists()) {
 			getWarnings().delete();
@@ -95,7 +95,7 @@ public class CustomItemManager {
 		if (items.listFiles().length != 0) {
 			for (File f : items.listFiles()) {
 				if (f.getName().endsWith(".json")) {
-					if (checkItemGeneric(f, false)) {
+					if (checkItemGeneric(f)) {
 						JsonFileInterpretter config = new JsonFileInterpretter(f);
 						String name = config.getString("Name");
 						String friendlyname = config.contains("FriendlyName") ? config.getString("FriendlyName") : name;
@@ -123,17 +123,63 @@ public class CustomItemManager {
 			}
 		}
 
+		if (weapons.listFiles().length != 0) {
+			for (File f : weapons.listFiles()) {
+				if (f.getName().endsWith(".json")) {
+					if(checkItemGeneric(f)) {
+						if(checkWeapon(f)) {
+							JsonFileInterpretter config = new JsonFileInterpretter(f);
+							String name = config.getString("Name");
+							String friendlyname = config.contains("FriendlyName") ? config.getString("FriendlyName")
+									: name.replaceAll("_", " ");
+							Material mat = Material.getMaterial(config.getString("Item").toUpperCase());
+							Integer customItemModel = config.contains("CustomItemModel") ? config.getInt("CustomItemModel") : 0;
+							Rarity rare = config.contains("Rarity")
+									? Rarity.valueOf(config.getString("Rarity").toUpperCase())
+									: Rarity.COMMON;
+							CraftRarity craftRarity = config.contains("CraftRarity")
+									? CraftRarity.valueOf(config.getString("CraftRarity").toUpperCase())
+									: CraftRarity.CRUDE;
+							SlotType st = config.contains("SlotType") ? SlotType.valueOf(config.getString("SlotType").toUpperCase()) : SlotType.MAIN_HAND;
+							Boolean canCraft = config.contains("CanCraft") ? config.getBoolean("CanCraft") : false;
+							Boolean craftOnly = config.contains("CraftOnly") ? config.getBoolean("CraftOnly") : false;
+							Integer itemLevel = config.contains("Level") ? config.getInt("Level") : 1;
+							Double itemDurability = config.contains("ItemDurability")
+									? config.getDouble("ItemDurability")
+									: 0.0;
+							Double itemMaxDurability = config.contains("ItemMaxDurability")
+									? config.getDouble("ItemMaxDurability")
+									: 0.0;
+							List<String> lore = config.contains("Lore") ? config.getStringList("Lore")
+									: new ArrayList<>();
+							Boolean soulBound = config.contains("SoulBound") ? config.getBoolean("SoulBound") : false;
+							Boolean ranged = config.contains("Ranged") ? config.getBoolean("Ranged") : false;
+							CustomWeapon cw = new CustomWeapon(name, mat, customItemModel, itemLevel, rare, craftRarity, st, ranged);
+							cw.setFriendlyName(friendlyname);
+							cw.setCanCraft(canCraft);
+							cw.setCraftOnly(craftOnly);
+							cw.setDurability(itemDurability);
+							cw.setMaxDurability(itemMaxDurability);
+							cw.setLore(lore);
+							cw.setSoulBound(soulBound);
+							customItems.put(name, cw);
+						}
+					}
+				}
+			}
+		}
+		
 		if (armors.listFiles().length != 0) {
 			for (File f : armors.listFiles()) {
 				if (f.getName().endsWith(".json")) {
-					if (checkItemGeneric(f, true)) {
+					if (checkItemGeneric(f)) {
 						if (checkArmor(f, armor)) {
 							JsonFileInterpretter config = new JsonFileInterpretter(f);
 							String name = config.getString("Name");
 							String friendlyname = config.contains("FriendlyName") ? config.getString("FriendlyName")
 									: name;
 							Material mat = Material.getMaterial(config.getString("Item").toUpperCase());
-							Integer durability = config.contains("Durability") ? config.getInt("Durability") : 0;
+							Integer customItemModel = config.contains("CustomItemModel") ? config.getInt("CustomItemModel") : 0;
 							Rarity rare = config.contains("Rarity")
 									? Rarity.valueOf(config.getString("Rarity").toUpperCase())
 									: Rarity.COMMON;
@@ -156,7 +202,7 @@ public class CustomItemManager {
 							Color c = config.contains("Color")
 									? StringUtils.getColorFromString(config.getString("Color"))
 									: null;
-							CustomArmor ci = new CustomArmor(name, mat, durability, itemLevel, rare, craftRarity, st);
+							CustomArmor ci = new CustomArmor(name, mat, customItemModel, itemLevel, rare, craftRarity, st);
 							ci.setFriendlyName(friendlyname);
 							ci.setCanCraft(canCraft);
 							ci.setCraftOnly(craftOnly);
@@ -183,7 +229,29 @@ public class CustomItemManager {
 		}
 		return null;
 	}
-
+	
+	private boolean checkWeapon(File f) throws IOException {
+		boolean load = true;
+		
+		JsonFileInterpretter config = new JsonFileInterpretter(f);
+		
+		FileWriter wfw = new FileWriter(getWarnings());
+		BufferedWriter wbw = new BufferedWriter(wfw);
+		
+		if(config.contains("SlotType")) {
+			SlotType slotType = SlotType.valueOf(config.getString("SlotType").toUpperCase());
+			if(slotType != SlotType.OFF_HAND || slotType != SlotType.MAIN_HAND) {
+				wbw.write("[" + f.getName() + "] 'SlotType' Must be Off_Hand or Main_Hand!");
+				wbw.newLine();
+				load = false;
+			}
+		}
+		
+		wbw.flush();
+		wbw.close();
+		return load;
+	}
+	
 	private boolean checkArmor(File f, List<Material> armor) throws IOException {
 		boolean load = true;
 		boolean wrongSlot = false;
@@ -279,7 +347,7 @@ public class CustomItemManager {
 		return load;
 	}
 
-	private boolean checkItemGeneric(File f, Boolean isArmor) throws IOException {
+	private boolean checkItemGeneric(File f) throws IOException {
 		boolean load = true;
 
 		JsonFileInterpretter config = new JsonFileInterpretter(f);
@@ -344,18 +412,6 @@ public class CustomItemManager {
 				wbw.newLine();
 				load = false;
 			}
-//			else {
-//				if (!isArmor) {
-//					SlotType st = SlotType.valueOf(s);
-//					if (st == SlotType.BOOTS || st == SlotType.CHEST || st == SlotType.LEGS || st == SlotType.HELMET
-//							|| st == SlotType.MAIN_HAND) {
-//						wbw.write("[" + f.getName()
-//								+ "] Slot Type for generic items must be either Trinket or Off-hand!");
-//						wbw.newLine();
-//						load = false;
-//					}
-//				}
-//			}
 		}
 
 		wbw.flush();

@@ -37,9 +37,10 @@ public class CustomWeapon extends MMOEquipable {
 	public CustomWeapon(String name, Material mat, Integer itemDamage, Integer level, Rarity rarity, CraftRarity craftingRarity, SlotType st) {
 		super(name, mat, itemDamage, rarity, craftingRarity, level);
 		setSlotType(st);
+		ranged = false;
 	}
 
-	public CustomWeapon(Player p, String name, Material mat, Integer itemDamage, Integer level, Rarity rarity,
+	public CustomWeapon(String name, Material mat, Integer itemDamage, Integer level, Rarity rarity,
 			CraftRarity craftingRarity, SlotType st, Boolean r) {
 		super(name, mat, itemDamage, rarity, craftingRarity, level);
 		ranged = r;
