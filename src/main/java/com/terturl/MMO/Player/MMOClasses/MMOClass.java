@@ -47,6 +47,12 @@ public class MMOClass implements Cloneable {
 	@Getter @Setter
 	private Double Health;
 	
+	@Getter @Setter
+	private Double damage = 0.0d;
+	
+	@Getter @Setter
+	private Double armor = 0.0d;
+	
 	@Getter
 	private List<String> completedQuests = new ArrayList<>();
 	@Getter

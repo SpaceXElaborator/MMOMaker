@@ -186,12 +186,16 @@ public class PlayerHandler {
 			Location loc = LocationUtils.locationDeSerializer(clazz.get("Location").toString());
 			Double mon = Double.valueOf(clazz.get("Currency").toString());
 			Double xp = Double.valueOf(clazz.get("XP").toString());
+			Double damage = Double.valueOf(clazz.get("Damage").toString());
+			Double defense = Double.valueOf(clazz.get("Defense").toString());
 			MMOClass mc = (MMOClass) MinecraftMMO.getInstance().getClassHandler()
 					.getClass(clazz.get("Class").toString()).clone();
 			mc.setMoney(mon);
 			mc.setLevel(level);
 			mc.setClassLocation(loc);
 			mc.setXp(xp);
+			mc.setDamage(damage);
+			mc.setArmor(defense);
 
 			// Get their crafting skill
 			JSONObject craftSkill = (JSONObject) clazz.get("CraftingSkill");
@@ -430,12 +434,16 @@ public class PlayerHandler {
 		Integer level = mc.getLevel();
 		Double mon = mc.getMoney();
 		Double xp = mc.getXp();
+		Double damage = mc.getDamage();
+		Double defense = mc.getArmor();
 
 		clazz.put("Class", s);
 		clazz.put("Level", level);
 		clazz.put("XP", xp);
 		clazz.put("Currency", mon);
 		clazz.put("Location", loc);
+		clazz.put("Damage", damage);
+		clazz.put("Defense", defense);
 
 		// Save the players Crafting Skill
 		CraftingSkill ck = mc.getCraftSkill();
@@ -495,6 +503,8 @@ public class PlayerHandler {
 		clazz.put("MaxHealth", mc.getMaxHealth());
 		clazz.put("Health", p.getHealth());
 		clazz.put("Mana", mc.getMana());
+		clazz.put("Defense", mc.getArmor());
+		clazz.put("Damage", mc.getDamage());
 		
 		return clazz;
 	}
