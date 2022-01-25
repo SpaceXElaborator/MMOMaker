@@ -260,25 +260,29 @@ public class MMOClass implements Cloneable {
 	}
 	
 	public void updateStats(Player p) {
-		resetStats();
-		ItemStack[] armor = p.getInventory().getArmorContents();
-		
-		for(ItemStack is : armor) {
-			MMOEquipable equip = ItemConversion.SpigotToMMOEquipable(is);
-			if(equip == null) continue;
-			Bukkit.getConsoleSender().sendMessage(equip.getName());
-			Bukkit.getConsoleSender().sendMessage(equip.getMods().toString());
-			Bukkit.getConsoleSender().sendMessage(equip.getModsOn().toString());
-			this.armor = (equip.getModsOn().containsKey(MMOModifiers.DEFENSE)) ? this.armor + equip.getModsOn().get(MMOModifiers.DEFENSE) : this.armor;
-			this.damage = (equip.getModsOn().containsKey(MMOModifiers.DAMAGE)) ? this.damage + equip.getModsOn().get(MMOModifiers.DAMAGE) : this.damage;
-			this.maxHealth = (equip.getModsOn().containsKey(MMOModifiers.HEALTH)) ? this.maxHealth + equip.getModsOn().get(MMOModifiers.HEALTH) : this.maxHealth;
-			Bukkit.getConsoleSender().sendMessage(this.armor.toString());
-			Bukkit.getConsoleSender().sendMessage(this.damage.toString());
-			Bukkit.getConsoleSender().sendMessage(this.maxHealth.toString());
-		}
-		
-		AttributeInstance ai = p.getAttribute(Attribute.GENERIC_MAX_HEALTH);
-		ai.setBaseValue(this.maxHealth);
+		Bukkit.getScheduler().runTaskLater(MinecraftMMO.getInstance(), new Runnable() {
+			public void run() {
+				resetStats();
+				ItemStack[] armorInv = p.getInventory().getArmorContents();
+				
+				for(ItemStack is : armorInv) {
+					MMOEquipable equip = ItemConversion.SpigotToMMOEquipable(is);
+					if(equip == null) continue;
+					Bukkit.getConsoleSender().sendMessage(equip.getName());
+					Bukkit.getConsoleSender().sendMessage(equip.getMods().toString());
+					Bukkit.getConsoleSender().sendMessage(equip.getModsOn().toString());
+					armor = (equip.getModsOn().containsKey(MMOModifiers.DEFENSE)) ? armor + equip.getModsOn().get(MMOModifiers.DEFENSE) : armor;
+					damage = (equip.getModsOn().containsKey(MMOModifiers.DAMAGE)) ? damage + equip.getModsOn().get(MMOModifiers.DAMAGE) : damage;
+					maxHealth = (equip.getModsOn().containsKey(MMOModifiers.HEALTH)) ? maxHealth + equip.getModsOn().get(MMOModifiers.HEALTH) : maxHealth;
+					Bukkit.getConsoleSender().sendMessage(armor.toString());
+					Bukkit.getConsoleSender().sendMessage(damage.toString());
+					Bukkit.getConsoleSender().sendMessage(maxHealth.toString());
+				}
+				
+				AttributeInstance ai = p.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+				ai.setBaseValue(maxHealth);
+			}
+		}, 2L);
 	}
 	
 	/**
