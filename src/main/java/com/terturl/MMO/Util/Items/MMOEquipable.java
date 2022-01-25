@@ -1,6 +1,5 @@
 package com.terturl.MMO.Util.Items;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -64,47 +63,65 @@ public class MMOEquipable extends CustomItem {
 				lore.add("");
 			}
 			for (MMOModifiers mods : getMods().keySet()) {
-				if (getCraftingRarity() == null) {
-					Object o = getMods().get(mods);
-					Double mult = null;
-					Double d = null;
-					if (o instanceof Double) {
-						d = (Double) getMods().get(mods);
-						getModsOn().put(mods, d);
-					} else if (o instanceof String) {
-						String s = (String) getMods().get(mods);
+				Object o = getMods().get(mods);
+				Double d = null;
+				if (o instanceof Double) {
+					d = (Double) getMods().get(mods);
+					getModsOn().put(mods, d);
+				} else if (o instanceof String) {
+					String s = (String) getMods().get(mods);
+					if(s.contains(",")) {
 						Integer in = getRandom(s);
 						d = in + 0.0D;
 						getModsOn().put(mods, d);
-					}
-					mult = d * getCraftingRarity().getMultiplier();
-					DecimalFormat df = new DecimalFormat("##.00");
-					getValueAddOn().put(mods, mult);
-					lore.add(ChatColor.GRAY + mods.getFriendlyName() + ":" + ChatColor.GREEN + " +" + getModsOn().get(mods)
-							+ " " + ChatColor.GOLD + "+" + df.format(mult));
-				}
-	
-				if (getCraftingRarity().equals(CraftRarity.CRUDE)) {
-					lore.add(ChatColor.GRAY + mods.getFriendlyName() + ":" + ChatColor.GREEN + " +" + getMods().get(mods));
-				} else {
-					Object o = getMods().get(mods);
-					Double mult = null;
-					Double d = null;
-					if (o instanceof Double) {
-						d = (Double) getMods().get(mods);
-						getModsOn().put(mods, d);
-					} else if (o instanceof String) {
-						String s = (String) getMods().get(mods);
-						Integer in = getRandom(s);
-						d = in + 0.0D;
+					} else {
+						d = Double.valueOf(s);
 						getModsOn().put(mods, d);
 					}
-					mult = d * getCraftingRarity().getMultiplier();
-					DecimalFormat df = new DecimalFormat("##.00");
-					getValueAddOn().put(mods, mult);
-					lore.add(ChatColor.GRAY + mods.getFriendlyName() + ":" + ChatColor.GREEN + " +" + getModsOn().get(mods)
-							+ " " + ChatColor.GOLD + "+" + df.format(mult));
 				}
+				lore.add(ChatColor.GRAY + mods.getFriendlyName() + ":" + ChatColor.GREEN + " +" + getModsOn().get(mods));
+				
+//				if (getCraftingRarity() == null) {
+//					Object o = getMods().get(mods);
+//					Double mult = null;
+//					Double d = null;
+//					if (o instanceof Double) {
+//						d = (Double) getMods().get(mods);
+//						getModsOn().put(mods, d);
+//					} else if (o instanceof String) {
+//						String s = (String) getMods().get(mods);
+//						Integer in = getRandom(s);
+//						d = in + 0.0D;
+//						getModsOn().put(mods, d);
+//					}
+//					mult = d * getCraftingRarity().getMultiplier();
+//					DecimalFormat df = new DecimalFormat("##.00");
+//					getValueAddOn().put(mods, mult);
+//					lore.add(ChatColor.GRAY + mods.getFriendlyName() + ":" + ChatColor.GREEN + " +" + getModsOn().get(mods)
+//							+ " " + ChatColor.GOLD + "+" + df.format(mult));
+//				}
+//	
+//				if (getCraftingRarity().equals(CraftRarity.CRUDE)) {
+//					lore.add(ChatColor.GRAY + mods.getFriendlyName() + ":" + ChatColor.GREEN + " +" + getMods().get(mods));
+//				} else {
+//					Object o = getMods().get(mods);
+//					Double mult = null;
+//					Double d = null;
+//					if (o instanceof Double) {
+//						d = (Double) getMods().get(mods);
+//						getModsOn().put(mods, d);
+//					} else if (o instanceof String) {
+//						String s = (String) getMods().get(mods);
+//						Integer in = getRandom(s);
+//						d = in + 0.0D;
+//						getModsOn().put(mods, d);
+//					}
+//					mult = d * getCraftingRarity().getMultiplier();
+//					DecimalFormat df = new DecimalFormat("##.00");
+//					getValueAddOn().put(mods, mult);
+//					lore.add(ChatColor.GRAY + mods.getFriendlyName() + ":" + ChatColor.GREEN + " +" + getModsOn().get(mods)
+//							+ " " + ChatColor.GOLD + "+" + df.format(mult));
+//				}
 			}
 			
 			if(getLore().size() > 0) {
