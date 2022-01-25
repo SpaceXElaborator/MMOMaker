@@ -268,19 +268,14 @@ public class MMOClass implements Cloneable {
 				for(ItemStack is : armorInv) {
 					MMOEquipable equip = ItemConversion.SpigotToMMOEquipable(is);
 					if(equip == null) continue;
-					Bukkit.getConsoleSender().sendMessage(equip.getName());
-					Bukkit.getConsoleSender().sendMessage(equip.getMods().toString());
-					Bukkit.getConsoleSender().sendMessage(equip.getModsOn().toString());
 					armor = (equip.getModsOn().containsKey(MMOModifiers.DEFENSE)) ? armor + equip.getModsOn().get(MMOModifiers.DEFENSE) : armor;
 					damage = (equip.getModsOn().containsKey(MMOModifiers.DAMAGE)) ? damage + equip.getModsOn().get(MMOModifiers.DAMAGE) : damage;
 					maxHealth = (equip.getModsOn().containsKey(MMOModifiers.HEALTH)) ? maxHealth + equip.getModsOn().get(MMOModifiers.HEALTH) : maxHealth;
-					Bukkit.getConsoleSender().sendMessage(armor.toString());
-					Bukkit.getConsoleSender().sendMessage(damage.toString());
-					Bukkit.getConsoleSender().sendMessage(maxHealth.toString());
 				}
 				
 				AttributeInstance ai = p.getAttribute(Attribute.GENERIC_MAX_HEALTH);
 				ai.setBaseValue(maxHealth);
+				updateClassInformation(p);
 			}
 		}, 2L);
 	}

@@ -59,7 +59,7 @@ public class MMOEquipable extends CustomItem {
 			m.setUnbreakable(true);
 			List<String> lore = new ArrayList<String>();
 			lore.add(ChatColor.GOLD + "Level: " + String.valueOf(getItemLevel()));
-			if(getMods().size() > 1) {
+			if(getMods().size() > 0) {
 				lore.add("");
 			}
 			for (MMOModifiers mods : getMods().keySet()) {

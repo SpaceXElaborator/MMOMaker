@@ -241,17 +241,14 @@ public class CustomItemManager {
 		Map<MMOModifiers, Object> mapping = new HashMap<MMOModifiers, Object>();
 		
 		if(config.contains("Health")) {
-			Bukkit.getConsoleSender().sendMessage("Has Health");
 			mapping.put(MMOModifiers.HEALTH, jo.get("Health"));
 		}
 		
 		if(config.contains("Damage")) {
-			Bukkit.getConsoleSender().sendMessage("Has Damage");
 			mapping.put(MMOModifiers.DAMAGE, jo.get("Damage"));
 		}
 		
 		if(config.contains("Armor")) {
-			Bukkit.getConsoleSender().sendMessage("Has Armor");
 			mapping.put(MMOModifiers.DEFENSE, jo.get("Armor"));
 		}
 		
