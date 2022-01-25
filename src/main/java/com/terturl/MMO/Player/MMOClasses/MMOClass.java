@@ -45,6 +45,9 @@ public class MMOClass implements Cloneable {
 	private int level = 1;
 
 	@Getter @Setter
+	private Double startingHealth;
+	
+	@Getter @Setter
 	private Double Mana;
 	
 	@Getter @Setter
@@ -253,7 +256,7 @@ public class MMOClass implements Cloneable {
 	private void resetStats() {
 		armor = 0.0d;
 		damage = 0.0d;
-		maxHealth = 0.0d;
+		maxHealth = startingHealth;
 	}
 	
 	public void updateStats(Player p) {
@@ -263,10 +266,15 @@ public class MMOClass implements Cloneable {
 		for(ItemStack is : armor) {
 			MMOEquipable equip = ItemConversion.SpigotToMMOEquipable(is);
 			if(equip == null) continue;
+			Bukkit.getConsoleSender().sendMessage(equip.getName());
+			Bukkit.getConsoleSender().sendMessage(equip.getMods().toString());
+			Bukkit.getConsoleSender().sendMessage(equip.getModsOn().toString());
 			this.armor = (equip.getModsOn().containsKey(MMOModifiers.DEFENSE)) ? this.armor + equip.getModsOn().get(MMOModifiers.DEFENSE) : this.armor;
 			this.damage = (equip.getModsOn().containsKey(MMOModifiers.DAMAGE)) ? this.damage + equip.getModsOn().get(MMOModifiers.DAMAGE) : this.damage;
 			this.maxHealth = (equip.getModsOn().containsKey(MMOModifiers.HEALTH)) ? this.maxHealth + equip.getModsOn().get(MMOModifiers.HEALTH) : this.maxHealth;
 			Bukkit.getConsoleSender().sendMessage(this.armor.toString());
+			Bukkit.getConsoleSender().sendMessage(this.damage.toString());
+			Bukkit.getConsoleSender().sendMessage(this.maxHealth.toString());
 		}
 		
 		AttributeInstance ai = p.getAttribute(Attribute.GENERIC_MAX_HEALTH);

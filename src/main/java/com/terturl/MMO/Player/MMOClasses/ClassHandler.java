@@ -96,6 +96,7 @@ public class ClassHandler {
 							mc.setBoots(starterItemsMap.get(SlotType.BOOTS));
 							mc.setMainH(starterItemsMap.get(SlotType.MAIN_HAND));
 							mc.setOffH(starterItemsMap.get(SlotType.OFF_HAND));
+							mc.setStartingHealth(maxhealth);
 							mc.setMaxHealth(maxhealth);
 							mc.setMana(startingMana);
 
