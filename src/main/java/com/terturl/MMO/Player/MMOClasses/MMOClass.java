@@ -6,7 +6,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.mariuszgromada.math.mxparser.Argument;
@@ -18,6 +21,9 @@ import com.terturl.MMO.Player.Skills.Skill;
 import com.terturl.MMO.Player.Skills.Crafting.CraftingSkill;
 import com.terturl.MMO.Quests.Quest;
 import com.terturl.MMO.Util.BasicInventoryItems;
+import com.terturl.MMO.Util.Items.ItemConversion;
+import com.terturl.MMO.Util.Items.MMOEquipable;
+import com.terturl.MMO.Util.Items.ItemEnums.MMOModifiers;
 import com.terturl.MMO.Util.Items.ItemEnums.SlotType;
 
 import lombok.EqualsAndHashCode;
@@ -42,10 +48,10 @@ public class MMOClass implements Cloneable {
 	private Double Mana;
 	
 	@Getter @Setter
-	private Double MaxHealth;
+	private Double maxHealth;
 	
 	@Getter @Setter
-	private Double Health;
+	private Double health;
 	
 	@Getter @Setter
 	private Double damage = 0.0d;
@@ -244,6 +250,29 @@ public class MMOClass implements Cloneable {
 		p.updateInventory();
 	}
 
+	private void resetStats() {
+		armor = 0.0d;
+		damage = 0.0d;
+		maxHealth = 0.0d;
+	}
+	
+	public void updateStats(Player p) {
+		resetStats();
+		ItemStack[] armor = p.getInventory().getArmorContents();
+		
+		for(ItemStack is : armor) {
+			MMOEquipable equip = ItemConversion.SpigotToMMOEquipable(is);
+			if(equip == null) continue;
+			this.armor = (equip.getModsOn().containsKey(MMOModifiers.DEFENSE)) ? this.armor + equip.getModsOn().get(MMOModifiers.DEFENSE) : this.armor;
+			this.damage = (equip.getModsOn().containsKey(MMOModifiers.DAMAGE)) ? this.damage + equip.getModsOn().get(MMOModifiers.DAMAGE) : this.damage;
+			this.maxHealth = (equip.getModsOn().containsKey(MMOModifiers.HEALTH)) ? this.maxHealth + equip.getModsOn().get(MMOModifiers.HEALTH) : this.maxHealth;
+			Bukkit.getConsoleSender().sendMessage(this.armor.toString());
+		}
+		
+		AttributeInstance ai = p.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+		ai.setBaseValue(this.maxHealth);
+	}
+	
 	/**
 	 * Checks if the MMOClass contains a specific skill or not
 	 * 

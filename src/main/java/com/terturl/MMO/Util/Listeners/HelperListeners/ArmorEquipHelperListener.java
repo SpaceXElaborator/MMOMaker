@@ -16,6 +16,8 @@ import org.json.simple.parser.ParseException;
 
 import com.terturl.MMO.MinecraftMMO;
 import com.terturl.MMO.API.Events.MMOEquipArmorEvent;
+import com.terturl.MMO.Player.MMOPlayer;
+import com.terturl.MMO.Player.MMOClasses.MMOClass;
 import com.terturl.MMO.Util.JsonFileInterpretter;
 
 import net.minecraft.nbt.NBTTagCompound;
@@ -64,6 +66,10 @@ public class ArmorEquipHelperListener implements Listener {
 		if(i.getType().equals(InventoryType.CRAFTING) || i.getType().equals(InventoryType.PLAYER)) {
 			// If the item was dropped in the armor slot or was shift clicked into the armor slot
 			if(e.getSlotType().equals(InventoryType.SlotType.ARMOR) || e.isShiftClick()) {
+				MMOPlayer mp = MinecraftMMO.getInstance().getPlayerHandler().getPlayer((Player)e.getWhoClicked());
+				MMOClass mc = mp.getMmoClasses().get(mp.getCurrentCharacter());
+				mc.updateStats((Player)e.getWhoClicked());
+				
 				MMOEquipArmorEvent meae = new MMOEquipArmorEvent(MinecraftMMO.getInstance().getItemManager().getItem(itemInformation.getString("name")), (Player)e.getWhoClicked());
 				if(meae.isCancelled()) return;
 				Bukkit.getPluginManager().callEvent(meae);
