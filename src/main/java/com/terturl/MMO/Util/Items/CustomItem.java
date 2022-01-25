@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ThreadLocalRandom;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -18,6 +17,7 @@ import com.google.gson.Gson;
 import com.terturl.MMO.Util.Items.ItemEnums.CraftRarity;
 import com.terturl.MMO.Util.Items.ItemEnums.Rarity;
 import com.terturl.MMO.Util.Items.ItemEnums.SlotType;
+import com.terturl.MMO.Util.Math.IntMinMax;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -149,8 +149,8 @@ public class CustomItem implements MMOCraftable {
 		String[] numbers = lat.split(",");
 		int d1 = Integer.valueOf(numbers[0]);
 		int d2 = Integer.valueOf(numbers[1]);
-		int random = ThreadLocalRandom.current().nextInt(d1, d2 + 1);
-		return random;
+		int ran = new IntMinMax(d1, d2).getAmount();
+		return ran;
 	}
 
 }

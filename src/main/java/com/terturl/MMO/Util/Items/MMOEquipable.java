@@ -4,6 +4,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -35,16 +36,15 @@ public class MMOEquipable extends CustomItem {
 	@Getter
 	@Setter
 	private Double maxDurability = 50.0;
-	
 	@Getter
 	@Setter
-	private HashMap<MMOModifiers, Object> mods = new HashMap<>();
+	private Map<MMOModifiers, Object> mods = new HashMap<>();
 	@Getter
 	@Setter
-	private HashMap<MMOModifiers, Double> modsOn = new HashMap<>();
+	private Map<MMOModifiers, Double> modsOn = new HashMap<>();
 	@Getter
 	@Setter
-	private HashMap<MMOModifiers, Double> valueAddOn = new HashMap<>();
+	private Map<MMOModifiers, Double> valueAddOn = new HashMap<>();
 	
 	public MMOEquipable(String name, Material mat, Integer itemD, Rarity rare, CraftRarity cr, Integer level) {
 		super(name, mat, itemD, rare, cr);

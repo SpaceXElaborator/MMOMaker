@@ -12,10 +12,12 @@ import java.util.Map;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
+import org.json.simple.JSONObject;
 
 import com.terturl.MMO.MinecraftMMO;
 import com.terturl.MMO.Util.JsonFileInterpretter;
 import com.terturl.MMO.Util.Items.ItemEnums.CraftRarity;
+import com.terturl.MMO.Util.Items.ItemEnums.MMOModifiers;
 import com.terturl.MMO.Util.Items.ItemEnums.Rarity;
 import com.terturl.MMO.Util.Items.ItemEnums.SlotType;
 import com.terturl.MMO.Util.Strings.StringUtils;
@@ -152,6 +154,7 @@ public class CustomItemManager {
 									: 0.0;
 							List<String> lore = config.contains("Lore") ? config.getStringList("Lore")
 									: new ArrayList<>();
+							Map<MMOModifiers, Object> mods = config.contains("Modifiers") ? getModifiers(config.getObject("Modifiers")) : new HashMap<MMOModifiers, Object>();
 							Boolean soulBound = config.contains("SoulBound") ? config.getBoolean("SoulBound") : false;
 							Boolean ranged = config.contains("Ranged") ? config.getBoolean("Ranged") : false;
 							CustomWeapon cw = new CustomWeapon(name, mat, customItemModel, itemLevel, rare, craftRarity, st, ranged);
@@ -162,6 +165,7 @@ public class CustomItemManager {
 							cw.setMaxDurability(itemMaxDurability);
 							cw.setLore(lore);
 							cw.setSoulBound(soulBound);
+							cw.setMods(mods);
 							customItems.put(name, cw);
 						}
 					}
@@ -202,6 +206,7 @@ public class CustomItemManager {
 							Color c = config.contains("Color")
 									? StringUtils.getColorFromString(config.getString("Color"))
 									: null;
+							Map<MMOModifiers, Object> mods = config.contains("Modifiers") ? getModifiers(config.getObject("Modifiers")) : new HashMap<MMOModifiers, Object>();
 							CustomArmor ci = new CustomArmor(name, mat, customItemModel, itemLevel, rare, craftRarity, st);
 							ci.setFriendlyName(friendlyname);
 							ci.setCanCraft(canCraft);
@@ -210,6 +215,7 @@ public class CustomItemManager {
 							ci.setMaxDurability(itemMaxDurability);
 							ci.setLore(lore);
 							ci.setSoulBound(soulBound);
+							ci.setMods(mods);
 							if (c != null) {
 								ci.setColor(c);
 							}
@@ -228,6 +234,25 @@ public class CustomItemManager {
 			return customItems.get(name);
 		}
 		return null;
+	}
+	
+	private Map<MMOModifiers, Object> getModifiers(JSONObject jo) {
+		JsonFileInterpretter config = new JsonFileInterpretter(jo);
+		Map<MMOModifiers, Object> mapping = new HashMap<MMOModifiers, Object>();
+		
+		if(config.contains("Health")) {
+			mapping.put(MMOModifiers.HEALTH, jo.get("Health"));
+		}
+		
+		if(config.contains("Damage")) {
+			mapping.put(MMOModifiers.DAMAGE, jo.get("Damage"));
+		}
+		
+		if(config.contains("Armor")) {
+			mapping.put(MMOModifiers.DEFENSE, jo.get("Armor"));
+		}
+		
+		return mapping;
 	}
 	
 	private boolean checkWeapon(File f) throws IOException {
