@@ -7,7 +7,7 @@ public enum CraftRarity {
 	SUPER_CRAFTED(ChatColor.LIGHT_PURPLE, "Super-Crafted", 0.2),
 	MASTER_CRAFTED(ChatColor.YELLOW, "Master-Crafted", 0.3);
 
-	CraftRarity(ChatColor g, String s, Double d) {
+	CraftRarity(ChatColor g, String s, double d) {
 		this.g = g;
 		this.s = s;
 		this.d = d;
@@ -15,7 +15,7 @@ public enum CraftRarity {
 
 	private final ChatColor g;
 	private final String s;
-	private final Double d;
+	private final double d;
 
 	public String getFriendlyName() {
 		return s;

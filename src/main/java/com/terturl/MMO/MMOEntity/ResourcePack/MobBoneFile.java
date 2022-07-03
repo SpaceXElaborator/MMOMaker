@@ -63,7 +63,7 @@ public class MobBoneFile {
 	 * @return If the cube was shrunken or enlarged
 	 */
 	public boolean normalize() {
-		Double[] offset = { 0.0D, 0.0D, 0.0D };
+		double[] offset = { 0.0D, 0.0D, 0.0D };
 		Map<Cube, Cube> cubes = new HashMap<>();
 		elements.forEach(original -> {
 			Cube cube = new Cube();
@@ -106,7 +106,7 @@ public class MobBoneFile {
 	}
 
 	private boolean shrinkLarge() {
-		Double[] offset = { 0.0D, 0.0D, 0.0D };
+		double[] offset = { 0.0D, 0.0D, 0.0D };
 		elements.forEach(cube -> {
 			cube.shrinkCube(0.42857143D);
 			// This will go through each of the X,Y, and Z values to make sure that their

@@ -8,6 +8,7 @@ import org.bukkit.event.HandlerList;
 import com.terturl.MMO.Entity.MMOEntity;
 
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Event to handle when a player kills a named MMOEntity
@@ -27,7 +28,8 @@ public class MMOEntityDeathEvent extends Event implements Cancellable {
 	@Getter
 	private final Player player;
 
-	private boolean cancelled;
+	@Getter @Setter
+	private boolean cancelled = false;
 
 	/**
 	 * @param mo The MMOEntity that died
@@ -55,26 +57,6 @@ public class MMOEntityDeathEvent extends Event implements Cancellable {
 	@Override
 	public HandlerList getHandlers() {
 		return HANDLERS;
-	}
-
-	/**
-	 * Gets if the event was cancelled for if it should call or not
-	 * 
-	 * @return
-	 */
-	@Override
-	public boolean isCancelled() {
-		return cancelled;
-	}
-
-	/**
-	 * Set the cancelled status of the event
-	 * 
-	 * @param arg0 Boolean to set cancelled to
-	 */
-	@Override
-	public void setCancelled(boolean arg0) {
-		cancelled = arg0;
 	}
 
 }

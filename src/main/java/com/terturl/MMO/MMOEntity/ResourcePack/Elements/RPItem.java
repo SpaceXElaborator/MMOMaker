@@ -17,7 +17,7 @@ import lombok.Getter;
 public class RPItem {
 
 	@Getter
-	private Integer data = 0;
+	private int data = 0;
 
 	@Getter
 	private String parent = "item/generated";

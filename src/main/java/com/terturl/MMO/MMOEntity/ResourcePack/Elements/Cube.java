@@ -21,10 +21,10 @@ public class Cube {
 	private String name;
 
 	@Getter
-	private Double[] from;
+	private double[] from;
 
 	@Getter
-	private Double[] to;
+	private double[] to;
 
 	@Getter
 	@Setter
@@ -39,8 +39,8 @@ public class Cube {
 	 * @param y New Y
 	 * @param z New Z
 	 */
-	public void setFrom(Double x, Double y, Double z) {
-		from = new Double[] { x, y, z };
+	public void setFrom(double x, double y, double z) {
+		from = new double[] { x, y, z };
 	}
 
 	/**
@@ -49,8 +49,8 @@ public class Cube {
 	 * @param y New Y
 	 * @param z New Z
 	 */
-	public void setTo(Double x, Double y, Double z) {
-		to = new Double[] { x, y, z };
+	public void setTo(double x, double y, double z) {
+		to = new double[] { x, y, z };
 	}
 
 	/**
@@ -67,7 +67,7 @@ public class Cube {
 	 * @param offset Offset to add
 	 * @return If the cube is within bounds for Minecraft
 	 */
-	public boolean addFrom(Double... offset) {
+	public boolean addFrom(double... offset) {
 		from[0] = from[0] + offset[0];
 		from[1] = from[1] + offset[1];
 		from[2] = from[2] + offset[2];
@@ -82,7 +82,7 @@ public class Cube {
 	 * @param offset Offset to add
 	 * @return If the cube is within bounds for Minecraft
 	 */
-	public boolean addTo(Double... offset) {
+	public boolean addTo(double... offset) {
 		to[0] = to[0] + offset[0];
 		to[1] = to[1] + offset[1];
 		to[2] = to[2] + offset[2];
@@ -96,7 +96,7 @@ public class Cube {
 	 * Shrinks both the to and from of the Cube by the ratio amount given
 	 * @param ratio Ratio to shrink by
 	 */
-	public void shrinkCube(Double ratio) {
+	public void shrinkCube(double ratio) {
 		from[0] = shrink(from[0], ratio);
 		from[1] = shrink(from[1], ratio);
 		from[2] = shrink(from[2], ratio);
@@ -105,7 +105,7 @@ public class Cube {
 		to[2] = shrink(to[2], ratio);
 	}
 
-	private Double shrink(Double d, Double r) {
+	private double shrink(double d, double r) {
 		return 8.0D * (1.0D - r) + r * d;
 	}
 

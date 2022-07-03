@@ -78,7 +78,7 @@ public class JsonFileInterpretter {
 	 * @param key Key to check
 	 * @return Boolean
 	 */
-	public Boolean contains(String key) {
+	public boolean contains(String key) {
 		return json.containsKey(key);
 	}
 
@@ -98,7 +98,7 @@ public class JsonFileInterpretter {
 	 * @param key Key to check
 	 * @return Boolean
 	 */
-	public Boolean getBoolean(String key) {
+	public boolean getBoolean(String key) {
 		return Boolean.valueOf(json.get(key).toString());
 	}
 
@@ -108,7 +108,7 @@ public class JsonFileInterpretter {
 	 * @param key Key to check
 	 * @return Double
 	 */
-	public Double getDouble(String key) {
+	public double getDouble(String key) {
 		return Double.parseDouble(json.get(key).toString());
 	}
 
@@ -118,7 +118,7 @@ public class JsonFileInterpretter {
 	 * @param key Key to check
 	 * @return Float
 	 */
-	public Float getFloat(String key) {
+	public float getFloat(String key) {
 		return Float.parseFloat(json.get(key).toString());
 	}
 
@@ -128,7 +128,7 @@ public class JsonFileInterpretter {
 	 * @param key Key to check
 	 * @return Integer
 	 */
-	public Integer getInt(String key) {
+	public int getInt(String key) {
 		return Integer.parseInt(json.get(key).toString());
 	}
 

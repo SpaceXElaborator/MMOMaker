@@ -67,6 +67,8 @@ public class DamageEvent implements Listener {
 					return;
 				p.playSound(e.getEntity().getLocation(), si.getSound(), si.getVolume(), si.getPitch());
 			}
+			
+			e.setDamage(mp.getMmoClasses().get(mp.getCurrentCharacter()).getDamage());
 
 		}
 	}

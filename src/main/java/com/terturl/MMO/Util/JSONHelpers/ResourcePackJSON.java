@@ -69,19 +69,19 @@ public class ResourcePackJSON {
 		JSONObject jo = new JSONObject();
 		
 		JSONArray translation = new JSONArray();
-		for(Double d : dis.getTranslation()) {
+		for(double d : dis.getTranslation()) {
 			translation.add(d);
 		}
 		jo.put("translation", translation);
 		
 		JSONArray rotation = new JSONArray();
-		for(Double d : dis.getRotation()) {
+		for(double d : dis.getRotation()) {
 			rotation.add(d);
 		}
 		jo.put("rotation", rotation);
 		
 		JSONArray scale = new JSONArray();
-		for(Double d : dis.getScale()) {
+		for(double d : dis.getScale()) {
 			scale.add(d);
 		}
 		jo.put("scale", scale);
@@ -96,7 +96,7 @@ public class ResourcePackJSON {
 		jo.put("angle", rot.getAngle());
 		jo.put("axis", rot.getAxis());
 		JSONArray origin = new JSONArray();
-		for(Double d : rot.getOrigin()) {
+		for(double d : rot.getOrigin()) {
 			origin.add(d);
 		}
 		jo.put("origin", origin);

@@ -138,7 +138,7 @@ public class PlayerHandler {
 	 * @param p Player to set their class
 	 * @param i Integer of class
 	 */
-	public void pickClass(Player p, Integer i) {
+	public void pickClass(Player p, int i) {
 		MMOPlayer mp = getPlayer(p);
 		mp.setCurrentCharacter(i);
 		MMOClass mc = mp.getMmoClasses().get(mp.getCurrentCharacter());
@@ -179,12 +179,12 @@ public class PlayerHandler {
 		JSONObject jo = config.getObject("Classes");
 		jo.forEach((k, v) -> {
 			JSONObject clazz = (JSONObject) jo.get(k.toString());
-			Integer level = Integer.valueOf(clazz.get("Level").toString());
+			int level = Integer.valueOf(clazz.get("Level").toString());
 			Location loc = LocationUtils.locationDeSerializer(clazz.get("Location").toString());
-			Double mon = Double.valueOf(clazz.get("Currency").toString());
-			Double xp = Double.valueOf(clazz.get("XP").toString());
-			Double damage = Double.valueOf(clazz.get("Damage").toString());
-			Double defense = Double.valueOf(clazz.get("Defense").toString());
+			double mon = Double.valueOf(clazz.get("Currency").toString());
+			double xp = Double.valueOf(clazz.get("XP").toString());
+			double damage = Double.valueOf(clazz.get("Damage").toString());
+			double defense = Double.valueOf(clazz.get("Defense").toString());
 			MMOClass mc = (MMOClass) MinecraftMMO.getInstance().getClassHandler()
 					.getClass(clazz.get("Class").toString()).clone();
 			mc.setMoney(mon);
@@ -309,7 +309,7 @@ public class PlayerHandler {
 	 * @param id Entity ID to check
 	 * @return if the NPC is players NPCs
 	 */
-	public boolean isPlayerClassNPC(Player p, Integer id) {
+	public boolean isPlayerClassNPC(Player p, int id) {
 		MMOPlayer mp = getPlayer(p);
 		for (NPC npc : playerNPCs.get(mp)) {
 			if (Objects.equal(npc.getEntityID(), id)) {
@@ -325,7 +325,7 @@ public class PlayerHandler {
 	 * @param id
 	 * @return
 	 */
-	public NPC getPlayerClassNPC(Player p, Integer id) {
+	public NPC getPlayerClassNPC(Player p, int id) {
 		MMOPlayer mp = getPlayer(p);
 		for (NPC npc : playerNPCs.get(mp)) {
 			if (Objects.equal(npc.getEntityID(), id)) {
@@ -428,11 +428,11 @@ public class PlayerHandler {
 		JSONObject clazz = new JSONObject();
 		String s = mc.getName();
 		String loc = LocationUtils.locationSerializer(mc.getClassLocation());
-		Integer level = mc.getLevel();
-		Double mon = mc.getMoney();
-		Double xp = mc.getXp();
-		Double damage = mc.getDamage();
-		Double defense = mc.getArmor();
+		int level = mc.getLevel();
+		double mon = mc.getMoney();
+		double xp = mc.getXp();
+		double damage = mc.getDamage();
+		double defense = mc.getArmor();
 
 		clazz.put("Class", s);
 		clazz.put("Level", level);

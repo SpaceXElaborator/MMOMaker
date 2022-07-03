@@ -65,7 +65,7 @@ public abstract class Quest {
 
 	@Getter
 	@Setter
-	private Double money, xp = 0.0;
+	private double money, xp = 0.0;
 
 	@Getter
 	@Setter

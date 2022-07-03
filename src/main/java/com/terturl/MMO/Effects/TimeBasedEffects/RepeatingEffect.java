@@ -14,13 +14,13 @@ public class RepeatingEffect extends Effect {
 	private Effect e;
 
 	@Getter
-	private Double every;
+	private double every;
 	
 	@Getter
-	private Double duration;
+	private double duration;
 	
 	@Getter
-	private Long delay;
+	private long delay;
 	
 	public void run(Player p) {
 		BukkitRunnable br = new BukkitRunnable() {

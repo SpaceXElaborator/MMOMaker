@@ -17,18 +17,18 @@ import lombok.Getter;
 public class WaveEffect extends Effect {
 
 	@Getter
-	private Double range;
+	private double range;
 	
 	@Getter
-	private Double degree;
+	private double degree;
 	
 	@Getter
-	private Double damage;
+	private double damage;
 	
 	@Getter
 	private Particle particle;
 	
-	private Integer taskId;
+	private int taskId;
 	
 	public void run(Player p) {
 		// Get the direction the player is looking

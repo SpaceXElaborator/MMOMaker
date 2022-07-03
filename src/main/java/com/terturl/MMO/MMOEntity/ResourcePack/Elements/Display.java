@@ -13,19 +13,19 @@ import lombok.Getter;
 public class Display {
 
 	@Getter
-	private Double[] translation = new Double[] {0.0D, -6.4D, 0.0D};
+	private double[] translation = new double[] {0.0D, -6.4D, 0.0D};
 	
 	@Getter
-	private Double[] rotation = new Double[] {0.0D, 0.0D, 0.0D};
+	private double[] rotation = new double[] {0.0D, 0.0D, 0.0D};
 	
 	@Getter
-	private Double[] scale = new Double[3];
+	private double[] scale = new double[3];
 	
 	/**
 	 * Will move the Display location to a new location
 	 * @param offset Offset to move by
 	 */
-	public void moveTranslation(Double... offset) {
+	public void moveTranslation(double... offset) {
 		translation[0] = translation[0] - offset[0] * scale[0];
 		translation[1] = translation[1] - offset[1] * scale[1];
 		translation[2] = translation[2] - offset[2] * scale[2];
@@ -37,7 +37,7 @@ public class Display {
 	 * @param y New Y
 	 * @param z New Z
 	 */
-	public void setTranslation(Double x, Double y, Double z) {
+	public void setTranslation(double x, double y, double z) {
 		translation[0] = x;
 		translation[1] = y;
 		translation[2] = z;
@@ -49,7 +49,7 @@ public class Display {
 	 * @param y New RY
 	 * @param z Mew RZ
 	 */
-	public void setRotation(Double x, Double y, Double z) {
+	public void setRotation(double x, double y, double z) {
 		rotation[0] = x;
 		rotation[1] = y;
 		rotation[2] = z;
@@ -61,7 +61,7 @@ public class Display {
 	 * @param y New SY
 	 * @param z Mew SZ
 	 */
-	public void setScale(Double x, Double y, Double z) {
+	public void setScale(double x, double y, double z) {
 		scale[0] = x;
 		scale[1] = y;
 		scale[2] = z;

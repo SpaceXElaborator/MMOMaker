@@ -25,7 +25,7 @@ public class BBOTexture {
 
 	@Getter
 	@Setter
-	private Integer id;
+	private int id;
 
 	@Getter
 	@Setter

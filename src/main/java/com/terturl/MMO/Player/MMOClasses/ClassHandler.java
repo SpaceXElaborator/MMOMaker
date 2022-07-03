@@ -71,8 +71,8 @@ public class ClassHandler {
 						if (checkStarterValues(f)) {
 							JsonFileInterpretter config = new JsonFileInterpretter(f);
 							String name = config.getString("Name");
-							Double maxhealth = config.getDouble("StarterHealth");
-							Double startingMana = config.getDouble("StarterMana");
+							double maxhealth = config.getDouble("StarterHealth");
+							double startingMana = config.getDouble("StarterMana");
 							Map<SlotType, String> starterItemsMap = new HashMap<>();
 							JSONObject starterItems = config.getObject("StarterItems");
 
@@ -119,7 +119,7 @@ public class ClassHandler {
 		Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "[MMO-RPG] Done");
 	}
 
-	private Boolean checkStarterValues(File f) throws IOException {
+	private boolean checkStarterValues(File f) throws IOException {
 		boolean load = true;
 		JsonFileInterpretter config = new JsonFileInterpretter(f);
 		FileWriter wfw = new FileWriter(getWarnings());
@@ -160,7 +160,7 @@ public class ClassHandler {
 		return load;
 	}
 
-	private Boolean checkStarterItems(JSONObject jo) throws IOException {
+	private boolean checkStarterItems(JSONObject jo) throws IOException {
 		boolean load = true;
 		FileWriter wfw = new FileWriter(getWarnings());
 		BufferedWriter wbw = new BufferedWriter(wfw);

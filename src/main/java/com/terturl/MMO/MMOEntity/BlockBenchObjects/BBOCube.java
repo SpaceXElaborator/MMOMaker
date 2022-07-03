@@ -36,7 +36,7 @@ public class BBOCube {
 	private double[] rotation = new double[] { 0.0D, 0.0D, 0.0D };
 
 	@Getter
-	private Double inflate = 0.0D;
+	private double inflate = 0.0D;
 
 	@Getter
 	@Setter
@@ -51,7 +51,7 @@ public class BBOCube {
 	 * @param y
 	 * @param z
 	 */
-	public void setFrom(Double x, Double y, Double z) {
+	public void setFrom(double x, double y, double z) {
 		from[0] = x;
 		from[1] = y;
 		from[2] = z;
@@ -63,7 +63,7 @@ public class BBOCube {
 	 * @param y
 	 * @param z
 	 */
-	public void setTo(Double x, Double y, Double z) {
+	public void setTo(double x, double y, double z) {
 		to[0] = x;
 		to[1] = y;
 		to[2] = z;
@@ -75,7 +75,7 @@ public class BBOCube {
 	 * @param y
 	 * @param z
 	 */
-	public void setOrigin(Double x, Double y, Double z) {
+	public void setOrigin(double x, double y, double z) {
 		origin[0] = x;
 		origin[1] = y;
 		origin[2] = z;
@@ -87,7 +87,7 @@ public class BBOCube {
 	 * @param y
 	 * @param z
 	 */
-	public void setRotation(Double x, Double y, Double z) {
+	public void setRotation(double x, double y, double z) {
 		rotation[0] = x;
 		rotation[1] = y;
 		rotation[2] = z;

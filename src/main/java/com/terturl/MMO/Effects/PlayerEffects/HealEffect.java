@@ -11,7 +11,7 @@ import lombok.Setter;
 public class HealEffect extends Effect {
 	
 	@Getter @Setter
-	private Double amount;
+	private double amount;
 	
 	public void run(Player p) {
 		p.setHealth(p.getHealth() + getAmount());

@@ -15,14 +15,14 @@ public class Rotation {
 
 	@Getter
 	@Setter
-	private Double angle;
+	private double angle;
 
 	@Getter
 	@Setter
 	private String axis;
 
 	@Getter
-	private Double[] origin;
+	private double[] origin;
 
 	/**
 	 * Set's the Rotations origin to the following X,Y, and Z location
@@ -30,8 +30,8 @@ public class Rotation {
 	 * @param y New Y
 	 * @param z New Z
 	 */
-	public void setOrigin(Double x, Double y, Double z) {
-		origin = new Double[] { x, y, z };
+	public void setOrigin(double x, double y, double z) {
+		origin = new double[] { x, y, z };
 	}
 
 	/**
@@ -39,7 +39,7 @@ public class Rotation {
 	 * 
 	 * @param offset
 	 */
-	public void addOrigin(Double... offset) {
+	public void addOrigin(double... offset) {
 		origin[0] = origin[0] + offset[0];
 		origin[1] = origin[1] + offset[1];
 		origin[2] = origin[2] + offset[2];
@@ -50,13 +50,13 @@ public class Rotation {
 	 * 
 	 * @param ratio Amount to shrink rotation
 	 */
-	public void shrinkOrigin(Double ratio) {
+	public void shrinkOrigin(double ratio) {
 		origin[0] = shrink(origin[0], ratio);
 		origin[1] = shrink(origin[1], ratio);
 		origin[1] = shrink(origin[2], ratio);
 	}
 
-	private Double shrink(Double d, Double r) {
+	private Double shrink(double d, double r) {
 		return 8.0D * (1.0D - r) + r * d;
 	}
 

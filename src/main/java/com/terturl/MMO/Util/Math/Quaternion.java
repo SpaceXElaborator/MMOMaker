@@ -16,7 +16,7 @@ import lombok.Getter;
 public class Quaternion {
 
 	@Getter
-	private Double w;
+	private double w;
 
 	@Getter
 	private Vector vec;

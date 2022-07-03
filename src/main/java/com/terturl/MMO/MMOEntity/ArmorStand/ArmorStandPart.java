@@ -74,7 +74,7 @@ public class ArmorStandPart {
 
 	@Getter
 	@Setter
-	private Double currentYaw = 0.0D;
+	private double currentYaw = 0.0D;
 
 	@Getter
 	@Setter
@@ -88,7 +88,7 @@ public class ArmorStandPart {
 	private List<ArmorStandPart> children = new ArrayList<ArmorStandPart>();
 
 	@Getter
-	private Integer itemModel;
+	private int itemModel;
 
 	/**
 	 * Create a new ArmorStandPart
@@ -102,8 +102,8 @@ public class ArmorStandPart {
 	 * @param customI  The CustomModelData this ArmorStandPart will send to
 	 *                 MMOMobArmorStand to set the saddles model
 	 */
-	public ArmorStandPart(MMOMob me, Boolean s, String pid, Vector position, EulerAngle rot, ArmorStandPart p,
-			Integer customI) {
+	public ArmorStandPart(MMOMob me, boolean s, String pid, Vector position, EulerAngle rot, ArmorStandPart p,
+			int customI) {
 		mob = me;
 		parent = p;
 		partId = pid;

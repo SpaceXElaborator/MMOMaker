@@ -69,7 +69,7 @@ public class QuestManager {
 						JsonFileInterpretter config = new JsonFileInterpretter(f);
 						String name = config.getString("Name");
 						String descString = config.getString("Description");
-						Boolean requireTurnIn = config.contains("RequireTurnIn") ? config.getBoolean("RequireTurnIn")
+						boolean requireTurnIn = config.contains("RequireTurnIn") ? config.getBoolean("RequireTurnIn")
 								: true;
 						String presentString = config.contains("Present") ? config.getString("Present")
 								: "Would you like to ACCEPT or DENY?";
@@ -154,8 +154,8 @@ public class QuestManager {
 				: new ArrayList<>();
 		List<String> craftingRecipes = config.contains("CraftingRecipes") ? config.getStringList("CraftingRecipes")
 				: new ArrayList<>();
-		Double xp = config.contains("XP") ? config.getDouble("XP") : 0.0;
-		Double money = config.contains("Money") ? config.getDouble("Money") : 0.0;
+		double xp = config.contains("XP") ? config.getDouble("XP") : 0.0;
+		double money = config.contains("Money") ? config.getDouble("Money") : 0.0;
 
 		q.setXp(xp);
 		q.setMoney(money);

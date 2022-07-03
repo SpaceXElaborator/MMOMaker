@@ -63,16 +63,16 @@ public class MMOEntityManager {
 						
 						if(config.contains("XP")) {
 							JSONObject jo = config.getObject("XP");
-							Double min = jo.containsKey("Min") ? Double.parseDouble(jo.get("Min").toString()) : 0.0;
-							Double max = Double.parseDouble(jo.get("Max").toString());
+							double min = jo.containsKey("Min") ? Double.parseDouble(jo.get("Min").toString()) : 0.0;
+							double max = Double.parseDouble(jo.get("Max").toString());
 							MinMax mm = new MinMax(min, max);
 							em.setGivableXP(mm);
 						}
 						
 						if(config.contains("Currency")) {
 							JSONObject jo = config.getObject("Currency");
-							Double min = jo.containsKey("Min") ? Double.parseDouble(jo.get("Min").toString()) : 0.0;
-							Double max = Double.parseDouble(jo.get("Max").toString());
+							double min = jo.containsKey("Min") ? Double.parseDouble(jo.get("Min").toString()) : 0.0;
+							double max = Double.parseDouble(jo.get("Max").toString());
 							MinMax mm = new MinMax(min, max);
 							em.setGivableCurrency(mm);
 						}
@@ -80,8 +80,8 @@ public class MMOEntityManager {
 						if(config.contains("HurtSound")) {
 							JSONObject jo = config.getObject("HurtSound");
 							String sound = jo.containsKey("Sound") ? jo.get("Sound").toString() : "minecraft:entity.zombie.hit";
-							Float vol = jo.containsKey("Volume") ? Float.valueOf(jo.get("Volume").toString()) : 1.0f;
-							Float pitch = jo.containsKey("Pitch") ? Float.valueOf(jo.get("Pitch").toString()) : 1.0f;
+							float vol = jo.containsKey("Volume") ? Float.valueOf(jo.get("Volume").toString()) : 1.0f;
+							float pitch = jo.containsKey("Pitch") ? Float.valueOf(jo.get("Pitch").toString()) : 1.0f;
 							SoundInformation se = new SoundInformation();
 							se.setSound(sound);
 							se.setVolume(vol);
@@ -92,8 +92,8 @@ public class MMOEntityManager {
 						if(config.contains("DeathSound")) {
 							JSONObject jo = config.getObject("DeathSound");
 							String sound = jo.containsKey("Sound") ? jo.get("Sound").toString() : "minecraft:entity.zombie.hit";
-							Float vol = jo.containsKey("Volume") ? Float.valueOf(jo.get("Volume").toString()) : 1.0f;
-							Float pitch = jo.containsKey("Pitch") ? Float.valueOf(jo.get("Pitch").toString()) : 1.0f;
+							float vol = jo.containsKey("Volume") ? Float.valueOf(jo.get("Volume").toString()) : 1.0f;
+							float pitch = jo.containsKey("Pitch") ? Float.valueOf(jo.get("Pitch").toString()) : 1.0f;
 							SoundInformation se = new SoundInformation();
 							se.setSound(sound);
 							se.setVolume(vol);
@@ -106,8 +106,8 @@ public class MMOEntityManager {
 							for(Object o : ja) {
 								JSONObject jo = (JSONObject)o;
 								String item = jo.get("Item").toString();
-								Integer amount = jo.containsKey("Amount") ? Integer.valueOf(jo.get("Amount").toString()) : 1;
-								Double chance = jo.containsKey("Chance") ? Double.parseDouble(jo.get("Chance").toString()) : 50.0;
+								int amount = jo.containsKey("Amount") ? Integer.valueOf(jo.get("Amount").toString()) : 1;
+								double chance = jo.containsKey("Chance") ? Double.parseDouble(jo.get("Chance").toString()) : 50.0;
 								CustomItem ci = MinecraftMMO.getInstance().getItemManager().getItem(item);
 								MMOEntityDrop med = new MMOEntityDrop(ci, amount, chance);
 								em.getEntityDrops().add(med);

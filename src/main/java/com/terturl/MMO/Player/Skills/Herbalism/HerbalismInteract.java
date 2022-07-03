@@ -48,7 +48,7 @@ public class HerbalismInteract implements Listener {
 		mc.addXpToSkill("Herbalism", hgi.getXp());
 		hgi.getItems().forEach((k, v) -> {
 			if(v.getsItem()) {
-				Integer amount = v.getAmount().getAmount();
+				int amount = v.getAmount().getAmount();
 				
 				// Create a new PickUpMMOItemEvent since they are technically "Picking up" the item
 				PickUpMMOItemEvent pumie = new PickUpMMOItemEvent(p, k, amount);

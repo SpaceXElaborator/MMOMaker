@@ -222,7 +222,7 @@ public class MobFileReader {
 		anim.setUuid(UUID.fromString(f.getString("uuid")));
 		anim.setName(f.getString("name").replaceAll("animation.model.", "").toLowerCase());
 		anim.setLoop((f.getString("loop").equalsIgnoreCase("loop")) ? true : false);
-		anim.setIsOverride(f.getBoolean("override"));
+		anim.setOverride(f.getBoolean("override"));
 		anim.setLength(new BigDecimal(f.getString("length")));
 
 		if (f.contains("animators")) {

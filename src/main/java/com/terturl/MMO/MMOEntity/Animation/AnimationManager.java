@@ -51,7 +51,7 @@ public class AnimationManager {
 		// BigDecimal is needed here since regular Doubles/Floats will get rounding issues when you add 0.1 to them
 		time.add(new BigDecimal("0.1"));
 		if (time.compareTo(length) > 0) {
-			if (animation.getLoop())
+			if (animation.isLoop())
 				time = new BigDecimal("0.0");
 			else
 				finished = true;

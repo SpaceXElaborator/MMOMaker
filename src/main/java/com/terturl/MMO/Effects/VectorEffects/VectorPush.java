@@ -15,19 +15,19 @@ import lombok.Getter;
 public class VectorPush extends Effect {
 
 	@Getter
-	private Double range;
+	private double range;
 	
 	@Getter
-	private Double damage;
+	private double damage;
 	
 	@Getter
-	private Double YOffset;
+	private double YOffset;
 	
 	@Getter
-	private Double ZOffset;
+	private double ZOffset;
 	
 	@Getter
-	private Double XOffset;
+	private double XOffset;
 	
 	@Override
 	public void run(Player p) {

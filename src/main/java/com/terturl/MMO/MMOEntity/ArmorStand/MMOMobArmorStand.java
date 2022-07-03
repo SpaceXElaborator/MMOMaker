@@ -62,7 +62,7 @@ public class MMOMobArmorStand {
 
 	@Getter
 	@Setter
-	private Double offset;
+	private double offset;
 
 	@Getter
 	@Setter
@@ -70,7 +70,7 @@ public class MMOMobArmorStand {
 
 	@Getter
 	@Setter
-	private Boolean itemVisible = true;
+	private boolean itemVisible = true;
 
 	/**
 	 * Creates a new ArmorStand at the location with the given ArmorStandPart
@@ -146,7 +146,7 @@ public class MMOMobArmorStand {
 	 * 
 	 * @param i CustomItemModel integer
 	 */
-	public void setMeta(Integer i) {
+	public void setMeta(int i) {
 		ItemMeta im = item.getItemMeta();
 		im.setCustomModelData(i);
 		item.setItemMeta(im);
@@ -168,7 +168,7 @@ public class MMOMobArmorStand {
 		PacketPlayOutEntityMetadata p2 = new PacketPlayOutEntityMetadata(ent.getId(), ent.getDataWatcher(), true);
 		PacketPlayOutUpdateAttributes p3 = new PacketPlayOutUpdateAttributes(ent.getId(), ent.getAttributeMap().b());
 		PacketPlayOutUpdateAttributes p4 = new PacketPlayOutUpdateAttributes(ent.getId(), ent.getAttributeMap().b());
-		if (getItemVisible()) {
+		if (isItemVisible()) {
 			PacketPlayOutEntityEquipment p5 = new PacketPlayOutEntityEquipment(ent.getId(), items);
 			sendPackets(p, p1, p2, p3, p5, p4);
 		} else {
@@ -184,7 +184,7 @@ public class MMOMobArmorStand {
 	 * @param yaw   Yaw to set the head
 	 * @param pitch Pitch to set the head
 	 */
-	public void rotateHead(Float yaw, Float pitch) {
+	public void rotateHead(float yaw, float pitch) {
 		PacketPlayOutEntityHeadRotation p1 = createDataSerializer(data -> {
 			data.d(ent.getId());
 			data.writeByte((byte) ((int) (yaw * 256.0F / 360.0F)));

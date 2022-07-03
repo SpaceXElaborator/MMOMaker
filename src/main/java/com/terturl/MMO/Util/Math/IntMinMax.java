@@ -13,16 +13,16 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class IntMinMax {
 
-	private Integer min;
-	private Integer max;
+	private int min;
+	private int max;
 	
 	/**
 	 * Will get the random Integer value between two integers and return the value
 	 * @return random integer
 	 */
-	public Integer getAmount() {
+	public int getAmount() {
 		SplittableRandom sr = new SplittableRandom();
-		Integer i = sr.nextInt(min, max+1);
+		int i = sr.nextInt(min, max+1);
 		return i;
 	}
 	

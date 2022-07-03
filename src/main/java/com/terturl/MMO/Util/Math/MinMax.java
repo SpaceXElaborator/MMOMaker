@@ -14,8 +14,8 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class MinMax {
 
-	private Double min;
-	private Double max;
+	private double min;
+	private double max;
 	
 	/**
 	 * Will get the random double value between two doubles and return a value to the second decimal place
@@ -23,7 +23,7 @@ public class MinMax {
 	 */
 	public Double getRandomNumber() {
 		Random r = new Random();
-		Double randomNum = min + (max - min) * r.nextDouble();
+		double randomNum = min + (max - min) * r.nextDouble();
 		DecimalFormat df = new DecimalFormat("#.##");
 		return Double.valueOf(df.format(randomNum));
 	}

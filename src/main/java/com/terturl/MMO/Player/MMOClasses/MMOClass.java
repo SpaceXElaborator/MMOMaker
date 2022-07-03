@@ -45,22 +45,22 @@ public class MMOClass implements Cloneable {
 	private int level = 1;
 
 	@Getter @Setter
-	private Double startingHealth;
+	private double startingHealth;
 	
 	@Getter @Setter
-	private Double Mana;
+	private double Mana;
 	
 	@Getter @Setter
-	private Double maxHealth;
+	private double maxHealth;
 	
 	@Getter @Setter
-	private Double health;
+	private double health;
 	
 	@Getter @Setter
-	private Double damage = 0.0d;
+	private double damage = 0.0d;
 	
 	@Getter @Setter
-	private Double armor = 0.0d;
+	private double armor = 0.0d;
 	
 	@Getter
 	private List<String> completedQuests = new ArrayList<>();
@@ -87,10 +87,10 @@ public class MMOClass implements Cloneable {
 
 	@Getter
 	@Setter
-	private Double money = 0.0;
+	private double money = 0.0;
 	@Getter
 	@Setter
-	private Double xp = 0.0;
+	private double xp = 0.0;
 
 	@Getter
 	@Setter

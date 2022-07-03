@@ -31,15 +31,15 @@ public class BlockBenchFile {
 
 	@Getter
 	@Setter
-	private Integer width;
+	private int width;
 
 	@Getter
 	@Setter
-	private Integer height;
+	private int height;
 
 	@Getter
 	@Setter
-	private Double eyeHeight;
+	private double eyeHeight;
 
 	@Getter
 	private List<BBOCube> elements = new ArrayList<>();

@@ -50,9 +50,9 @@ public class RecipeManager {
 					if(checkRecipe(f)) {
 						JsonFileInterpretter config = new JsonFileInterpretter(f);
 						String item = config.getString("Product");
-						Integer level = config.contains("Level") ? config.getInt("Level") : 1;
-						Integer amount = config.contains("Amount") ? config.getInt("Amount") : 1;
-						Double xpToGive = config.contains("XP") ? config.getDouble("XP") : 0.0;
+						int level = config.contains("Level") ? config.getInt("Level") : 1;
+						int amount = config.contains("Amount") ? config.getInt("Amount") : 1;
+						double xpToGive = config.contains("XP") ? config.getDouble("XP") : 0.0;
 						CustomItem ci = MinecraftMMO.getInstance().getItemManager().getItem(item);
 						String name = f.getName().substring(0, f.getName().length()-5);
 						
@@ -64,7 +64,7 @@ public class RecipeManager {
 						for(Object o : ja) {
 							JSONObject craftComponent = (JSONObject)o;
 							String craftItem = craftComponent.get("Item").toString();
-							Integer amountRequired = craftComponent.containsKey("Amount") ? Integer.valueOf(craftComponent.get("Amount").toString()) : 1;
+							int amountRequired = craftComponent.containsKey("Amount") ? Integer.valueOf(craftComponent.get("Amount").toString()) : 1;
 							CustomItem component = MinecraftMMO.getInstance().getItemManager().getItem(craftItem);
 							mr.addItem(component, amountRequired);
 						}

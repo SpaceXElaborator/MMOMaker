@@ -101,11 +101,11 @@ public class CustomItemManager {
 						JsonFileInterpretter config = new JsonFileInterpretter(f);
 						String name = config.getString("Name");
 						String friendlyname = config.contains("FriendlyName") ? config.getString("FriendlyName") : name;
-						Integer itemModelData = config.contains("ItemModelData") ? config.getInt("ItemModelData") : 0;
-						Boolean canCraft = config.contains("CanCraft") ? config.getBoolean("CanCraft") : false;
-						Boolean craftOnly = config.contains("CraftOnly") ? config.getBoolean("CraftOnly") : false;
+						int itemModelData = config.contains("ItemModelData") ? config.getInt("ItemModelData") : 0;
+						boolean canCraft = config.contains("CanCraft") ? config.getBoolean("CanCraft") : false;
+						boolean craftOnly = config.contains("CraftOnly") ? config.getBoolean("CraftOnly") : false;
 						List<String> lore = config.contains("Lore") ? config.getStringList("Lore") : new ArrayList<>();
-						Boolean soulBound = config.contains("SoulBound") ? config.getBoolean("SoulBound") : false;
+						boolean soulBound = config.contains("SoulBound") ? config.getBoolean("SoulBound") : false;
 						Material mat = Material.getMaterial(config.getString("Item").toUpperCase());
 						Rarity rare = config.contains("Rarity")
 								? Rarity.valueOf(config.getString("Rarity").toUpperCase())
@@ -115,7 +115,7 @@ public class CustomItemManager {
 								: CraftRarity.CRUDE;
 						CustomItem ci = new CustomItem(name, mat, itemModelData, rare, craftRarity);
 						ci.setFriendlyName(friendlyname);
-						ci.setCanCraft(canCraft);
+						ci.setCraftable(canCraft);
 						ci.setCraftOnly(craftOnly);
 						ci.setLore(lore);
 						ci.setSoulBound(soulBound);
@@ -135,7 +135,7 @@ public class CustomItemManager {
 							String friendlyname = config.contains("FriendlyName") ? config.getString("FriendlyName")
 									: name.replaceAll("_", " ");
 							Material mat = Material.getMaterial(config.getString("Item").toUpperCase());
-							Integer customItemModel = config.contains("CustomItemModel") ? config.getInt("CustomItemModel") : 0;
+							int customItemModel = config.contains("CustomItemModel") ? config.getInt("CustomItemModel") : 0;
 							Rarity rare = config.contains("Rarity")
 									? Rarity.valueOf(config.getString("Rarity").toUpperCase())
 									: Rarity.COMMON;
@@ -143,23 +143,23 @@ public class CustomItemManager {
 									? CraftRarity.valueOf(config.getString("CraftRarity").toUpperCase())
 									: CraftRarity.CRUDE;
 							SlotType st = config.contains("SlotType") ? SlotType.valueOf(config.getString("SlotType").toUpperCase()) : SlotType.MAIN_HAND;
-							Boolean canCraft = config.contains("CanCraft") ? config.getBoolean("CanCraft") : false;
-							Boolean craftOnly = config.contains("CraftOnly") ? config.getBoolean("CraftOnly") : false;
-							Integer itemLevel = config.contains("Level") ? config.getInt("Level") : 1;
-							Double itemDurability = config.contains("ItemDurability")
+							boolean canCraft = config.contains("CanCraft") ? config.getBoolean("CanCraft") : false;
+							boolean craftOnly = config.contains("CraftOnly") ? config.getBoolean("CraftOnly") : false;
+							int itemLevel = config.contains("Level") ? config.getInt("Level") : 1;
+							double itemDurability = config.contains("ItemDurability")
 									? config.getDouble("ItemDurability")
 									: 0.0;
-							Double itemMaxDurability = config.contains("ItemMaxDurability")
+							double itemMaxDurability = config.contains("ItemMaxDurability")
 									? config.getDouble("ItemMaxDurability")
 									: 0.0;
 							List<String> lore = config.contains("Lore") ? config.getStringList("Lore")
 									: new ArrayList<>();
 							Map<MMOModifiers, Object> mods = config.contains("Modifiers") ? getModifiers(config.getObject("Modifiers")) : new HashMap<MMOModifiers, Object>();
-							Boolean soulBound = config.contains("SoulBound") ? config.getBoolean("SoulBound") : false;
-							Boolean ranged = config.contains("Ranged") ? config.getBoolean("Ranged") : false;
+							boolean soulBound = config.contains("SoulBound") ? config.getBoolean("SoulBound") : false;
+							boolean ranged = config.contains("Ranged") ? config.getBoolean("Ranged") : false;
 							CustomWeapon cw = new CustomWeapon(name, mat, customItemModel, itemLevel, rare, craftRarity, st, ranged);
 							cw.setFriendlyName(friendlyname);
-							cw.setCanCraft(canCraft);
+							cw.setCraftable(canCraft);
 							cw.setCraftOnly(craftOnly);
 							cw.setDurability(itemDurability);
 							cw.setMaxDurability(itemMaxDurability);
@@ -183,7 +183,7 @@ public class CustomItemManager {
 							String friendlyname = config.contains("FriendlyName") ? config.getString("FriendlyName")
 									: name;
 							Material mat = Material.getMaterial(config.getString("Item").toUpperCase());
-							Integer customItemModel = config.contains("CustomItemModel") ? config.getInt("CustomItemModel") : 0;
+							int customItemModel = config.contains("CustomItemModel") ? config.getInt("CustomItemModel") : 0;
 							Rarity rare = config.contains("Rarity")
 									? Rarity.valueOf(config.getString("Rarity").toUpperCase())
 									: Rarity.COMMON;
@@ -191,25 +191,25 @@ public class CustomItemManager {
 									? CraftRarity.valueOf(config.getString("CraftRarity").toUpperCase())
 									: CraftRarity.CRUDE;
 							SlotType st = SlotType.valueOf(config.getString("SlotType").toUpperCase());
-							Boolean canCraft = config.contains("CanCraft") ? config.getBoolean("CanCraft") : false;
-							Boolean craftOnly = config.contains("CraftOnly") ? config.getBoolean("CraftOnly") : false;
-							Integer itemLevel = config.contains("Level") ? config.getInt("Level") : 1;
-							Double itemDurability = config.contains("ItemDurability")
+							boolean canCraft = config.contains("CanCraft") ? config.getBoolean("CanCraft") : false;
+							boolean craftOnly = config.contains("CraftOnly") ? config.getBoolean("CraftOnly") : false;
+							int itemLevel = config.contains("Level") ? config.getInt("Level") : 1;
+							double itemDurability = config.contains("ItemDurability")
 									? config.getDouble("ItemDurability")
 									: 0.0;
-							Double itemMaxDurability = config.contains("ItemMaxDurability")
+							double itemMaxDurability = config.contains("ItemMaxDurability")
 									? config.getDouble("ItemMaxDurability")
 									: 0.0;
 							List<String> lore = config.contains("Lore") ? config.getStringList("Lore")
 									: new ArrayList<>();
-							Boolean soulBound = config.contains("SoulBound") ? config.getBoolean("SoulBound") : false;
+							boolean soulBound = config.contains("SoulBound") ? config.getBoolean("SoulBound") : false;
 							Color c = config.contains("Color")
 									? StringUtils.getColorFromString(config.getString("Color"))
 									: null;
 							Map<MMOModifiers, Object> mods = config.contains("Modifiers") ? getModifiers(config.getObject("Modifiers")) : new HashMap<MMOModifiers, Object>();
 							CustomArmor ci = new CustomArmor(name, mat, customItemModel, itemLevel, rare, craftRarity, st);
 							ci.setFriendlyName(friendlyname);
-							ci.setCanCraft(canCraft);
+							ci.setCraftable(canCraft);
 							ci.setCraftOnly(craftOnly);
 							ci.setDurability(itemDurability);
 							ci.setMaxDurability(itemMaxDurability);

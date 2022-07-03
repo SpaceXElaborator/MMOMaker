@@ -21,25 +21,25 @@ public class LineEffect extends Effect {
 	private Particle particle;
 	
 	@Getter
-	private Double damage;
+	private double damage;
 	
 	@Getter
-	private Integer range;
+	private int range;
 	
 	@Getter
-	private Double particleAmount = 200.0;
+	private double particleAmount = 200.0;
 	
 	@Getter
-	private Double YOffset = 0.0;
+	private double YOffset = 0.0;
 	
 	@Getter
-	private Double ZOffset = 0.0;
+	private double ZOffset = 0.0;
 	
 	@Getter
-	private Double XOffset = 0.0;
+	private double XOffset = 0.0;
 	
 	@Getter
-	private Boolean penetrate = false;
+	private boolean penetratable = false;
 	
 	public void run(Player p) {
 		// Get a location if there is an offset
@@ -82,7 +82,7 @@ public class LineEffect extends Effect {
 						addToDamaged(p, e);
 
 						// If it should stop after hitting one entity, stop
-						if (!getPenetrate())
+						if (!isPenetratable())
 							return;
 					}
 				}
@@ -99,7 +99,7 @@ public class LineEffect extends Effect {
 		range = Integer.parseInt(jo.get("Range").toString());
 		particleAmount = Double.parseDouble(jo.get("ParticleAmount").toString());
 		damage = Double.parseDouble(jo.get("Damage").toString());
-		penetrate = Boolean.parseBoolean(jo.get("Penetrate").toString());
+		penetratable = Boolean.parseBoolean(jo.get("Penetrate").toString());
 		
 		YOffset = jo.containsKey("YOffset") ? Double.parseDouble(jo.get("YOffset").toString()) : 0.0;
 		XOffset = jo.containsKey("XOffset") ? Double.parseDouble(jo.get("XOffset").toString()) : 0.0;

@@ -22,10 +22,10 @@ public class MMOEntityDrop {
 	private CustomItem ci;
 
 	@Getter
-	private Integer amount;
+	private int amount;
 
 	@Getter
-	private Double chance;
+	private double chance;
 
 	/**
 	 * Creates a new double from the SplittableRandom class and compares it to the
@@ -35,7 +35,7 @@ public class MMOEntityDrop {
 	 */
 	public boolean getsItem() {
 		SplittableRandom sr = new SplittableRandom();
-		Double d = sr.nextDouble(100.01);
+		double d = sr.nextDouble(100.01);
 		return d <= chance;
 	}
 

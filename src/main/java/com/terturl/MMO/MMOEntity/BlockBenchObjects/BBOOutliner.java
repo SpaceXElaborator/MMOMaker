@@ -47,7 +47,7 @@ public class BBOOutliner {
 	 * @param y
 	 * @param z
 	 */
-	public void setOrigin(Double x, Double y, Double z) {
+	public void setOrigin(double x, double y, double z) {
 		origin[0] = x;
 		origin[1] = y;
 		origin[2] = z;
@@ -59,7 +59,7 @@ public class BBOOutliner {
 	 * @param y
 	 * @param z
 	 */
-	public void setRotation(Double x, Double y, Double z) {
+	public void setRotation(double x, double y, double z) {
 		rotation[0] = x;
 		rotation[1] = y;
 		rotation[2] = z;

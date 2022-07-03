@@ -14,11 +14,11 @@ import lombok.Setter;
 public class Face {
 
 	@Getter
-	private Double[] uv;
+	private double[] uv;
 
 	@Getter
 	@Setter
-	private Integer rotation = 0;
+	private int rotation = 0;
 
 	@Getter
 	@Setter
@@ -26,10 +26,10 @@ public class Face {
 
 	@Getter
 	@Setter
-	private Integer tintindex = 0;
+	private int tintindex = 0;
 
-	public void setUv(Double a, Double b, Double c, Double d) {
-		uv = new Double[] { a, b, c, d };
+	public void setUv(double a, double b, double c, double d) {
+		uv = new double[] { a, b, c, d };
 	}
 
 }

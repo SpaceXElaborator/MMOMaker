@@ -28,13 +28,13 @@ public class MMOEquipable extends CustomItem {
 	private List<MMORunes> runes;
 	@Getter
 	@Setter
-	private Integer itemLevel = 1;
+	private int itemLevel = 1;
 	@Getter
 	@Setter
-	private Double durability = 50.0;
+	private double durability = 50.0;
 	@Getter
 	@Setter
-	private Double maxDurability = 50.0;
+	private double maxDurability = 50.0;
 	@Getter
 	@Setter
 	private Map<MMOModifiers, Object> mods = new HashMap<>();
@@ -64,14 +64,14 @@ public class MMOEquipable extends CustomItem {
 			}
 			for (MMOModifiers mods : getMods().keySet()) {
 				Object o = getMods().get(mods);
-				Double d = null;
+				double d = 0.0;
 				if (o instanceof Double) {
-					d = (Double) getMods().get(mods);
+					d = (double) getMods().get(mods);
 					getModsOn().put(mods, d);
 				} else if (o instanceof String) {
 					String s = (String) getMods().get(mods);
 					if(s.contains(",")) {
-						Integer in = getRandom(s);
+						int in = getRandom(s);
 						d = in + 0.0D;
 						getModsOn().put(mods, d);
 					} else {

@@ -8,6 +8,7 @@ import org.bukkit.event.HandlerList;
 import com.terturl.MMO.Entity.NPC.NPC;
 
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Handles when a player clicks on an NPC
@@ -26,7 +27,9 @@ public class ClickNPCEvent extends Event implements Cancellable {
 	private final Player p;
 	@Getter
 	private final Boolean IsCrouching;
-	private Boolean cancelled = false;
+
+	@Getter @Setter
+	private boolean cancelled = false;
 
 	/**
 	 * @param n           NPC that was clicked on
@@ -56,26 +59,6 @@ public class ClickNPCEvent extends Event implements Cancellable {
 	@Override
 	public HandlerList getHandlers() {
 		return HANDLERS;
-	}
-
-	/**
-	 * Gets if the event was cancelled for if it should call or not
-	 * 
-	 * @return
-	 */
-	@Override
-	public boolean isCancelled() {
-		return cancelled;
-	}
-
-	/**
-	 * Set the cancelled status of the event
-	 * 
-	 * @param arg0 Boolean to set cancelled to
-	 */
-	@Override
-	public void setCancelled(boolean arg0) {
-		cancelled = arg0;
 	}
 
 }

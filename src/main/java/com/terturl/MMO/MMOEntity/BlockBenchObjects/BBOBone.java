@@ -23,13 +23,13 @@ public class BBOBone {
 	private String parent = "";
 
 	@Getter
-	private Double[] globalOffset = new Double[3];
+	private double[] globalOffset = new double[3];
 
 	@Getter
-	private Double[] localOffset = new Double[3];
+	private double[] localOffset = new double[3];
 
 	@Getter
-	private Double[] localRotation = new Double[3];
+	private double[] localRotation = new double[3];
 
 	@Getter
 	private Map<String, Boolean> options = new HashMap<>();
@@ -47,18 +47,18 @@ public class BBOBone {
 	 * @param ry Bone's y rotation
 	 * @param rz Bone's Z rotation
 	 */
-	public BBOBone(String p, Double x, Double y, Double z, Double rx, Double ry, Double rz) {
+	public BBOBone(String p, double x, double y, double z, double rx, double ry, double rz) {
 		parent = p;
-		globalOffset = new Double[] { x / 16.0D, y / 16.0D, z / 16.0D };
-		localRotation = new Double[] { rx, ry, rz };
+		globalOffset = new double[] { x / 16.0D, y / 16.0D, z / 16.0D };
+		localRotation = new double[] { rx, ry, rz };
 	}
 
 	/**
 	 * Set the local offset of the bone in relation to the global offset of the parent/.bbmodel file
 	 * @param offset
 	 */
-	public void setRelativeOffset(Double... offset) {
-		localOffset = new Double[] { globalOffset[0] - offset[0], globalOffset[1] - offset[1],
+	public void setRelativeOffset(double... offset) {
+		localOffset = new double[] { globalOffset[0] - offset[0], globalOffset[1] - offset[1],
 				globalOffset[2] - offset[2] };
 	}
 
@@ -76,7 +76,7 @@ public class BBOBone {
 	 * @param option Option key
 	 * @param val Option value
 	 */
-	public void setOption(String option, Boolean val) {
+	public void setOption(String option, boolean val) {
 		options.put(option, val);
 	}
 

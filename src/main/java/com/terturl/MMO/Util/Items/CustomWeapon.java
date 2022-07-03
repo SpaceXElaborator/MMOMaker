@@ -32,7 +32,7 @@ public class CustomWeapon extends MMOEquipable {
 
 	@Getter
 	@Setter
-	private Boolean ranged;
+	private boolean ranged;
 
 	public CustomWeapon(String name, Material mat, Integer itemDamage, Integer level, Rarity rarity, CraftRarity craftingRarity, SlotType st) {
 		super(name, mat, itemDamage, rarity, craftingRarity, level);

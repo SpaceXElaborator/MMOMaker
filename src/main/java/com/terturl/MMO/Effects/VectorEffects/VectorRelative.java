@@ -13,10 +13,10 @@ import lombok.Getter;
 public class VectorRelative extends Effect {
 
 	@Getter
-	private Double damage;
+	private double damage;
 	
 	@Getter
-	private Double range;
+	private double range;
 	
 	public void run(Player p) {
 		if(getDamage() > 0) {

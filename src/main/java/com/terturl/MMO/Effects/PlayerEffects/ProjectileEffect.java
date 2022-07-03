@@ -12,10 +12,10 @@ import lombok.Getter;
 public class ProjectileEffect extends Effect {
 
 	@Getter 
-	private Double damage;
+	private double damage;
 	
 	@Getter
-	private Double speed;
+	private double speed;
 	
 	@Getter
 	private String projectile = "";

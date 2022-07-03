@@ -14,10 +14,10 @@ import lombok.Getter;
 public class JumpTo extends Effect {
 
 	@Getter
-	private Double range;
+	private double range;
 	
 	@Getter
-	private Double damage;
+	private double damage;
 	
 	public void run(Player p) {
 		for (Entity e : p.getNearbyEntities(getRange(), getRange(), getRange())) {

@@ -45,7 +45,7 @@ public class CustomItem implements MMOCraftable {
 	private Material itemMat;
 	@Getter
 	@Setter
-	private Integer customItemModel = 0;
+	private int customItemModel = 0;
 	@Getter
 	@Setter
 	private SlotType slotType = SlotType.ITEM;
@@ -69,7 +69,7 @@ public class CustomItem implements MMOCraftable {
 	private boolean soulBound = false;
 	@Getter
 	@Setter
-	private boolean canCraft = false;
+	private boolean craftable = false;
 	@Getter
 	@Setter
 	private boolean craftOnly = false;

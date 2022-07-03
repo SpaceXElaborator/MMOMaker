@@ -24,6 +24,6 @@ public class ShopItem {
 	private CustomItem itemForSale;
 	
 	@Getter @Setter
-	private Double price;
+	private double price;
 	
 }

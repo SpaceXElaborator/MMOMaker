@@ -70,7 +70,7 @@ public class MMOPlayer {
 
 	@Getter
 	@Setter
-	private boolean isInCombat = false;
+	private boolean inCombat = false;
 
 	private List<EntityArmorStand> newQuestNotifiers = new ArrayList<>();
 	private List<EntityArmorStand> completableQuestNofifiers = new ArrayList<>();
@@ -119,7 +119,7 @@ public class MMOPlayer {
 			damageTimer.addPlayer(player);
 		}
 
-		isInCombat = true;
+		setInCombat(true);
 		if (combatTimer != null) {
 			combatTimer.cancel();
 		}
@@ -129,7 +129,7 @@ public class MMOPlayer {
 			@Override
 			public void run() {
 				if (i == 0.0) {
-					isInCombat = false;
+					setInCombat(false);
 					if (damageTimer != null) {
 						damageTimer.removePlayer(player);
 						damageTimer.removeAll();

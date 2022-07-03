@@ -14,13 +14,13 @@ public class LimitEffect extends Effect {
 	private Effect e;
 
 	@Getter
-	private Long every;
+	private long every;
 	
 	@Getter
-	private Integer limitTimes;
+	private int limitTimes;
 	
 	@Getter
-	private Long delay;
+	private long delay;
 	
 	public void run(Player p) {
 		BukkitRunnable br = new BukkitRunnable() {

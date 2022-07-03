@@ -58,7 +58,7 @@ public class MMOMobManager {
 	 * @param s Name of MMOMob
 	 * @return If mob exists or not
 	 */
-	public Boolean containsName(String s) {
+	public boolean containsName(String s) {
 		for (MMOMobEntity me : mobEntities) {
 			if (me.getName().equalsIgnoreCase(s))
 				return true;
@@ -73,7 +73,7 @@ public class MMOMobManager {
 	 * @param loc Location to spawn MMOMob
 	 * @return If the MMOMob was spawned or not
 	 */
-	public Boolean spawnMob(String s, Location loc) {
+	public boolean spawnMob(String s, Location loc) {
 		if (!containsName(s)) {
 			return false;
 		}

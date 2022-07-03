@@ -20,10 +20,10 @@ public abstract class Skill implements Cloneable {
 	private String skillName;
 	
 	@Getter @Setter
-	private Integer level = 0;
+	private int level = 0;
 	
 	@Getter @Setter
-	private Double xp = 0.0;
+	private double xp = 0.0;
 	
 	public Skill(String name) {
 		skillName = name;
@@ -45,9 +45,9 @@ public abstract class Skill implements Cloneable {
 	}
 	
 	public void addXP(Double d) {
-		Double finalXP = getXPToLevelUp();
+		double finalXP = getXPToLevelUp();
 		if(xp+d >= finalXP) {
-			Double rollOver = (xp+d) - finalXP;
+			double rollOver = (xp+d) - finalXP;
 			level = level + 1;
 			addXP(rollOver);
 		}

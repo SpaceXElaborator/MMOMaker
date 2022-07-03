@@ -35,13 +35,13 @@ public class MMORecipe {
 	private CustomItem product;
 	
 	@Getter
-	private Integer levelRequired;
+	private int levelRequired;
 	
 	@Getter @Setter
-	private Integer amountToGive;
+	private int amountToGive;
 	
 	@Getter @Setter
-	private Double xpGiven = 0.0;
+	private double xpGiven = 0.0;
 	
 	@Getter
 	private Map<CustomItem, Integer> recipeMapping = new HashMap<>();

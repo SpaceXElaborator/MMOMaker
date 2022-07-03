@@ -24,11 +24,11 @@ public class MMODropChance {
 	private IntMinMax amount;
 	
 	@Getter 
-	private Double chance;
+	private double chance;
 	
 	public boolean getsItem() {
 		SplittableRandom sr = new SplittableRandom();
-		Double d = sr.nextDouble(100.01);
+		double d = sr.nextDouble(100.01);
 		return d <= chance;
 	}
 	

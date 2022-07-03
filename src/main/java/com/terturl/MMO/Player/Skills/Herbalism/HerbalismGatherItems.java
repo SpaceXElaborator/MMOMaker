@@ -34,7 +34,7 @@ public class HerbalismGatherItems {
 	 * Amount of XP given to the player
 	 */
 	@Getter
-	private Double xp;
+	private double xp;
 
 	/**
 	 * The CustomItem and dropchance that can drop

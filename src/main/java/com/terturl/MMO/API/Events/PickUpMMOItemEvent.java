@@ -8,6 +8,7 @@ import org.bukkit.event.HandlerList;
 import com.terturl.MMO.Util.Items.CustomItem;
 
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Listener class to handle when a player picks up CustomItem
@@ -30,7 +31,8 @@ public class PickUpMMOItemEvent extends Event implements Cancellable {
 	@Getter
 	private final Player player;
 
-	private Boolean cancelled = false;
+	@Getter @Setter
+	private boolean cancelled = false;
 
 	/**
 	 * @param p  The player that picked up the CustomItem
@@ -60,26 +62,6 @@ public class PickUpMMOItemEvent extends Event implements Cancellable {
 	@Override
 	public HandlerList getHandlers() {
 		return HANDLERS;
-	}
-
-	/**
-	 * Gets if the event was cancelled for if it should call or not
-	 * 
-	 * @return
-	 */
-	@Override
-	public boolean isCancelled() {
-		return cancelled;
-	}
-
-	/**
-	 * Set the cancelled status of the event
-	 * 
-	 * @param arg0 Boolean to set cancelled to
-	 */
-	@Override
-	public void setCancelled(boolean arg0) {
-		cancelled = arg0;
 	}
 
 }

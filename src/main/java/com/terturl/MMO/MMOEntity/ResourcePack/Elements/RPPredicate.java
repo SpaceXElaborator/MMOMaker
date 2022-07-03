@@ -12,7 +12,7 @@ import lombok.Getter;
 public class RPPredicate {
 
 	@Getter
-	private Integer customModelData;
+	private int customModelData;
 	
 	@Getter
 	private String model;

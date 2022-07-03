@@ -31,7 +31,7 @@ public class Ability implements Cloneable {
 
 	@Getter
 	@Setter
-	private Integer requiredLevel;
+	private int requiredLevel;
 
 	@Getter
 	@Setter

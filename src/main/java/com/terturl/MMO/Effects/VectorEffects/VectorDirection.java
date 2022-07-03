@@ -13,13 +13,13 @@ import lombok.Getter;
 public class VectorDirection extends Effect {
 
 	@Getter
-	private Double damage;
+	private double damage;
 	
 	@Getter
-	private Double range;
+	private double range;
 	
 	@Getter
-	private Double speed;
+	private double speed;
 	
 	public void run(Player p) {
 		if (getDamage() > 0) {

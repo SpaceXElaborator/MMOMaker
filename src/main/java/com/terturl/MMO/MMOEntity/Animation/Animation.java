@@ -28,7 +28,7 @@ public class Animation {
 
 	@Getter
 	@Setter
-	private Boolean isOverride;
+	private boolean override;
 
 	@Getter
 	@Setter
@@ -36,7 +36,7 @@ public class Animation {
 
 	@Getter
 	@Setter
-	private Boolean loop;
+	private boolean loop;
 
 	@Getter
 	private List<Animator> frames = new ArrayList<>();

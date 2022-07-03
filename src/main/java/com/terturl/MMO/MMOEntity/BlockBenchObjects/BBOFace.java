@@ -20,11 +20,11 @@ public class BBOFace {
 
 	@Getter
 	@Setter
-	private Integer rotation = 0;
+	private int rotation = 0;
 
 	@Getter
 	@Setter
-	private Integer texture;
+	private int texture;
 
 	/**
 	 * Will set the textures UV levels, most typically, this will be 0,0,0,0.2
@@ -34,7 +34,7 @@ public class BBOFace {
 	 * @param c
 	 * @param d
 	 */
-	public void setUV(Double a, Double b, Double c, Double d) {
+	public void setUV(double a, double b, double c, double d) {
 		uv[0] = a;
 		uv[1] = b;
 		uv[2] = c;

@@ -35,22 +35,22 @@ import net.md_5.bungee.api.ChatColor;
 public class MMOMobEntity {
 
 	@Getter
-	private Integer resWidth;
+	private int resWidth;
 
 	@Getter
-	private Integer resHeight;
-
-	@Getter
-	@Setter
-	private Double width = 0.0D;
+	private int resHeight;
 
 	@Getter
 	@Setter
-	private Double height = 0.0D;
+	private double width = 0.0D;
 
 	@Getter
 	@Setter
-	private Double eyeHeight = 0.0D;
+	private double height = 0.0D;
+
+	@Getter
+	@Setter
+	private double eyeHeight = 0.0D;
 
 	@Getter
 	@Setter
@@ -91,7 +91,7 @@ public class MMOMobEntity {
 			bones.put(outliner.getName().toLowerCase(), bone);
 		}
 		bones.values().forEach(bone -> {
-			bone.setRelativeOffset(new Double[] { 0.0D, 0.0D, 0.0D });
+			bone.setRelativeOffset(new double[] { 0.0D, 0.0D, 0.0D });
 			bone.updateChildren();
 		});
 		for (Animation a : block.getAnimations()) {
@@ -132,7 +132,7 @@ public class MMOMobEntity {
 				BBOOutliner bChild = bbf.findOutlinerByUUID(uuid);
 				BBOBone b = createBone(outliner.getName(), bChild);
 				b.setRelativeOffset(
-						new Double[] { outliner.getOrigin()[0], outliner.getOrigin()[1], outliner.getOrigin()[2] });
+						new double[] { outliner.getOrigin()[0], outliner.getOrigin()[1], outliner.getOrigin()[2] });
 				bone.addChild(bChild.getName(), b);
 			} else {
 				BBOCube cube = bbf.findCubeByUUID(uuid);
@@ -158,13 +158,13 @@ public class MMOMobEntity {
 	private Cube createCube(BBOCube bCube, BBOOutliner outliner) throws IllegalArgumentException {
 		Cube cube = new Cube();
 		cube.setName(bCube.getName().toLowerCase());
-		Double fx = bCube.getFrom()[0] - outliner.getOrigin()[0] - bCube.getInflate();
-		Double fy = bCube.getFrom()[1] - outliner.getOrigin()[1] - bCube.getInflate();
-		Double fz = bCube.getFrom()[2] - outliner.getOrigin()[2] - bCube.getInflate();
+		double fx = bCube.getFrom()[0] - outliner.getOrigin()[0] - bCube.getInflate();
+		double fy = bCube.getFrom()[1] - outliner.getOrigin()[1] - bCube.getInflate();
+		double fz = bCube.getFrom()[2] - outliner.getOrigin()[2] - bCube.getInflate();
 		cube.setFrom(fx + 8.0D, fy + 8.0D, fz + 8.0D);
-		Double tx = bCube.getTo()[0] - outliner.getOrigin()[0] + bCube.getInflate();
-		Double ty = bCube.getTo()[1] - outliner.getOrigin()[1] + bCube.getInflate();
-		Double tz = bCube.getTo()[2] - outliner.getOrigin()[2] + bCube.getInflate();
+		double tx = bCube.getTo()[0] - outliner.getOrigin()[0] + bCube.getInflate();
+		double ty = bCube.getTo()[1] - outliner.getOrigin()[1] + bCube.getInflate();
+		double tz = bCube.getTo()[2] - outliner.getOrigin()[2] + bCube.getInflate();
 		cube.setTo(tx + 8.0D, ty + 8.0D, tz + 8.0D);
 		Rotation rot = new Rotation();
 		switch (bCube.getAxis()) {
@@ -187,8 +187,8 @@ public class MMOMobEntity {
 				bCube.getOrigin()[1] - outliner.getOrigin()[1] + 8.0D,
 				bCube.getOrigin()[2] - outliner.getOrigin()[2] + 8.0D);
 		cube.setRotation(rot);
-		Double wRatio = 16.0D / resWidth;
-		Double hRatio = 16.0D / resHeight;
+		double wRatio = 16.0D / resWidth;
+		double hRatio = 16.0D / resHeight;
 		bCube.getFaces().forEach((side, face) -> {
 			Face cFace = new Face();
 			cFace.setUv(face.getUv()[0] * wRatio, face.getUv()[1] * hRatio, face.getUv()[2] * wRatio,
