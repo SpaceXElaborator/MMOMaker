@@ -51,17 +51,18 @@ public class DungeonSchematic {
 		InputStream stream = new FileInputStream(f);
 		NBTTagCompound tagCompound = NBTCompressedStreamTools.a(stream);
 		Bukkit.getConsoleSender().sendMessage(tagCompound.toString());
-		if(tagCompound.getShort("Width") > 16) throw new LengthExceedsException((int)tagCompound.getShort("Width"));
-		if(tagCompound.getShort("Length") > 16) throw new LengthExceedsException((int)tagCompound.getShort("Length"));
 		
-		setWidth(tagCompound.getShort("Width"));
-		setHeight(tagCompound.getShort("Height"));
-		setLength(tagCompound.getShort("Length"));
-		setBlockIds(tagCompound.getByteArray("BlockData"));
-		NBTTagCompound test = tagCompound.getCompound("Palette");
-		Set<String> testKeys = test.getKeys();
+		if(tagCompound.g("Width") > 16) throw new LengthExceedsException(tagCompound.g("Width"));
+		if(tagCompound.g("Length") > 16) throw new LengthExceedsException(tagCompound.g("Length"));
+		
+		setWidth(tagCompound.g("Width"));
+		setHeight(tagCompound.g("Height"));
+		setLength(tagCompound.g("Length"));
+		setBlockIds(tagCompound.m("BlockData"));
+		NBTTagCompound test = tagCompound.p("Palette");
+		Set<String> testKeys = test.d();
 		for(String s : testKeys) {
-			palette.put(test.getInt(s), s);
+			palette.put(test.h(s), s);
 		}
 		stream.close();
 	}

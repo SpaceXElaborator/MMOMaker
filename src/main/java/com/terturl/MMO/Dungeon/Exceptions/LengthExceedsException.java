@@ -4,7 +4,7 @@ public class LengthExceedsException extends Exception {
 
 	private static final long serialVersionUID = 1L;
 
-	public LengthExceedsException(Integer i) {
+	public LengthExceedsException(short i) {
 		super("Size exceeds 16 blocks: " + String.valueOf(i));
 	}
 	
