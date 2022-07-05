@@ -2,8 +2,8 @@ package com.terturl.MMO.Effects.TimeBasedEffects;
 
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.json.simple.JSONObject;
 
+import com.google.gson.JsonObject;
 import com.terturl.MMO.MinecraftMMO;
 import com.terturl.MMO.Effects.Effect;
 
@@ -39,10 +39,10 @@ public class LimitEffect extends Effect {
 				getEvery());
 	}
 
-	public void load(JSONObject jo) {
-		every = Long.parseLong(jo.get("Every").toString());
-		limitTimes = Integer.parseInt(jo.get("Limit").toString());
-		delay = Long.parseLong(jo.get("Delay").toString());
+	public void load(JsonObject jo) {
+		every = jo.get("Every").getAsLong();
+		limitTimes = jo.get("Limit").getAsInt();
+		delay = jo.get("Delay").getAsLong();
 	}
 	
 }

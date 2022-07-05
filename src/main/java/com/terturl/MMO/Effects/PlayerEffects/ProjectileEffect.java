@@ -2,8 +2,8 @@ package com.terturl.MMO.Effects.PlayerEffects;
 
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
-import org.json.simple.JSONObject;
 
+import com.google.gson.JsonObject;
 import com.terturl.MMO.MinecraftMMO;
 import com.terturl.MMO.Effects.Effect;
 
@@ -35,10 +35,10 @@ public class ProjectileEffect extends Effect {
 		}
 	}
 
-	public void load(JSONObject jo) {
-		projectile = jo.get("Projectile").toString();
-		speed = Double.parseDouble(jo.get("Speed").toString());
-		damage = Double.parseDouble(jo.get("Damage").toString());
+	public void load(JsonObject jo) {
+		projectile = jo.get("Projectile").getAsString();
+		speed = jo.get("Speed").getAsDouble();
+		damage = jo.get("Damage").getAsDouble();
 	}
 	
 }

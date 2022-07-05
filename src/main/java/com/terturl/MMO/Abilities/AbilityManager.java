@@ -5,11 +5,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.terturl.MMO.MinecraftMMO;
 import com.terturl.MMO.Abilities.Ability.AbilityCosts;
 import com.terturl.MMO.Effects.Effect;
@@ -50,23 +52,23 @@ public class AbilityManager {
 		for (File f : abDir.listFiles()) {
 			if (f.getName().endsWith(".json")) {
 
-				JsonFileInterpretter config = new JsonFileInterpretter(f);
-				String name = config.getString("Name");
-				Integer levelRequied = config.getInt("Level");
+				JsonObject config = new JsonFileInterpretter(f).getJson();
+				String name = config.get("Name").getAsString();
+				Integer levelRequied = config.get("Level").getAsInt();
 				Map<AbilityCosts, Double> costs = new HashMap<>();
-				JSONObject jo = config.getObject("Cost");
-				if (jo.containsKey("Mana")) {
-					costs.put(AbilityCosts.MANA, (Double) jo.get("Mana"));
+				JsonObject joCost = config.get("Cost").getAsJsonObject();
+				if (joCost.has("Mana")) {
+					costs.put(AbilityCosts.MANA, joCost.get("Mana").getAsDouble());
 				}
-				if (jo.containsKey("Health")) {
-					costs.put(AbilityCosts.HEALTH, (Double) jo.get("Health"));
+				if (joCost.has("Health")) {
+					costs.put(AbilityCosts.HEALTH, joCost.get("Health").getAsDouble());
 				}
 
 				Ability a = new Ability(name);
 				a.setRequiredLevel(levelRequied);
 				a.setCosts(costs);
 
-				JSONArray ja = config.getArray("Activate");
+				JsonArray ja = config.get("Activate").getAsJsonArray();
 				a.getEffects().addAll(getEffects(ja, name));
 				abilities.put(name, a);
 			}
@@ -81,17 +83,17 @@ public class AbilityManager {
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
-	private List<Effect> getEffects(JSONArray ja, String name) {
+	private List<Effect> getEffects(JsonArray ja, String name) {
 		List<Effect> effectsList = new ArrayList<>();
 		
 		for(int i = 0; i < ja.size(); i++) {
-			JSONObject effectListing = (JSONObject)ja.get(i);
-			effectListing.forEach((k, v) -> {
-				if(!effects.containsKey(k.toString())) return;
-				Effect e = effects.get(k);
-				e.load((JSONObject)v);
-			});
+			JsonObject effectListing = ja.get(i).getAsJsonObject();
+			for(Entry<String, JsonElement> je : effectListing.entrySet()) {
+				if(!effects.containsKey(je.getKey())) continue;
+				if(!je.getValue().isJsonObject()) continue;
+				Effect e = effects.get(je.getKey());
+				e.load(je.getValue().getAsJsonObject());
+			}
 		}
 		
 		return effectsList;

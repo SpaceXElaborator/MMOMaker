@@ -6,9 +6,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.bukkit.entity.Player;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.terturl.MMO.Quests.Quest;
 
 import lombok.Getter;
@@ -92,18 +94,17 @@ public class MMOEntityKillQuest extends Quest {
 	/**
 	 * @see Quest#saveQuest()
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
-	public JSONObject saveQuest() {
-		JSONObject jo = new JSONObject();
-		JSONArray hasKilled = new JSONArray();
+	public JsonObject saveQuest() {
+		JsonObject jo = new JsonObject();
+		JsonArray hasKilled = new JsonArray();
 		for(String et : getHasKilled().keySet()) {
-			JSONObject entry = new JSONObject();
-			entry.put("MMOEntity", et);
-			entry.put("Amount", getHasKilled().get(et));
+			JsonObject entry = new JsonObject();
+			entry.addProperty("MMOEntity", et);
+			entry.addProperty("Amount", getHasKilled().get(et));
 			hasKilled.add(entry);
 		}
-		jo.put("Entities", hasKilled);
+		jo.add("Entities", hasKilled);
 		return jo;
 	}
 	
@@ -111,15 +112,16 @@ public class MMOEntityKillQuest extends Quest {
 	 * @see Quest#loadQuestToPlayer(JSONObject)
 	 */
 	@Override
-	public void loadQuestToPlayer(JSONObject jo) {
-		if(jo.containsKey("Entities")) {
-			JSONArray entries = (JSONArray)jo.get("Entities");
-			for(Object o : entries) {
-				JSONObject entity = (JSONObject)o;
-				String et = entity.get("MMOEntity").toString();
-				Integer amount = Integer.parseInt(entity.get("Amount").toString());
-				getHasKilled().put(et, amount);
-			}
+	public void loadQuestToPlayer(JsonObject jo) {
+		if(!jo.has("Entities") || !jo.get("Entities").isJsonArray()) return;
+		
+		JsonArray entries = jo.get("Entities").getAsJsonArray();
+		for(JsonElement o : entries) {
+			if(!o.isJsonObject()) continue;
+			JsonObject entity = o.getAsJsonObject();
+			String et = entity.get("MMOEntity").getAsString();
+			int amount = entity.get("Amount").getAsInt();
+			getHasKilled().put(et, amount);
 		}
 	}
 
@@ -127,12 +129,15 @@ public class MMOEntityKillQuest extends Quest {
 	 * @see Quest#loadQuest(JSONObject)
 	 */
 	@Override
-	public void loadQuest(JSONObject jo) {
-		JSONArray ja = (JSONArray) jo.get("EntityInformation");
-		for(Object o : ja) {
-			JSONObject entry = (JSONObject)o;
-			String et = entry.get("MMOEntity").toString();
-			Integer amount = Integer.parseInt(entry.get("Amount").toString());
+	public void loadQuest(JsonObject jo) {
+		if(!jo.has("EntityInformation") || !jo.get("EntityInformation").isJsonArray()) return;
+		
+		JsonArray ja = jo.get("EntityInformation").getAsJsonArray();
+		for(JsonElement o : ja) {
+			if(!o.isJsonObject()) continue;
+			JsonObject entry = o.getAsJsonObject();
+			String et = entry.get("MMOEntity").getAsString();
+			int amount = entry.get("Amount").getAsInt();
 			addEntityToKill(et, amount);
 		}
 	}

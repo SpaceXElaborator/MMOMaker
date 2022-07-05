@@ -10,9 +10,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Material;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.terturl.MMO.MinecraftMMO;
 import com.terturl.MMO.Util.JsonFileInterpretter;
 import com.terturl.MMO.Util.MMODropChance;
@@ -42,27 +43,35 @@ public class HerbalismManager {
 		File herbalism = new File(skillsDir, "Herbalism.json");
 		if (!herbalism.exists())
 			createHerbalismFile(herbalism);
-		JsonFileInterpretter config = new JsonFileInterpretter(herbalism);
-		JSONArray blocks = config.getArray("Blocks");
-		for (Object o : blocks) {
-			JSONObject herbalismCall = (JSONObject) o;
+		JsonObject config = new JsonFileInterpretter(herbalism).getJson();
+		
+		JsonArray blocks = config.get("Blocks").getAsJsonArray();
+		for(JsonElement je : blocks) {
+			if(!je.isJsonObject()) continue;
+			JsonObject herbalismCall = je.getAsJsonObject();
 			Material mat = Material.valueOf(herbalismCall.get("Material").toString().toUpperCase());
 			Double xp = Double.parseDouble(herbalismCall.get("XP").toString());
 			Map<CustomItem, MMODropChance> herbItems = new HashMap<>();
-			JSONArray items = (JSONArray) herbalismCall.get("Items");
-			for (Object o2 : items) {
-				JSONObject item = (JSONObject) o2;
-				CustomItem ci = MinecraftMMO.getInstance().getItemManager().getItem(item.get("Item").toString());
-				JSONObject minMax = (JSONObject) item.get("Amount");
-				IntMinMax imm = new IntMinMax(Integer.valueOf(minMax.get("Min").toString()),
-						Integer.valueOf(minMax.get("Max").toString()));
-				Double chance = Double.parseDouble(item.get("Chance").toString());
-				MMODropChance mdc = new MMODropChance(ci, imm, chance);
-				herbItems.put(ci, mdc);
+			
+			if(herbalismCall.has("Items") && herbalismCall.get("Items").isJsonArray()) {
+				JsonArray items = herbalismCall.get("Items").getAsJsonArray();
+				for(JsonElement je2 : items) {
+					if(!je2.isJsonObject()) continue;
+					JsonObject item = je2.getAsJsonObject();
+					CustomItem ci = MinecraftMMO.getInstance().getItemManager().getItem(item.get("Item").toString());
+					JsonObject minMax = item.get("Amount").getAsJsonObject();
+					IntMinMax imm = new IntMinMax(minMax.get("Min").getAsInt(),
+							minMax.get("Max").getAsInt());
+					Double chance = item.get("Chance").getAsDouble();
+					MMODropChance mdc = new MMODropChance(ci, imm, chance);
+					herbItems.put(ci, mdc);
+				}
 			}
+			
 			HerbalismGatherItems hgi = new HerbalismGatherItems(mat, xp, herbItems);
 			herbalismItems.add(hgi);
 		}
+		
 	}
 
 	/**

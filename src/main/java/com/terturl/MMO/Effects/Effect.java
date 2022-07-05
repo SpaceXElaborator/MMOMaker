@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.json.simple.JSONObject;
 
+import com.google.gson.JsonObject;
 import com.terturl.MMO.MinecraftMMO;
 import com.terturl.MMO.Player.MMOPlayer;
 import com.terturl.MMO.Util.SoundInformation;
@@ -19,7 +19,7 @@ public abstract class Effect implements Cloneable {
 	private List<SoundInformation> sounds = new ArrayList<>();
 	
 	public abstract void run(Player p);
-	public abstract void load(JSONObject jo);
+	public abstract void load(JsonObject jo);
 	
 	public void addSound(SoundInformation si) {
 		sounds.add(si);

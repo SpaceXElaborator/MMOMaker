@@ -1,7 +1,6 @@
 package com.terturl.MMO.Util.JSONHelpers;
 
-import org.json.simple.JSONObject;
-
+import com.google.gson.JsonObject;
 import com.terturl.MMO.MinecraftMMO;
 import com.terturl.MMO.Util.Items.CustomItem;
 
@@ -12,15 +11,14 @@ import com.terturl.MMO.Util.Items.CustomItem;
  */
 public class ItemUtils {
 	
-	@SuppressWarnings("unchecked")
-	public static JSONObject itemToJSON(CustomItem ci) {
-		JSONObject jo = new JSONObject();
-		jo.put("Name", ci.getName());
+	public static JsonObject itemToJSON(CustomItem ci) {
+		JsonObject jo = new JsonObject();
+		jo.addProperty("Name", ci.getName());
 		return jo;
 	}
 	
-	public static CustomItem JSONToItem(JSONObject jo) {
-		CustomItem ci = MinecraftMMO.getInstance().getItemManager().getItem(jo.get("Name").toString());
+	public static CustomItem JSONToItem(JsonObject jo) {
+		CustomItem ci = MinecraftMMO.getInstance().getItemManager().getItem(jo.get("Name").getAsString());
 		return ci;
 	}
 	

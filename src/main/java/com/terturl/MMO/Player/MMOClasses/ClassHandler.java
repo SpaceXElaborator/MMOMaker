@@ -8,12 +8,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.json.simple.JSONObject;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.terturl.MMO.MinecraftMMO;
 import com.terturl.MMO.Player.MMOPlayer;
 import com.terturl.MMO.Util.JsonFileInterpretter;
@@ -69,12 +72,12 @@ public class ClassHandler {
 				for (File f : classDir.listFiles()) {
 					if (f.getName().endsWith(".json")) {
 						if (checkStarterValues(f)) {
-							JsonFileInterpretter config = new JsonFileInterpretter(f);
-							String name = config.getString("Name");
-							double maxhealth = config.getDouble("StarterHealth");
-							double startingMana = config.getDouble("StarterMana");
+							JsonObject config = new JsonFileInterpretter(f).getJson();
+							String name = config.get("Name").getAsString();
+							double maxhealth = config.get("StarterHealth").getAsDouble();
+							double startingMana = config.get("StarterMana").getAsDouble();
 							Map<SlotType, String> starterItemsMap = new HashMap<>();
-							JSONObject starterItems = config.getObject("StarterItems");
+							JsonObject starterItems = config.get("StarterItems").getAsJsonObject();
 
 							if (containsClass(name)) {
 								wbw.write("[" + f.getName() + "] Class: " + name + " Exists");
@@ -100,8 +103,10 @@ public class ClassHandler {
 							mc.setMaxHealth(maxhealth);
 							mc.setMana(startingMana);
 
-							for (String s : config.getStringList("StarterSkills")) {
-								mc.getPlayerAbilities().add(s);
+							// TODO: Check these
+							JsonArray array = config.get("StarterSkills").getAsJsonArray();
+							for(JsonElement je : array) {
+								mc.getPlayerAbilities().add(je.getAsString());
 							}
 
 							classes.add(mc);
@@ -121,35 +126,35 @@ public class ClassHandler {
 
 	private boolean checkStarterValues(File f) throws IOException {
 		boolean load = true;
-		JsonFileInterpretter config = new JsonFileInterpretter(f);
+		JsonObject config = new JsonFileInterpretter(f).getJson();
 		FileWriter wfw = new FileWriter(getWarnings());
 		BufferedWriter wbw = new BufferedWriter(wfw);
 
-		if (!config.contains("Name")) {
+		if (!config.has("Name")) {
 			wbw.write("[" + f.getName() + "] Does not contain 'Name'");
 			wbw.newLine();
 			load = false;
 		}
 
-		if (!config.contains("StarterItems")) {
+		if (!config.has("StarterItems")) {
 			wbw.write("[" + f.getName() + "] Does not contain JSON object 'StartItems'");
 			wbw.newLine();
 			load = false;
 		}
 
-		if (!config.contains("StarterMana")) {
+		if (!config.has("StarterMana")) {
 			wbw.write("[" + f.getName() + "] Does not contain JSON object 'StarterMana'");
 			wbw.newLine();
 			load = false;
 		}
 
-		if (!config.contains("StarterHealth")) {
+		if (!config.has("StarterHealth")) {
 			wbw.write("[" + f.getName() + "] Does not contain JSON object 'StarterHealth'");
 			wbw.newLine();
 			load = false;
 		}
 
-		if (!config.contains("StarterSkills")) {
+		if (!config.has("StarterSkills")) {
 			wbw.write("[" + f.getName() + "] Does not contain JSON object 'StarterSkills'");
 			wbw.newLine();
 			load = false;
@@ -160,14 +165,14 @@ public class ClassHandler {
 		return load;
 	}
 
-	private boolean checkStarterItems(JSONObject jo) throws IOException {
+	private boolean checkStarterItems(JsonObject jo) throws IOException {
 		boolean load = true;
 		FileWriter wfw = new FileWriter(getWarnings());
 		BufferedWriter wbw = new BufferedWriter(wfw);
 		CustomItemManager cim = MinecraftMMO.getInstance().getItemManager();
 
-		for (Object o : jo.values()) {
-			String item = o.toString();
+		for(Entry<String, JsonElement> entries : jo.entrySet()) {
+			String item = entries.getValue().getAsString();
 			if (!cim.getCustomItems().containsKey(item)) {
 				wbw.write(item + " Is not a valid CustomItem");
 				wbw.newLine();
@@ -186,41 +191,41 @@ public class ClassHandler {
 		return load;
 	}
 
-	private Map<SlotType, String> setStarterItemMap(JSONObject jo) {
+	private Map<SlotType, String> setStarterItemMap(JsonObject jo) {
 		Map<SlotType, String> map = new HashMap<SlotType, String>();
 
-		if (jo.containsKey("Helmet")) {
-			map.put(SlotType.HELMET, jo.get("Helmet").toString());
+		if (jo.has("Helmet")) {
+			map.put(SlotType.HELMET, jo.get("Helmet").getAsString());
 		} else {
 			map.put(SlotType.HELMET, "MMO_ITEM_EMPTY_SLOT_ITEM");
 		}
 
-		if (jo.containsKey("Chestplate")) {
-			map.put(SlotType.CHEST, jo.get("Chestplate").toString());
+		if (jo.has("Chestplate")) {
+			map.put(SlotType.CHEST, jo.get("Chestplate").getAsString());
 		} else {
 			map.put(SlotType.CHEST, "MMO_ITEM_EMPTY_SLOT_ITEM");
 		}
 
-		if (jo.containsKey("Leggings")) {
-			map.put(SlotType.LEGS, jo.get("Leggings").toString());
+		if (jo.has("Leggings")) {
+			map.put(SlotType.LEGS, jo.get("Leggings").getAsString());
 		} else {
 			map.put(SlotType.LEGS, "MMO_ITEM_EMPTY_SLOT_ITEM");
 		}
 
-		if (jo.containsKey("Boots")) {
-			map.put(SlotType.BOOTS, jo.get("Boots").toString());
+		if (jo.has("Boots")) {
+			map.put(SlotType.BOOTS, jo.get("Boots").getAsString());
 		} else {
 			map.put(SlotType.BOOTS, "MMO_ITEM_EMPTY_SLOT_ITEM");
 		}
 
-		if (jo.containsKey("MainHand")) {
-			map.put(SlotType.MAIN_HAND, jo.get("MainHand").toString());
+		if (jo.has("MainHand")) {
+			map.put(SlotType.MAIN_HAND, jo.get("MainHand").getAsString());
 		} else {
 			map.put(SlotType.MAIN_HAND, "MMO_ITEM_EMPTY_SLOT_ITEM");
 		}
 
-		if (jo.containsKey("OffHand")) {
-			map.put(SlotType.OFF_HAND, jo.get("OffHand").toString());
+		if (jo.has("OffHand")) {
+			map.put(SlotType.OFF_HAND, jo.get("OffHand").getAsString());
 		} else {
 			map.put(SlotType.OFF_HAND, "MMO_ITEM_EMPTY_SLOT_ITEM");
 		}

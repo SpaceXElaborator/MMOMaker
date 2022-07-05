@@ -4,8 +4,8 @@ import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
-import org.json.simple.JSONObject;
 
+import com.google.gson.JsonObject;
 import com.terturl.MMO.Effects.Effect;
 
 import lombok.Getter;
@@ -39,10 +39,10 @@ public class VectorDirection extends Effect {
 		p.setVelocity(v.multiply(getRange()));
 	}
 
-	public void load(JSONObject jo) {
-		damage = Double.parseDouble(jo.get("Damage").toString());
-		range = Double.parseDouble(jo.get("Range").toString());
-		speed = Double.parseDouble(jo.get("Speed").toString());
+	public void load(JsonObject jo) {
+		damage =jo.get("Damage").getAsDouble();
+		range = jo.get("Range").getAsDouble();
+		speed = jo.get("Speed").getAsDouble();
 	}
 	
 }

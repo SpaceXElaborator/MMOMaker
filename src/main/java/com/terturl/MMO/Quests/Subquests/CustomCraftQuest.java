@@ -6,9 +6,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.bukkit.entity.Player;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.terturl.MMO.Quests.Quest;
 
 import lombok.Getter;
@@ -105,12 +107,15 @@ public class CustomCraftQuest extends Quest {
 	 * @see Quest#loadQuest(JSONObject)
 	 */
 	@Override
-	public void loadQuest(JSONObject jo) {
-		JSONArray ja = (JSONArray) jo.get("CraftingInformation");
-		for (Object o : ja) {
-			JSONObject entry = (JSONObject) o;
-			String s = entry.get("Item").toString();
-			Integer amount = Integer.parseInt(entry.get("Amount").toString());
+	public void loadQuest(JsonObject jo) {
+		if(!jo.has("CraftingInformation") || !jo.get("CraftingInformation").isJsonArray()) return;
+		
+		JsonArray ja = jo.get("CraftingInformation").getAsJsonArray();
+		for (JsonElement o : ja) {
+			if(!o.isJsonObject()) continue;
+			JsonObject entry = o.getAsJsonObject();
+			String s = entry.get("Item").getAsString();
+			int amount = entry.get("Amount").getAsInt();
 			addItemToCraft(s, amount);
 		}
 	}
@@ -118,18 +123,17 @@ public class CustomCraftQuest extends Quest {
 	/**
 	 * @see Quest#saveQuest()
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
-	public JSONObject saveQuest() {
-		JSONObject jo = new JSONObject();
-		JSONArray hasCrafted = new JSONArray();
+	public JsonObject saveQuest() {
+		JsonObject jo = new JsonObject();
+		JsonArray hasCrafted = new JsonArray();
 		for (String s : getHasCrafted().keySet()) {
-			JSONObject entry = new JSONObject();
-			entry.put("Item", s);
-			entry.put("Amount", getHasCrafted().get(s));
+			JsonObject entry = new JsonObject();
+			entry.addProperty("Item", s);
+			entry.addProperty("Amount", getHasCrafted().get(s));
 			hasCrafted.add(entry);
 		}
-		jo.put("Crafted", hasCrafted);
+		jo.add("Crafted", hasCrafted);
 		return jo;
 	}
 
@@ -137,15 +141,16 @@ public class CustomCraftQuest extends Quest {
 	 * @see Quest#loadQuestToPlayer(JSONObject)
 	 */
 	@Override
-	public void loadQuestToPlayer(JSONObject jo) {
-		if (jo.containsKey("Crafted")) {
-			JSONArray entries = (JSONArray) jo.get("Crafted");
-			for (Object o : entries) {
-				JSONObject entity = (JSONObject) o;
-				String et = entity.get("Item").toString();
-				Integer amount = Integer.parseInt(entity.get("Amount").toString());
-				getHasCrafted().put(et, amount);
-			}
+	public void loadQuestToPlayer(JsonObject jo) {
+		if(!jo.has("Crafted") || !jo.get("Crafted").isJsonArray()) return;
+		
+		JsonArray entries = jo.get("Crafted").getAsJsonArray();
+		for (JsonElement o : entries) {
+			if(!o.isJsonObject()) continue;
+			JsonObject entity = o.getAsJsonObject();
+			String et = entity.get("Item").getAsString();
+			int amount = entity.get("Amount").getAsInt();
+			getHasCrafted().put(et, amount);
 		}
 	}
 

@@ -2,8 +2,8 @@ package com.terturl.MMO.Effects.TimeBasedEffects;
 
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.json.simple.JSONObject;
 
+import com.google.gson.JsonObject;
 import com.terturl.MMO.MinecraftMMO;
 import com.terturl.MMO.Effects.Effect;
 
@@ -42,10 +42,10 @@ public class RepeatingEffect extends Effect {
 		br.runTaskTimer(MinecraftMMO.getInstance(), getDelay(), 1);
 	}
 
-	public void load(JSONObject jo) {
-		every = Double.parseDouble(jo.get("Every").toString());
-		duration = Double.parseDouble(jo.get("Duration").toString());
-		delay = Long.parseLong(jo.get("Delay").toString());
+	public void load(JsonObject jo) {
+		every = jo.get("Every").getAsDouble();
+		duration = jo.get("Duration").getAsDouble();
+		delay = jo.get("Delay").getAsLong();
 	}
 	
 }

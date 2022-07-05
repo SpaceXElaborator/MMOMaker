@@ -10,15 +10,13 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.terturl.MMO.MinecraftMMO;
 import com.terturl.MMO.API.Events.MMOEquipArmorEvent;
 import com.terturl.MMO.Player.MMOPlayer;
 import com.terturl.MMO.Player.MMOClasses.MMOClass;
-import com.terturl.MMO.Util.JsonFileInterpretter;
 
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -44,20 +42,13 @@ public class ArmorEquipHelperListener implements Listener {
 		
 		// Make sure it has values and read them
 		if(!tag.hasKey("CustomItemValues")) return;
-		JSONParser js = new JSONParser();
-		JSONObject json = null;
-		try {
-			json = (JSONObject) js.parse(tag.getString("CustomItemValues"));
-		} catch (ParseException e1) {
-			e1.printStackTrace();
-		}
+		JsonObject itemInformation = new Gson().fromJson(tag.getString("CustomItemValues"), JsonObject.class);
 		
 		// Make sure the name and slotType values are present
-		if(json == null) return;
-		JsonFileInterpretter itemInformation = new JsonFileInterpretter(json);
-		if(!itemInformation.contains("name")) return;
-		if(!itemInformation.contains("slotType")) return;
-		String s = itemInformation.getString("slotType");
+		if(itemInformation == null) return;
+		if(!itemInformation.has("name")) return;
+		if(!itemInformation.has("slotType")) return;
+		String s = itemInformation.get("slotType").getAsString();
 		
 		// If its not armor we do not care about it
 		if(s == "ITEM" || s == "TRINKET" || s == "DROP" || s == "MAIN_HAND" || s == "OFF_HAND") return;
@@ -70,7 +61,7 @@ public class ArmorEquipHelperListener implements Listener {
 				MMOClass mc = mp.getMmoClasses().get(mp.getCurrentCharacter());
 				mc.updateStats((Player)e.getWhoClicked());
 				
-				MMOEquipArmorEvent meae = new MMOEquipArmorEvent(MinecraftMMO.getInstance().getItemManager().getItem(itemInformation.getString("name")), (Player)e.getWhoClicked());
+				MMOEquipArmorEvent meae = new MMOEquipArmorEvent(MinecraftMMO.getInstance().getItemManager().getItem(itemInformation.get("name").getAsString()), (Player)e.getWhoClicked());
 				if(meae.isCancelled()) return;
 				Bukkit.getPluginManager().callEvent(meae);
 			}

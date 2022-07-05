@@ -7,8 +7,8 @@ import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
-import org.json.simple.JSONObject;
 
+import com.google.gson.JsonObject;
 import com.terturl.MMO.MinecraftMMO;
 import com.terturl.MMO.Effects.Effect;
 
@@ -100,12 +100,12 @@ public class WaveEffect extends Effect {
 		Bukkit.getScheduler().cancelTask(taskId);
 	}
 
-	public void load(JSONObject jo) {
-		damage = Double.parseDouble(jo.get("Damage").toString());
-		range = Double.parseDouble(jo.get("Range").toString());
-		degree = Double.parseDouble(jo.get("Degree").toString());
+	public void load(JsonObject jo) {
+		damage = jo.get("Damage").getAsDouble();
+		range = jo.get("Range").getAsDouble();
+		degree = jo.get("Degree").getAsDouble();
 		
-		particle = Particle.valueOf(jo.get("Particle").toString().toUpperCase());
+		particle = Particle.valueOf(jo.get("Particle").getAsString().toUpperCase());
 	}
 
 }

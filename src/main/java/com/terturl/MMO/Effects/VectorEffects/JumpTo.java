@@ -4,8 +4,8 @@ import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
-import org.json.simple.JSONObject;
 
+import com.google.gson.JsonObject;
 import com.terturl.MMO.Effects.Effect;
 import com.terturl.MMO.Util.EntityUtils;
 
@@ -37,9 +37,9 @@ public class JumpTo extends Effect {
 		}
 	}
 
-	public void load(JSONObject jo) {
-		range = Double.parseDouble(jo.get("Range").toString());
-		damage = Double.parseDouble(jo.get("Damage").toString());
+	public void load(JsonObject jo) {
+		range = jo.get("Range").getAsDouble();
+		damage = jo.get("Damage").getAsDouble();
 	}
 	
 }

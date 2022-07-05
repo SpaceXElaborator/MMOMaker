@@ -7,8 +7,8 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.json.simple.JSONObject;
 
+import com.google.gson.JsonObject;
 import com.terturl.MMO.MinecraftMMO;
 import com.terturl.MMO.Player.MMOPlayer;
 import com.terturl.MMO.Player.MMOClasses.MMOClass;
@@ -239,19 +239,19 @@ public abstract class Quest {
 	 * 
 	 * @param jo JSONObject of quest file's Properties object
 	 */
-	public abstract void loadQuest(JSONObject jo);
+	public abstract void loadQuest(JsonObject jo);
 
 	/**
 	 * Called to save the quest to the players JSON save file
 	 * 
 	 * @return JSONObject to be added to the players file
 	 */
-	public abstract JSONObject saveQuest();
+	public abstract JsonObject saveQuest();
 
 	/**
 	 * Used to load the quest from the players save file to load what they have accomplished
 	 * @param jo JSONObject of the information from the players save file
 	 */
-	public abstract void loadQuestToPlayer(JSONObject jo);
+	public abstract void loadQuestToPlayer(JsonObject jo);
 
 }

@@ -1,8 +1,8 @@
 package com.terturl.MMO.Effects.PlayerEffects;
 
 import org.bukkit.entity.Player;
-import org.json.simple.JSONObject;
 
+import com.google.gson.JsonObject;
 import com.terturl.MMO.Effects.Effect;
 
 import lombok.Getter;
@@ -17,8 +17,8 @@ public class HealEffect extends Effect {
 		p.setHealth(p.getHealth() + getAmount());
 	}
 
-	public void load(JSONObject jo) {
-		amount = Double.parseDouble(jo.get("Amount").toString());
+	public void load(JsonObject jo) {
+		amount = jo.get("Amount").getAsDouble();
 	}
 
 }

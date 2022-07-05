@@ -5,8 +5,8 @@ import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
-import org.json.simple.JSONObject;
 
+import com.google.gson.JsonObject;
 import com.terturl.MMO.Effects.Effect;
 import com.terturl.MMO.Util.Math.RelativeLocation;
 
@@ -54,13 +54,13 @@ public class VectorPush extends Effect {
 	}
 
 	@Override
-	public void load(JSONObject jo) {
-		damage = Double.parseDouble(jo.get("Damage").toString());
-		range = Double.parseDouble(jo.get("Range").toString());
+	public void load(JsonObject jo) {
+		damage = jo.get("Damage").getAsDouble();
+		range = jo.get("Range").getAsDouble();
 		
-		YOffset = Double.parseDouble(jo.get("YOffset").toString());
-		XOffset = Double.parseDouble(jo.get("XOffset").toString());
-		ZOffset = Double.parseDouble(jo.get("ZOffset").toString());
+		YOffset = jo.get("YOffset").getAsDouble();
+		XOffset = jo.get("XOffset").getAsDouble();
+		ZOffset = jo.get("ZOffset").getAsDouble();
 	}
 	
 }

@@ -14,9 +14,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_17_R1.CraftWorld;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.terturl.MMO.MinecraftMMO;
 import com.terturl.MMO.Util.JsonFileInterpretter;
 import com.terturl.MMO.Util.SoundInformation;
@@ -54,34 +55,34 @@ public class MMOEntityManager {
 			for(File f : entityFolder.listFiles()) {
 				if(f.getName().endsWith(".json")) {
 					if(checkEntitiy(f)) {
-						JsonFileInterpretter config = new JsonFileInterpretter(f);
-						String type = config.getString("Type");
-						String name = config.getString("Name");
+						JsonObject config = new JsonFileInterpretter(f).getJson();
+						String type = config.get("Type").getAsString();
+						String name = config.get("Name").getAsString();
 						EntityConversion ec = EntityConversion.valueOf(type.toUpperCase());
 						if(ec == null) continue;
 						MMOEntity em = new MMOEntity(ec.getType(), ((CraftWorld)Bukkit.getWorlds().get(0)).getHandle(), name);
 						
-						if(config.contains("XP")) {
-							JSONObject jo = config.getObject("XP");
-							double min = jo.containsKey("Min") ? Double.parseDouble(jo.get("Min").toString()) : 0.0;
-							double max = Double.parseDouble(jo.get("Max").toString());
+						if(config.has("XP") && config.get("XP").isJsonObject()) {
+							JsonObject jo = config.get("XP").getAsJsonObject();
+							double min = jo.has("Min") ? jo.get("Min").getAsDouble() : 0.0;
+							double max = jo.has("Max") ? jo.get("Max").getAsDouble() : 0.0;
 							MinMax mm = new MinMax(min, max);
 							em.setGivableXP(mm);
 						}
 						
-						if(config.contains("Currency")) {
-							JSONObject jo = config.getObject("Currency");
-							double min = jo.containsKey("Min") ? Double.parseDouble(jo.get("Min").toString()) : 0.0;
-							double max = Double.parseDouble(jo.get("Max").toString());
+						if(config.has("Currency") && config.get("Currency").isJsonObject()) {
+							JsonObject jo = config.get("Currency").getAsJsonObject();
+							double min = jo.has("Min") ? jo.get("Min").getAsDouble() : 0.0;
+							double max = jo.has("Max") ? jo.get("Max").getAsDouble() : 0.0;
 							MinMax mm = new MinMax(min, max);
 							em.setGivableCurrency(mm);
 						}
 						
-						if(config.contains("HurtSound")) {
-							JSONObject jo = config.getObject("HurtSound");
-							String sound = jo.containsKey("Sound") ? jo.get("Sound").toString() : "minecraft:entity.zombie.hit";
-							float vol = jo.containsKey("Volume") ? Float.valueOf(jo.get("Volume").toString()) : 1.0f;
-							float pitch = jo.containsKey("Pitch") ? Float.valueOf(jo.get("Pitch").toString()) : 1.0f;
+						if(config.has("HurtSound") && config.get("HurtSound").isJsonObject()) {
+							JsonObject jo = config.get("HurtSound").getAsJsonObject();
+							String sound = jo.has("Sound") ? jo.get("Sound").getAsString() : "minecraft:entity.zombie.hit";
+							float vol = jo.has("Volume") ? jo.get("Volume").getAsFloat() : 1.0f;
+							float pitch = jo.has("Pitch") ? jo.get("Pitch").getAsFloat() : 1.0f;
 							SoundInformation se = new SoundInformation();
 							se.setSound(sound);
 							se.setVolume(vol);
@@ -89,11 +90,11 @@ public class MMOEntityManager {
 							em.setMMOSoundHurt(se);
 						}
 						
-						if(config.contains("DeathSound")) {
-							JSONObject jo = config.getObject("DeathSound");
-							String sound = jo.containsKey("Sound") ? jo.get("Sound").toString() : "minecraft:entity.zombie.hit";
-							float vol = jo.containsKey("Volume") ? Float.valueOf(jo.get("Volume").toString()) : 1.0f;
-							float pitch = jo.containsKey("Pitch") ? Float.valueOf(jo.get("Pitch").toString()) : 1.0f;
+						if(config.has("DeathSound") && config.get("DeathSound").isJsonObject()) {
+							JsonObject jo = config.get("DeathSound").getAsJsonObject();
+							String sound = jo.has("Sound") ? jo.get("Sound").getAsString() : "minecraft:entity.zombie.hit";
+							float vol = jo.has("Volume") ? jo.get("Volume").getAsFloat() : 1.0f;
+							float pitch = jo.has("Pitch") ? jo.get("Pitch").getAsFloat() : 1.0f;
 							SoundInformation se = new SoundInformation();
 							se.setSound(sound);
 							se.setVolume(vol);
@@ -101,13 +102,14 @@ public class MMOEntityManager {
 							em.setMMOSoundDeath(se);
 						}
 						
-						if(config.contains("Items")) {
-							JSONArray ja = config.getArray("Items");
-							for(Object o : ja) {
-								JSONObject jo = (JSONObject)o;
-								String item = jo.get("Item").toString();
-								int amount = jo.containsKey("Amount") ? Integer.valueOf(jo.get("Amount").toString()) : 1;
-								double chance = jo.containsKey("Chance") ? Double.parseDouble(jo.get("Chance").toString()) : 50.0;
+						if(config.has("Items") && config.get("Items").isJsonArray()) {
+							JsonArray ja = config.get("Items").getAsJsonArray();
+							for(JsonElement je : ja) {
+								if(!je.isJsonObject()) continue;
+								JsonObject jo = je.getAsJsonObject();
+								String item = jo.get("Item").getAsString();
+								int amount = jo.has("Amount") ? jo.get("Amount").getAsInt() : 1;
+								double chance = jo.has("Chance") ? jo.get("Chance").getAsDouble() : 50.0;
 								CustomItem ci = MinecraftMMO.getInstance().getItemManager().getItem(item);
 								MMOEntityDrop med = new MMOEntityDrop(ci, amount, chance);
 								em.getEntityDrops().add(med);
@@ -124,17 +126,17 @@ public class MMOEntityManager {
 	private boolean checkEntitiy(File f) throws IOException {
 		boolean load = true;
 		
-		JsonFileInterpretter config = new JsonFileInterpretter(f);
+		JsonObject config = new JsonFileInterpretter(f).getJson();
 		FileWriter wfw = new FileWriter(getWarnings());
 		BufferedWriter wbw = new BufferedWriter(wfw);
 		
-		if(!config.contains("Type")) {
+		if(!config.has("Type")) {
 			wbw.write("[" + f.getName() + "] 'Type' property is not set!");
 			wbw.newLine();
 			load = false;
 		}
 		
-		if(!config.contains("Name")) {
+		if(!config.has("Name")) {
 			wbw.write("[" + f.getName() + "] 'Name' property is not set!");
 			wbw.newLine();
 			load = false;

@@ -2,12 +2,14 @@ package com.terturl.MMO.MMOEntity;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.terturl.MMO.MinecraftMMO;
 import com.terturl.MMO.MMOEntity.Animation.Animation;
 import com.terturl.MMO.MMOEntity.Animation.Animator;
@@ -62,50 +64,54 @@ public class MobFileReader {
 	}
 
 	private void generateMob(File f) {
-		JsonFileInterpretter mobFile = new JsonFileInterpretter(f);
+		JsonObject mobFile = new JsonFileInterpretter(f).getJson();
 		BlockBenchFile bbf = new BlockBenchFile();
-		if (!mobFile.contains("name")) {
+		if (!mobFile.has("name")) {
 			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Unable to locate name of mob");
 			return;
 		}
-		bbf.setName(mobFile.getString("name").toLowerCase());
+		bbf.setName(mobFile.get("name").getAsString().toLowerCase());
 
-		if (mobFile.contains("resolution")) {
-			JsonFileInterpretter element = new JsonFileInterpretter(mobFile.getObject("resolution"));
-			bbf.setHeight(element.getInt("height"));
-			bbf.setWidth(element.getInt("width"));
+		if (mobFile.has("resolution") && mobFile.get("resolution").isJsonObject()) {
+			JsonObject element = mobFile.get("resolution").getAsJsonObject();
+			bbf.setHeight(element.get("height").getAsInt());
+			bbf.setWidth(element.get("width").getAsInt());
 		}
 
-		if (mobFile.contains("elements")) {
-			JSONArray ja = mobFile.getArray("elements");
-			for (Object elements : ja) {
-				JSONObject element = (JSONObject) elements;
+		if (mobFile.has("elements") && mobFile.get("elements").isJsonArray()) {
+			JsonArray ja = mobFile.get("elements").getAsJsonArray();
+			for (JsonElement elements : ja) {
+				if(!elements.isJsonObject()) continue;
+				JsonObject element = elements.getAsJsonObject();
 				BBOCube cube = createCube(element);
 				bbf.getElements().add(cube);
 			}
 		}
 
-		if (mobFile.contains("outliner")) {
-			JSONArray ja = mobFile.getArray("outliner");
-			for (Object elements : ja) {
-				JSONObject element = (JSONObject) elements;
+		if (mobFile.has("outliner") && mobFile.get("outliner").isJsonArray()) {
+			JsonArray ja = mobFile.get("outliner").getAsJsonArray();
+			for (JsonElement elements : ja) {
+				if(!elements.isJsonObject()) continue;
+				JsonObject element = elements.getAsJsonObject();
 				BBOOutliner outliner = addOutliners(null, element, bbf);
 				bbf.getOutliner().add(outliner);
 			}
 		}
 
-		if (mobFile.contains("textures")) {
-			JSONArray ja = mobFile.getArray("textures");
-			for (Object elements : ja) {
-				JSONObject element = (JSONObject) elements;
+		if (mobFile.has("textures") && mobFile.get("textures").isJsonArray()) {
+			JsonArray ja = mobFile.get("textures").getAsJsonArray();
+			for (JsonElement elements : ja) {
+				if(!elements.isJsonObject()) continue;
+				JsonObject element = elements.getAsJsonObject();
 				bbf.getTextures().add(createTexture(element));
 			}
 		}
 
-		if (mobFile.contains("animations")) {
-			JSONArray anims = mobFile.getArray("animations");
-			for (Object elements : anims) {
-				JSONObject animation = (JSONObject) elements;
+		if (mobFile.has("animations") && mobFile.get("animations").isJsonArray()) {
+			JsonArray ja = mobFile.get("animations").getAsJsonArray();
+			for (JsonElement elements : ja) {
+				if(!elements.isJsonObject()) continue;
+				JsonObject animation = elements.getAsJsonObject();
 				Animation anim = createAnimation(animation);
 				bbf.getAnimations().add(anim);
 			}
@@ -114,123 +120,119 @@ public class MobFileReader {
 		rpg.addMob(bbf);
 	}
 
-	private BBOTexture createTexture(JSONObject jo) {
-		JsonFileInterpretter element = new JsonFileInterpretter(jo);
+	private BBOTexture createTexture(JsonObject element) {
 		BBOTexture texture = new BBOTexture();
-		texture.setName(element.getString("name"));
-		texture.setUuid(UUID.fromString(element.getString("uuid")));
-		texture.setTexture(ImageCreator.fromString(element.getString("source")));
-		texture.setId(element.getInt("id"));
+		texture.setName(element.get("name").getAsString());
+		texture.setUuid(UUID.fromString(element.get("uuid").getAsString()));
+		texture.setTexture(ImageCreator.fromString(element.get("source").getAsString()));
+		texture.setId(element.get("id").getAsInt());
 		return texture;
 	}
 
-	private BBOOutliner addOutliners(String parent, JSONObject jo, BlockBenchFile bbf) {
-		JsonFileInterpretter element = new JsonFileInterpretter(jo);
+	private BBOOutliner addOutliners(String parent, JsonObject element, BlockBenchFile bbf) {
 		BBOOutliner outliner = new BBOOutliner();
 
-		outliner.setName(element.getString("name"));
-		outliner.setUuid(UUID.fromString(element.getString("uuid")));
+		outliner.setName(element.get("name").getAsString());
+		outliner.setUuid(UUID.fromString(element.get("uuid").getAsString()));
 		outliner.setParent(parent);
 
-		if (element.contains("origin")) {
-			JSONArray origin = element.getArray("origin");
-			outliner.setOrigin(Double.valueOf(origin.get(0).toString()), Double.valueOf(origin.get(1).toString()),
-					Double.valueOf(origin.get(2).toString()));
+		if (element.has("origin") && element.get("origin").isJsonArray()) {
+			JsonArray array = element.get("origin").getAsJsonArray();
+			outliner.setOrigin(array.get(0).getAsDouble(), array.get(1).getAsDouble(),
+					array.get(2).getAsDouble());
 		}
 
-		if (element.contains("rotation")) {
-			JSONArray rotation = element.getArray("rotation");
-			outliner.setRotation(Double.valueOf(rotation.get(0).toString()), Double.valueOf(rotation.get(1).toString()),
-					Double.valueOf(rotation.get(2).toString()));
+		if (element.has("rotation") && element.get("rotation").isJsonArray()) {
+			JsonArray array = element.get("rotation").getAsJsonArray();
+			outliner.setOrigin(array.get(0).getAsDouble(), array.get(1).getAsDouble(),
+					array.get(2).getAsDouble());
 		}
 
 		// Sometimes the children are just UUID strings. This block of cude will
 		// determine if a new outliner needs to be created and added to the parent
 		// outliner or if it will just add the UUID of the cube
-		if (element.contains("children")) {
-			JSONArray children = element.getArray("children");
-			for (Object o : children) {
-				if (o instanceof JSONObject) {
-					JSONObject jo2 = (JSONObject) o;
-					BBOOutliner outliner2 = addOutliners(outliner.getName(), jo2, bbf);
+		if(element.has("children") && element.get("children").isJsonArray()) {
+			JsonArray array = element.get("children").getAsJsonArray();
+			for(JsonElement je : array) {
+				if(je.isJsonObject()) {
+					JsonObject jo = je.getAsJsonObject();
+					BBOOutliner outliner2 = addOutliners(outliner.getName(), jo, bbf);
 					bbf.getOutliner().add(outliner2);
 					outliner.getChildren().add(outliner2.getUuid());
-					continue;
+				} else {
+					String uuid = je.getAsString();
+					outliner.getChildren().add(UUID.fromString(uuid));
 				}
-				String uuid = o.toString();
-				outliner.getChildren().add(UUID.fromString(uuid));
 			}
 		}
 
 		return outliner;
 	}
 
-	private BBOCube createCube(JSONObject jo) {
-		JsonFileInterpretter element = new JsonFileInterpretter(jo);
+	private BBOCube createCube(JsonObject element) {
 		BBOCube cube = new BBOCube();
 		
-		cube.setName(element.getString("name"));
+		cube.setName(element.get("name").getAsString());
 		
-		JSONArray to = element.getArray("to");
-		cube.setTo(Double.parseDouble(to.get(0).toString()), Double.parseDouble(to.get(1).toString()),
-				Double.parseDouble(to.get(2).toString()));
+		JsonArray to = element.get("to").getAsJsonArray();
+		cube.setTo(to.get(0).getAsDouble(),to.get(1).getAsDouble(),
+				to.get(2).getAsDouble());
 		
-		JSONArray from = element.getArray("from");
-		cube.setFrom(Double.parseDouble(from.get(0).toString()), Double.parseDouble(from.get(1).toString()),
-				Double.parseDouble(from.get(2).toString()));
+		JsonArray from = element.get("from").getAsJsonArray();
+		cube.setFrom(from.get(0).getAsDouble(),from.get(1).getAsDouble(),
+				from.get(2).getAsDouble());
 		
-		if (element.contains("origin")) {
-			JSONArray origin = element.getArray("origin");
-			cube.setOrigin(Double.parseDouble(origin.get(0).toString()), Double.parseDouble(origin.get(1).toString()),
-					Double.parseDouble(origin.get(2).toString()));
+		if (element.has("origin") && element.get("origin").isJsonArray()) {
+			JsonArray origin = element.get("origin").getAsJsonArray();
+			cube.setOrigin(origin.get(0).getAsDouble(),origin.get(1).getAsDouble(),
+					origin.get(2).getAsDouble());
 		}
 		
-		if (element.contains("rotation")) {
-			JSONArray rotation = element.getArray("rotation");
-			cube.setRotation(Double.parseDouble(rotation.get(0).toString()),
-					Double.parseDouble(rotation.get(1).toString()), Double.parseDouble(rotation.get(2).toString()));
+		if (element.has("rotation") && element.get("rotation").isJsonArray()) {
+			JsonArray rotation = element.get("rotation").getAsJsonArray();
+			cube.setRotation(rotation.get(0).getAsDouble() ,rotation.get(1).getAsDouble(),
+					rotation.get(2).getAsDouble());
 		}
 
-		JSONObject facesObject = element.getObject("faces");
-		JsonFileInterpretter faces = new JsonFileInterpretter(facesObject);
+		JsonObject faces = element.get("faces").getAsJsonObject();
 
-		cube.getFaces().put("north", createFace(faces.getObject("north")));
-		cube.getFaces().put("east", createFace(faces.getObject("east")));
-		cube.getFaces().put("south", createFace(faces.getObject("south")));
-		cube.getFaces().put("west", createFace(faces.getObject("west")));
-		cube.getFaces().put("up", createFace(faces.getObject("up")));
-		cube.getFaces().put("down", createFace(faces.getObject("down")));
+		cube.getFaces().put("north", createFace(faces.get("north").getAsJsonObject()));
+		cube.getFaces().put("east", createFace(faces.get("east").getAsJsonObject()));
+		cube.getFaces().put("south", createFace(faces.get("south").getAsJsonObject()));
+		cube.getFaces().put("west", createFace(faces.get("west").getAsJsonObject()));
+		cube.getFaces().put("up", createFace(faces.get("up").getAsJsonObject()));
+		cube.getFaces().put("down", createFace(faces.get("down").getAsJsonObject()));
 
-		cube.setUuid(UUID.fromString(element.getString("uuid")));
+		cube.setUuid(UUID.fromString(element.get("uuid").getAsString()));
 
 		return cube;
 	}
 
-	private BBOFace createFace(JSONObject jo) {
+	private BBOFace createFace(JsonObject jo) {
+		if(!jo.has("uv") || !jo.get("uv").isJsonArray()) return null;
+		
 		BBOFace face = new BBOFace();
-		JsonFileInterpretter f = new JsonFileInterpretter(jo);
-		JSONArray uv = f.getArray("uv");
-		face.setUV(Double.parseDouble(uv.get(0).toString()), Double.parseDouble(uv.get(1).toString()),
-				Double.parseDouble(uv.get(2).toString()), Double.parseDouble(uv.get(3).toString()));
-		face.setTexture((f.get("texture") == null) ? null : f.getInt("texture"));
+		JsonArray uv = jo.get("uv").getAsJsonArray();
+		face.setUV(uv.get(0).getAsDouble(), uv.get(1).getAsDouble(),
+				uv.get(2).getAsDouble(), uv.get(3).getAsDouble());
+		face.setTexture((jo.get("texture") == null) ? null : jo.get("texture").getAsInt());
 		return face;
 	}
 
-	private Animation createAnimation(JSONObject jo) {
+	private Animation createAnimation(JsonObject jo) {
 		Animation anim = new Animation();
-		JsonFileInterpretter f = new JsonFileInterpretter(jo);
-		anim.setUuid(UUID.fromString(f.getString("uuid")));
-		anim.setName(f.getString("name").replaceAll("animation.model.", "").toLowerCase());
-		anim.setLoop((f.getString("loop").equalsIgnoreCase("loop")) ? true : false);
-		anim.setOverride(f.getBoolean("override"));
-		anim.setLength(new BigDecimal(f.getString("length")));
+		anim.setUuid(UUID.fromString(jo.get("uuid").getAsString()));
+		anim.setName(jo.get("name").getAsString().replaceAll("animation.model.", "").toLowerCase());
+		anim.setLoop((jo.get("loop").getAsString().equalsIgnoreCase("loop")) ? true : false);
+		anim.setOverride(jo.get("override").getAsBoolean());
+		anim.setLength(new BigDecimal(jo.get("length").getAsBigInteger()));
 
-		if (f.contains("animators")) {
-			JSONObject animators = f.getObject("animators");
-			for (Object animator : animators.keySet()) {
-				String s = animator.toString();
-				JSONObject animatorInformation = (JSONObject) animators.get(s);
-				Animator an = createAnimator(s, animatorInformation);
+		if (jo.has("animators") && jo.get("animators").isJsonObject()) {
+			JsonObject animators = jo.get("animators").getAsJsonObject();
+			for (Entry<String, JsonElement> animator : animators.entrySet()) {
+				if(!animator.getValue().isJsonObject()) continue;
+				JsonObject animatorInformation = animator.getValue().getAsJsonObject();
+				Animator an = createAnimator(animator.getKey(), animatorInformation);
 				anim.getFrames().add(an);
 			}
 		}
@@ -238,38 +240,41 @@ public class MobFileReader {
 		return anim;
 	}
 
-	private Animator createAnimator(String uuid, JSONObject jo) {
+	private Animator createAnimator(String uuid, JsonObject jo) {
 		Animator anim = new Animator();
-		JsonFileInterpretter f = new JsonFileInterpretter(jo);
 		anim.setPartId(UUID.fromString(uuid));
 
-		JSONArray keyframes = f.getArray("keyframes");
-		for (Object o : keyframes) {
-			JSONObject keyframe = (JSONObject) o;
-			KeyFrame frame = createKeyFrame(f.getString("name").toLowerCase(), keyframe);
+		if(!jo.has("keyframes")) return null;
+		if(!jo.get("keyframes").isJsonArray()) return null;
+		
+		JsonArray keyframes = jo.get("keyframes").getAsJsonArray();
+		for(JsonElement je : keyframes) {
+			if(!je.isJsonObject()) continue;
+			JsonObject keyframe = je.getAsJsonObject();
+			KeyFrame frame = createKeyFrame(jo.get("name").getAsString().toLowerCase(), keyframe);
 			anim.getKeyFrames().add(frame);
 		}
 
 		return anim;
 	}
 
-	private KeyFrame createKeyFrame(String s, JSONObject jo) {
+	private KeyFrame createKeyFrame(String s, JsonObject jo) {
 		KeyFrame frame = new KeyFrame();
-		JsonFileInterpretter f = new JsonFileInterpretter(jo);
-
 		frame.setPartName(s);
-		String channel = f.getString("channel");
+		String channel = jo.get("channel").getAsString();
 		if (!channel.equalsIgnoreCase("rotation"))
 			return null;
-		frame.setTime(new BigDecimal(f.getString("time")));
-		frame.setUuid(UUID.fromString(f.getString("uuid")));
-		JSONArray dataPoints = f.getArray("data_points");
-		JSONObject dataPoint = (JSONObject) dataPoints.get(0);
-		JsonFileInterpretter dataPointF = new JsonFileInterpretter(dataPoint);
-		Rotation rot = new Rotation();
-		rot.setOrigin(dataPointF.getDouble("x"), dataPointF.getDouble("y"), dataPointF.getDouble("z"));
-		frame.setRot(rot);
-
+		frame.setTime(new BigDecimal(jo.get("time").getAsBigInteger()));
+		frame.setUuid(UUID.fromString(jo.get("uuid").getAsString()));
+		
+		if(jo.has("data_points") && jo.get("data_points").isJsonArray()) {
+			JsonArray dataPoints = jo.get("data_points").getAsJsonArray();
+			JsonObject dataPoint = dataPoints.get(0).getAsJsonObject();
+			Rotation rot = new Rotation();
+			rot.setOrigin(dataPoint.get("x").getAsDouble(), dataPoint.get("y").getAsDouble(), dataPoint.get("z").getAsDouble());
+			frame.setRot(rot);
+		}
+		
 		return frame;
 	}
 

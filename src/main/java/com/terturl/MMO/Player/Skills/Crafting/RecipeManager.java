@@ -8,9 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.terturl.MMO.MinecraftMMO;
 import com.terturl.MMO.Util.JsonFileInterpretter;
 import com.terturl.MMO.Util.Items.CustomItem;
@@ -48,11 +49,11 @@ public class RecipeManager {
 			for(File f : recDir.listFiles()) {
 				if(f.getName().endsWith(".json")) {
 					if(checkRecipe(f)) {
-						JsonFileInterpretter config = new JsonFileInterpretter(f);
-						String item = config.getString("Product");
-						int level = config.contains("Level") ? config.getInt("Level") : 1;
-						int amount = config.contains("Amount") ? config.getInt("Amount") : 1;
-						double xpToGive = config.contains("XP") ? config.getDouble("XP") : 0.0;
+						JsonObject config = new JsonFileInterpretter(f).getJson();
+						String item = config.get("Product").getAsString();
+						int level = config.has("Level") ? config.get("Level").getAsInt() : 1;
+						int amount = config.has("Amount") ? config.get("Amount").getAsInt() : 1;
+						double xpToGive = config.has("XP") ? config.get("XP").getAsDouble() : 0.0;
 						CustomItem ci = MinecraftMMO.getInstance().getItemManager().getItem(item);
 						String name = f.getName().substring(0, f.getName().length()-5);
 						
@@ -60,11 +61,12 @@ public class RecipeManager {
 						mr.setAmountToGive(amount);
 						mr.setXpGiven(xpToGive);
 						
-						JSONArray ja = config.getArray("Items");
-						for(Object o : ja) {
-							JSONObject craftComponent = (JSONObject)o;
-							String craftItem = craftComponent.get("Item").toString();
-							int amountRequired = craftComponent.containsKey("Amount") ? Integer.valueOf(craftComponent.get("Amount").toString()) : 1;
+						JsonArray ja = config.get("Items").getAsJsonArray();
+						for(JsonElement je : ja) {
+							if(!je.isJsonObject()) continue;
+							JsonObject craftComponent = je.getAsJsonObject();
+							String craftItem = craftComponent.get("Item").getAsString();
+							int amountRequired = craftComponent.has("Amount") ? craftComponent.get("Amount").getAsInt() : 1;
 							CustomItem component = MinecraftMMO.getInstance().getItemManager().getItem(craftItem);
 							mr.addItem(component, amountRequired);
 						}
@@ -99,21 +101,22 @@ public class RecipeManager {
 		boolean load = true;
 		
 		// Create a new json config derived from the file and create a new filewriter and bufferedwriter to write to the errors file
-		JsonFileInterpretter config = new JsonFileInterpretter(f);
+		JsonObject config = new JsonFileInterpretter(f).getJson();
 		FileWriter wfw = new FileWriter(getWarnings());
 		BufferedWriter wbw = new BufferedWriter(wfw);
 		
 		CustomItemManager cim = MinecraftMMO.getInstance().getItemManager();
-		String item = config.getString("Product");
+		String item = config.get("Product").getAsString();
 		if(!cim.getCustomItems().containsKey(item)) {
 			wbw.write("[" + f.getName() + "] 'Item' Does not contain a valid CustomItem " + item);
 			wbw.newLine();
 			load = false;
 		}
 		
-		JSONArray ja = config.getArray("Items");
-		for(Object o : ja) {
-			JSONObject craftComponent = (JSONObject)o;
+		JsonArray ja = config.get("Items").getAsJsonArray();
+		for(JsonElement je : ja) {
+			if(!je.isJsonObject()) continue;
+			JsonObject craftComponent = je.getAsJsonObject();
 			String craftItem = craftComponent.get("Item").toString();
 			if(!cim.getCustomItems().containsKey(craftItem)) {
 				wbw.write("[" + f.getName() + "] Does not contain a valid CustomItem " + craftItem + " in Items Array");

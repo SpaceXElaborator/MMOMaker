@@ -2,21 +2,26 @@ package com.terturl.MMO.Util.JSONHelpers;
 
 import java.util.List;
 
-import org.json.simple.JSONArray;
+import com.google.gson.JsonArray;
 
 public class StringHelper {
 
-	@SuppressWarnings("unchecked")
-	public static JSONArray stringListToArray(List<String> li) {
-		JSONArray ja = new JSONArray();
+	public static JsonArray stringListToArray(List<String> li) {
+		JsonArray ja = new JsonArray();
 
 		for (String s : li) {
-			if (ja.contains(s))
-				continue;
+			if (hasValue(ja, s)) continue;
 			ja.add(s);
 		}
 
 		return ja;
 	}
 
+	public static boolean hasValue(JsonArray json, String value) {
+	    for(int i = 0; i < json.size(); i++) {
+	        if(json.get(i).getAsString().equals(value)) return true;
+	    }
+	    return false;
+	}
+	
 }

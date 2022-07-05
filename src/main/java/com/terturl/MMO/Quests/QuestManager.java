@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Bukkit;
-import org.json.simple.JSONObject;
 
+import com.google.gson.JsonObject;
 import com.terturl.MMO.MinecraftMMO;
 import com.terturl.MMO.Util.JsonFileInterpretter;
 
@@ -66,27 +66,35 @@ public class QuestManager {
 				try {
 					if (checkQuest(f)) {
 						Object q = null;
-						JsonFileInterpretter config = new JsonFileInterpretter(f);
-						String name = config.getString("Name");
-						String descString = config.getString("Description");
-						boolean requireTurnIn = config.contains("RequireTurnIn") ? config.getBoolean("RequireTurnIn")
+						JsonObject config = new JsonFileInterpretter(f).getJson();
+						String name = config.get("Name").getAsString();
+						String descString = config.get("Description").getAsString();
+						boolean requireTurnIn = config.has("RequireTurnIn") ? config.get("RequireTurnIn").getAsBoolean()
 								: true;
-						String presentString = config.contains("Present") ? config.getString("Present")
+						String presentString = config.has("Present") ? config.get("Present").getAsString()
 								: "Would you like to ACCEPT or DENY?";
-						String denyString = config.contains("Deny") ? config.getString("Deny")
+						String denyString = config.has("Deny") ? config.get("Deny").getAsString()
 								: "That's Very Sad Traveller";
-						String acceptString = config.contains("Accept") ? config.getString("Accept")
+						String acceptString = config.has("Accept") ? config.get("Accept").getAsString()
 								: "Thank you Traveller!";
-						String type = config.contains("Type") ? config.getString("Type") : "Basic";
-						List<String> questLore = config.contains("Lore") ? config.getStringList("Lore")
-								: new ArrayList<>();
-						List<String> parentQuests = config.contains("Parents") ? config.getStringList("Parents")
-								: new ArrayList<>();
+						String type = config.has("Type") ? config.get("Type").getAsString() : "Basic";
+						List<String> questLore = new ArrayList<>();
+						if(config.has("Lore") && config.get("Lore").isJsonArray()) {
+							config.get("Lore").getAsJsonArray().forEach(e -> {
+								questLore.add(e.getAsString());
+							});
+						}
+						List<String> parentQuests = new ArrayList<>();
+						if(config.has("Parents") && config.get("Parents").isJsonArray()) {
+							config.get("Parents").getAsJsonArray().forEach(e -> {
+								parentQuests.add(e.getAsString());
+							});
+						}
 
 						// Load the quests based on their properties to get around an ugly if/else
 						// if/else block like AbilityManager has
 						q = (Quest) questTypes.get(type).clone();
-						((Quest) q).loadQuest(config.getObject("Properties"));
+						((Quest) q).loadQuest(config.get("Properties").getAsJsonObject());
 						((Quest) q).setName(name);
 						((Quest) q).setLoreForQuest(questLore);
 						((Quest) q).setQuestType(type);
@@ -98,8 +106,8 @@ public class QuestManager {
 						((Quest) q).setParentQuests(parentQuests);
 
 						// Load any rewards if there are any
-						if (config.contains("Rewards")) {
-							loadRewards(config.getObject("Rewards"), (Quest) q);
+						if (config.has("Rewards")) {
+							loadRewards(config.get("Rewards").getAsJsonObject(), (Quest) q);
 						}
 
 						allQuests.add((Quest) q);
@@ -120,7 +128,7 @@ public class QuestManager {
 	 */
 	public void registerQuest(String type, Quest baseClass) {
 		baseClass.setQuestType(type);
-		questTypes.put(type, baseClass);
+		questTypes.put(type.toUpperCase(), baseClass);
 	}
 
 	/**
@@ -146,16 +154,31 @@ public class QuestManager {
 		return allQuests.stream().filter(e -> e.getName().equals(s)).findFirst().orElse(null);
 	}
 
-	private void loadRewards(JSONObject jo, Quest q) {
-		JsonFileInterpretter config = new JsonFileInterpretter(jo);
+	private void loadRewards(JsonObject config, Quest q) {
 
-		List<String> customItems = config.contains("Items") ? config.getStringList("Items") : new ArrayList<>();
-		List<String> questRewards = config.contains("RewardQuests") ? config.getStringList("RewardQuests")
-				: new ArrayList<>();
-		List<String> craftingRecipes = config.contains("CraftingRecipes") ? config.getStringList("CraftingRecipes")
-				: new ArrayList<>();
-		double xp = config.contains("XP") ? config.getDouble("XP") : 0.0;
-		double money = config.contains("Money") ? config.getDouble("Money") : 0.0;
+		List<String> customItems = new ArrayList<>();
+		if(config.has("Items") && config.get("Items").isJsonArray()) {
+			config.get("Items").getAsJsonArray().forEach(e -> {
+				customItems.add(e.getAsString());
+			});
+		}
+		
+		List<String> questRewards = new ArrayList<>();
+		if(config.has("RewardQuests") && config.get("RewardQuests").isJsonArray()) {
+			config.get("RewardQuests").getAsJsonArray().forEach(e -> {
+				questRewards.add(e.getAsString());
+			});
+		}
+
+		List<String> craftingRecipes = new ArrayList<>();
+		if(config.has("CraftingRecipes") && config.get("CraftingRecipes").isJsonArray()) {
+			config.get("CraftingRecipes").getAsJsonArray().forEach(e -> {
+				craftingRecipes.add(e.getAsString());
+			});
+		}
+		
+		double xp = config.has("XP") ? config.get("XP").getAsDouble() : 0.0;
+		double money = config.has("Money") ? config.get("Money").getAsDouble() : 0.0;
 
 		q.setXp(xp);
 		q.setMoney(money);
@@ -167,36 +190,36 @@ public class QuestManager {
 	private boolean checkQuest(File f) throws IOException {
 		boolean load = true;
 
-		JsonFileInterpretter config = new JsonFileInterpretter(f);
+		JsonObject config = new JsonFileInterpretter(f).getJson();
 
 		FileWriter wfw = new FileWriter(getWarnings());
 		BufferedWriter wbw = new BufferedWriter(wfw);
 
-		if (!config.contains("Name")) {
+		if (!config.has("Name")) {
 			wbw.write("[" + f.getName() + "] 'Name' property is not set!");
 			wbw.newLine();
 			load = false;
 		}
 
-		if (!config.contains("Description")) {
+		if (!config.has("Description")) {
 			wbw.write("[" + f.getName() + "] 'Description' property is not set!");
 			wbw.newLine();
 			load = false;
 		}
 
-		if (!questTypes.containsKey(config.getString("Type"))) {
-			wbw.write("[" + f.getName() + "] Has unknown type: " + config.getString("Type"));
+		if (!questTypes.containsKey(config.get("Type").getAsString().toUpperCase())) {
+			wbw.write("[" + f.getName() + "] Has unknown type: " + config.get("Type").getAsString());
 			wbw.newLine();
 			load = false;
 		}
 
-		if (!config.contains("Properties")) {
+		if (!config.has("Properties")) {
 			wbw.write("[" + f.getName() + "] 'Properties' property is not set to load quest information!");
 			wbw.newLine();
 			load = false;
 		}
 
-		if ((Quest) questTypes.get(config.getString("Type")).clone() == null) {
+		if ((Quest) questTypes.get(config.get("Type").getAsString().toUpperCase()).clone() == null) {
 			wbw.write("[" + f.getName() + "] Unable to create new quest. Check clone() method!");
 			wbw.newLine();
 			load = false;

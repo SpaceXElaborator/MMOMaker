@@ -12,8 +12,8 @@ import java.util.Map;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
-import org.json.simple.JSONObject;
 
+import com.google.gson.JsonObject;
 import com.terturl.MMO.MinecraftMMO;
 import com.terturl.MMO.Util.JsonFileInterpretter;
 import com.terturl.MMO.Util.Items.ItemEnums.CraftRarity;
@@ -98,20 +98,26 @@ public class CustomItemManager {
 			for (File f : items.listFiles()) {
 				if (f.getName().endsWith(".json")) {
 					if (checkItemGeneric(f)) {
-						JsonFileInterpretter config = new JsonFileInterpretter(f);
-						String name = config.getString("Name");
-						String friendlyname = config.contains("FriendlyName") ? config.getString("FriendlyName") : name;
-						int itemModelData = config.contains("ItemModelData") ? config.getInt("ItemModelData") : 0;
-						boolean canCraft = config.contains("CanCraft") ? config.getBoolean("CanCraft") : false;
-						boolean craftOnly = config.contains("CraftOnly") ? config.getBoolean("CraftOnly") : false;
-						List<String> lore = config.contains("Lore") ? config.getStringList("Lore") : new ArrayList<>();
-						boolean soulBound = config.contains("SoulBound") ? config.getBoolean("SoulBound") : false;
-						Material mat = Material.getMaterial(config.getString("Item").toUpperCase());
-						Rarity rare = config.contains("Rarity")
-								? Rarity.valueOf(config.getString("Rarity").toUpperCase())
+						JsonObject config = new JsonFileInterpretter(f).getJson();
+						String name = config.get("Name").getAsString();
+						String friendlyname = config.has("FriendlyName") ? config.get("FriendlyName").getAsString() : name;
+						int itemModelData = config.has("ItemModelData") ? config.get("ItemModelData").getAsInt() : 0;
+						boolean canCraft = config.has("CanCraft") ? config.get("CanCraft").getAsBoolean() : false;
+						boolean craftOnly = config.has("CraftOnly") ? config.get("CraftOnly").getAsBoolean() : false;
+						List<String> lore = new ArrayList<>();
+						if(config.has("Lore") && config.get("Lore").isJsonArray()) {
+							config.get("Lore").getAsJsonArray().forEach(e -> {
+								lore.add(e.getAsString());
+							});
+						}
+						
+						boolean soulBound = config.has("SoulBound") ? config.get("SoulBound").getAsBoolean() : false;
+						Material mat = Material.getMaterial(config.get("Item").getAsString().toUpperCase());
+						Rarity rare = config.has("Rarity")
+								? Rarity.valueOf(config.get("Rarity").getAsString().toUpperCase())
 								: Rarity.COMMON;
-						CraftRarity craftRarity = config.contains("CraftRarity")
-								? CraftRarity.valueOf(config.getString("CraftRarity").toUpperCase())
+						CraftRarity craftRarity = config.has("CraftRarity")
+								? CraftRarity.valueOf(config.get("CraftRarity").getAsString().toUpperCase())
 								: CraftRarity.CRUDE;
 						CustomItem ci = new CustomItem(name, mat, itemModelData, rare, craftRarity);
 						ci.setFriendlyName(friendlyname);
@@ -130,33 +136,37 @@ public class CustomItemManager {
 				if (f.getName().endsWith(".json")) {
 					if(checkItemGeneric(f)) {
 						if(checkWeapon(f)) {
-							JsonFileInterpretter config = new JsonFileInterpretter(f);
-							String name = config.getString("Name");
-							String friendlyname = config.contains("FriendlyName") ? config.getString("FriendlyName")
+							JsonObject config = new JsonFileInterpretter(f).getJson();
+							String name = config.get("Name").getAsString();
+							String friendlyname = config.has("FriendlyName") ? config.get("FriendlyName").getAsString()
 									: name.replaceAll("_", " ");
-							Material mat = Material.getMaterial(config.getString("Item").toUpperCase());
-							int customItemModel = config.contains("CustomItemModel") ? config.getInt("CustomItemModel") : 0;
-							Rarity rare = config.contains("Rarity")
-									? Rarity.valueOf(config.getString("Rarity").toUpperCase())
+							Material mat = Material.getMaterial(config.get("Item").getAsString().toUpperCase());
+							int customItemModel = config.has("CustomItemModel") ? config.get("CustomItemModel").getAsInt() : 0;
+							Rarity rare = config.has("Rarity")
+									? Rarity.valueOf(config.get("Rarity").getAsString().toUpperCase())
 									: Rarity.COMMON;
-							CraftRarity craftRarity = config.contains("CraftRarity")
-									? CraftRarity.valueOf(config.getString("CraftRarity").toUpperCase())
+							CraftRarity craftRarity = config.has("CraftRarity")
+									? CraftRarity.valueOf(config.get("CraftRarity").getAsString().toUpperCase())
 									: CraftRarity.CRUDE;
-							SlotType st = config.contains("SlotType") ? SlotType.valueOf(config.getString("SlotType").toUpperCase()) : SlotType.MAIN_HAND;
-							boolean canCraft = config.contains("CanCraft") ? config.getBoolean("CanCraft") : false;
-							boolean craftOnly = config.contains("CraftOnly") ? config.getBoolean("CraftOnly") : false;
-							int itemLevel = config.contains("Level") ? config.getInt("Level") : 1;
-							double itemDurability = config.contains("ItemDurability")
-									? config.getDouble("ItemDurability")
+							SlotType st = config.has("SlotType") ? SlotType.valueOf(config.get("SlotType").getAsString().toUpperCase()) : SlotType.MAIN_HAND;
+							boolean canCraft = config.has("CanCraft") ? config.get("CanCraft").getAsBoolean() : false;
+							boolean craftOnly = config.has("CraftOnly") ? config.get("CraftOnly").getAsBoolean() : false;
+							int itemLevel = config.has("Level") ? config.get("Level").getAsInt() : 1;
+							double itemDurability = config.has("ItemDurability")
+									? config.get("ItemDurability").getAsDouble()
 									: 0.0;
-							double itemMaxDurability = config.contains("ItemMaxDurability")
-									? config.getDouble("ItemMaxDurability")
+							double itemMaxDurability = config.has("ItemMaxDurability")
+									? config.get("ItemMaxDurability").getAsDouble()
 									: 0.0;
-							List<String> lore = config.contains("Lore") ? config.getStringList("Lore")
-									: new ArrayList<>();
-							Map<MMOModifiers, Object> mods = config.contains("Modifiers") ? getModifiers(config.getObject("Modifiers")) : new HashMap<MMOModifiers, Object>();
-							boolean soulBound = config.contains("SoulBound") ? config.getBoolean("SoulBound") : false;
-							boolean ranged = config.contains("Ranged") ? config.getBoolean("Ranged") : false;
+							List<String> lore = new ArrayList<>();
+							if(config.has("Lore") && config.get("Lore").isJsonArray()) {
+								config.get("Lore").getAsJsonArray().forEach(e -> {
+									lore.add(e.getAsString());
+								});
+							}
+							Map<MMOModifiers, Object> mods = (config.has("Modifiers") && (config.get("Modifiers").isJsonObject())) ? getModifiers(config.get("Modifiers").getAsJsonObject()) : new HashMap<MMOModifiers, Object>();
+							boolean soulBound = config.has("SoulBound") ? config.get("SoulBound").getAsBoolean() : false;
+							boolean ranged = config.has("Ranged") ? config.get("Ranged").getAsBoolean() : false;
 							CustomWeapon cw = new CustomWeapon(name, mat, customItemModel, itemLevel, rare, craftRarity, st, ranged);
 							cw.setFriendlyName(friendlyname);
 							cw.setCraftable(canCraft);
@@ -178,35 +188,39 @@ public class CustomItemManager {
 				if (f.getName().endsWith(".json")) {
 					if (checkItemGeneric(f)) {
 						if (checkArmor(f, armor)) {
-							JsonFileInterpretter config = new JsonFileInterpretter(f);
-							String name = config.getString("Name");
-							String friendlyname = config.contains("FriendlyName") ? config.getString("FriendlyName")
+							JsonObject config = new JsonFileInterpretter(f).getJson();
+							String name = config.get("Name").getAsString();
+							String friendlyname = config.has("FriendlyName") ? config.get("FriendlyName").getAsString()
 									: name;
-							Material mat = Material.getMaterial(config.getString("Item").toUpperCase());
-							int customItemModel = config.contains("CustomItemModel") ? config.getInt("CustomItemModel") : 0;
-							Rarity rare = config.contains("Rarity")
-									? Rarity.valueOf(config.getString("Rarity").toUpperCase())
+							Material mat = Material.getMaterial(config.get("Item").getAsString().toUpperCase());
+							int customItemModel = config.has("CustomItemModel") ? config.get("CustomItemModel").getAsInt() : 0;
+							Rarity rare = config.has("Rarity")
+									? Rarity.valueOf(config.get("Rarity").getAsString().toUpperCase())
 									: Rarity.COMMON;
-							CraftRarity craftRarity = config.contains("CraftRarity")
-									? CraftRarity.valueOf(config.getString("CraftRarity").toUpperCase())
+							CraftRarity craftRarity = config.has("CraftRarity")
+									? CraftRarity.valueOf(config.get("CraftRarity").getAsString().toUpperCase())
 									: CraftRarity.CRUDE;
-							SlotType st = SlotType.valueOf(config.getString("SlotType").toUpperCase());
-							boolean canCraft = config.contains("CanCraft") ? config.getBoolean("CanCraft") : false;
-							boolean craftOnly = config.contains("CraftOnly") ? config.getBoolean("CraftOnly") : false;
-							int itemLevel = config.contains("Level") ? config.getInt("Level") : 1;
-							double itemDurability = config.contains("ItemDurability")
-									? config.getDouble("ItemDurability")
+							SlotType st = SlotType.valueOf(config.get("SlotType").getAsString().toUpperCase());
+							boolean canCraft = config.has("CanCraft") ? config.get("CanCraft").getAsBoolean() : false;
+							boolean craftOnly = config.has("CraftOnly") ? config.get("CraftOnly").getAsBoolean() : false;
+							int itemLevel = config.has("Level") ? config.get("Level").getAsInt() : 1;
+							double itemDurability = config.has("ItemDurability")
+									? config.get("ItemDurability").getAsDouble()
 									: 0.0;
-							double itemMaxDurability = config.contains("ItemMaxDurability")
-									? config.getDouble("ItemMaxDurability")
+							double itemMaxDurability = config.has("ItemMaxDurability")
+									? config.get("ItemMaxDurability").getAsDouble()
 									: 0.0;
-							List<String> lore = config.contains("Lore") ? config.getStringList("Lore")
-									: new ArrayList<>();
-							boolean soulBound = config.contains("SoulBound") ? config.getBoolean("SoulBound") : false;
-							Color c = config.contains("Color")
-									? StringUtils.getColorFromString(config.getString("Color"))
+							List<String> lore = new ArrayList<>();
+							if(config.has("Lore") && config.get("Lore").isJsonArray()) {
+								config.get("Lore").getAsJsonArray().forEach(e -> {
+									lore.add(e.getAsString());
+								});
+							}
+							boolean soulBound = config.has("SoulBound") ? config.get("SoulBound").getAsBoolean() : false;
+							Color c = config.has("Color")
+									? StringUtils.getColorFromString(config.get("Color").getAsString())
 									: null;
-							Map<MMOModifiers, Object> mods = config.contains("Modifiers") ? getModifiers(config.getObject("Modifiers")) : new HashMap<MMOModifiers, Object>();
+							Map<MMOModifiers, Object> mods = (config.has("Modifiers") && (config.get("Modifiers").isJsonObject())) ? getModifiers(config.get("Modifiers").getAsJsonObject()) : new HashMap<MMOModifiers, Object>();
 							CustomArmor ci = new CustomArmor(name, mat, customItemModel, itemLevel, rare, craftRarity, st);
 							ci.setFriendlyName(friendlyname);
 							ci.setCraftable(canCraft);
@@ -236,20 +250,19 @@ public class CustomItemManager {
 		return null;
 	}
 	
-	private Map<MMOModifiers, Object> getModifiers(JSONObject jo) {
-		JsonFileInterpretter config = new JsonFileInterpretter(jo);
+	private Map<MMOModifiers, Object> getModifiers(JsonObject config) {
 		Map<MMOModifiers, Object> mapping = new HashMap<MMOModifiers, Object>();
 		
-		if(config.contains("Health")) {
-			mapping.put(MMOModifiers.HEALTH, jo.get("Health"));
+		if(config.has("Health")) {
+			mapping.put(MMOModifiers.HEALTH, config.get("Health").getAsDouble());
 		}
 		
-		if(config.contains("Damage")) {
-			mapping.put(MMOModifiers.DAMAGE, jo.get("Damage"));
+		if(config.has("Damage")) {
+			mapping.put(MMOModifiers.DAMAGE, config.get("Damage").getAsDouble());
 		}
 		
-		if(config.contains("Armor")) {
-			mapping.put(MMOModifiers.DEFENSE, jo.get("Armor"));
+		if(config.has("Armor")) {
+			mapping.put(MMOModifiers.DEFENSE, config.get("Armor").getAsDouble());
 		}
 		
 		return mapping;
@@ -258,13 +271,13 @@ public class CustomItemManager {
 	private boolean checkWeapon(File f) throws IOException {
 		boolean load = true;
 		
-		JsonFileInterpretter config = new JsonFileInterpretter(f);
+		JsonObject config = new JsonFileInterpretter(f).getJson();
 		
 		FileWriter wfw = new FileWriter(getWarnings());
 		BufferedWriter wbw = new BufferedWriter(wfw);
 		
-		if(config.contains("SlotType")) {
-			SlotType slotType = SlotType.valueOf(config.getString("SlotType").toUpperCase());
+		if(config.has("SlotType")) {
+			SlotType slotType = SlotType.valueOf(config.get("SlotType").getAsString().toUpperCase());
 			if(slotType != SlotType.OFF_HAND || slotType != SlotType.MAIN_HAND) {
 				wbw.write("[" + f.getName() + "] 'SlotType' Must be Off_Hand or Main_Hand!");
 				wbw.newLine();
@@ -280,17 +293,17 @@ public class CustomItemManager {
 	private boolean checkArmor(File f, List<Material> armor) throws IOException {
 		boolean load = true;
 		boolean wrongSlot = false;
-		JsonFileInterpretter config = new JsonFileInterpretter(f);
+		JsonObject config = new JsonFileInterpretter(f).getJson();
 
 		FileWriter wfw = new FileWriter(getWarnings());
 		BufferedWriter wbw = new BufferedWriter(wfw);
 
-		Material mat = Material.valueOf(config.getString("Item").toUpperCase());
+		Material mat = Material.valueOf(config.get("Item").getAsString().toUpperCase());
 
-		if (config.contains("SlotType")) {
-			SlotType slotType = SlotType.valueOf(config.getString("SlotType").toUpperCase());
+		if (config.has("SlotType")) {
+			SlotType slotType = SlotType.valueOf(config.get("SlotType").getAsString().toUpperCase());
 
-			if (config.contains("Color")) {
+			if (config.has("Color")) {
 				boolean isLeather = false;
 				for (Material leth : leather) {
 					if (mat.equals(leth)) {
@@ -375,25 +388,25 @@ public class CustomItemManager {
 	private boolean checkItemGeneric(File f) throws IOException {
 		boolean load = true;
 
-		JsonFileInterpretter config = new JsonFileInterpretter(f);
+		JsonObject config = new JsonFileInterpretter(f).getJson();
 
 		FileWriter wfw = new FileWriter(getWarnings());
 		BufferedWriter wbw = new BufferedWriter(wfw);
 
-		if (!config.contains("Name")) {
+		if (!config.has("Name")) {
 			wbw.write("[" + f.getName() + "] 'name' property is not set!");
 			wbw.newLine();
 			load = false;
 		}
 
-		if (!config.contains("Item")) {
+		if (!config.has("Item")) {
 			wbw.write("[" + f.getName() + "] 'Item' property is not set!");
 			wbw.newLine();
 			load = false;
 		}
 
-		if (config.contains("CustomItemModel")) {
-			Integer damage = StringUtils.isInt(config.getString("CustomItemModel")) ? config.getInt("CustomItemModel")
+		if (config.has("CustomItemModel")) {
+			Integer damage = StringUtils.isInt(config.get("CustomItemModel").getAsString()) ? config.get("CustomItemModel").getAsInt()
 					: null;
 			if (damage == null) {
 				wbw.write("[" + f.getName() + "] 'Durability' MUST be a number!");
@@ -402,8 +415,8 @@ public class CustomItemManager {
 			}
 		}
 
-		if (config.contains("Level")) {
-			Integer level = StringUtils.isInt(config.getString("Level")) ? config.getInt("Level") : null;
+		if (config.has("Level")) {
+			Integer level = StringUtils.isInt(config.get("Level").getAsString()) ? config.get("Level").getAsInt() : null;
 			if (level == null) {
 				wbw.write("[" + f.getName() + "] 'Level' MUST be a number!");
 				wbw.newLine();
@@ -411,29 +424,29 @@ public class CustomItemManager {
 			}
 		}
 
-		if (config.contains("Rarity")) {
-			String s = Rarity.exists(config.getString("Rarity")) ? config.getString("Rarity").toUpperCase() : null;
+		if (config.has("Rarity")) {
+			String s = Rarity.exists(config.get("Rarity").getAsString().toUpperCase()) ? config.get("Rarity").getAsString().toUpperCase() : null;
 			if (s == null) {
-				wbw.write("[" + f.getName() + "] Rarity: " + config.getString("Rarity") + " does not exist!");
+				wbw.write("[" + f.getName() + "] Rarity: " + config.get("Rarity").getAsString() + " does not exist!");
 				wbw.newLine();
 				load = false;
 			}
 		}
 		
-		if (config.contains("CraftRarity")) {
-			String s = CraftRarity.exists(config.getString("CraftRarity")) ? config.getString("CraftRarity").toUpperCase() : null;
+		if (config.has("CraftRarity")) {
+			String s = CraftRarity.exists(config.get("CraftRarity").getAsString().toUpperCase()) ? config.get("CraftRarity").getAsString().toUpperCase() : null;
 			if (s == null) {
-				wbw.write("[" + f.getName() + "] CraftRarity: " + config.getString("CraftRarity") + " does not exist!");
+				wbw.write("[" + f.getName() + "] CraftRarity: " + config.get("CraftRarity").getAsString() + " does not exist!");
 				wbw.newLine();
 				load = false;
 			}
 		}
 
-		if (config.contains("SlotType")) {
-			String s = SlotType.exists(config.getString("SlotType")) ? config.getString("SlotType").toUpperCase()
+		if (config.has("SlotType")) {
+			String s = SlotType.exists(config.get("SlotType").getAsString().toUpperCase()) ? config.get("SlotType").getAsString().toUpperCase()
 					: null;
 			if (s == null) {
-				wbw.write("[" + f.getName() + "] Slot Type: " + config.getString("SlotType") + " does not exist!");
+				wbw.write("[" + f.getName() + "] Slot Type: " + config.get("SlotType").getAsString() + " does not exist!");
 				wbw.newLine();
 				load = false;
 			}

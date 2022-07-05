@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
@@ -19,12 +19,13 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.inventory.ItemStack;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
 import com.google.common.base.Objects;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.terturl.MMO.MinecraftMMO;
 import com.terturl.MMO.Entity.NPC.NPC;
 import com.terturl.MMO.Entity.NPC.NPC.ItemSlot;
@@ -165,7 +166,6 @@ public class PlayerHandler {
 	 * 
 	 * @param p Player to load
 	 */
-	@SuppressWarnings("unchecked")
 	public void loadPlayer(Player p) {
 		p.getInventory().clear();
 		p.updateInventory();
@@ -173,20 +173,20 @@ public class PlayerHandler {
 		// Get the players file based on their UUID
 		File f = new File(playersFolder, p.getUniqueId() + ".json");
 		MMOPlayer mp = new MMOPlayer(p);
-		JsonFileInterpretter config = new JsonFileInterpretter(f);
+		JsonObject config = new JsonFileInterpretter(f).getJson();
 
 		// Load all of their MMOClasses into their MMOClasses list
-		JSONObject jo = config.getObject("Classes");
-		jo.forEach((k, v) -> {
-			JSONObject clazz = (JSONObject) jo.get(k.toString());
-			int level = Integer.valueOf(clazz.get("Level").toString());
-			Location loc = LocationUtils.locationDeSerializer(clazz.get("Location").toString());
-			double mon = Double.valueOf(clazz.get("Currency").toString());
-			double xp = Double.valueOf(clazz.get("XP").toString());
-			double damage = Double.valueOf(clazz.get("Damage").toString());
-			double defense = Double.valueOf(clazz.get("Defense").toString());
+		JsonObject jo = config.get("Classes").getAsJsonObject();
+		for(Entry<String, JsonElement> entries : jo.entrySet()) {
+			JsonObject clazz = entries.getValue().getAsJsonObject();
+			int level = clazz.get("Level").getAsInt();
+			Location loc = LocationUtils.locationDeSerializer(clazz.get("Location").getAsString());
+			double mon = clazz.get("Currency").getAsDouble();
+			double xp = clazz.get("XP").getAsDouble();
+			double damage = clazz.get("Damage").getAsDouble();
+			double defense = clazz.get("Defense").getAsDouble();
 			MMOClass mc = (MMOClass) MinecraftMMO.getInstance().getClassHandler()
-					.getClass(clazz.get("Class").toString()).clone();
+					.getClass(clazz.get("Class").getAsString()).clone();
 			mc.setMoney(mon);
 			mc.setLevel(level);
 			mc.setClassLocation(loc);
@@ -195,12 +195,12 @@ public class PlayerHandler {
 			mc.setArmor(defense);
 
 			// Get their crafting skill
-			JSONObject craftSkill = (JSONObject) clazz.get("CraftingSkill");
-			mc.getCraftSkill().setLevel(Integer.valueOf(craftSkill.get("Level").toString()));
-			mc.getCraftSkill().setXp(Double.parseDouble(craftSkill.get("XP").toString()));
+			JsonObject craftSkill = clazz.get("CraftingSkill").getAsJsonObject();
+			mc.getCraftSkill().setLevel(craftSkill.get("Level").getAsInt());
+			mc.getCraftSkill().setXp(craftSkill.get("XP").getAsDouble());
 
 			// Get all MMORecipes and add it to that MMOClasses list
-			JSONArray craftingRecipes = (JSONArray) clazz.get("CraftingRecipes");
+			JsonArray craftingRecipes = clazz.get("CraftingRecipes").getAsJsonArray();
 			craftingRecipes.forEach(e -> {
 				String recipe = e.toString();
 				if (MinecraftMMO.getInstance().getRecipeManager().getRecipeByName(recipe) == null) {
@@ -214,7 +214,7 @@ public class PlayerHandler {
 			});
 
 			// Load all Abilities that MMOClass has into their playerAbilities list
-			JSONArray playerAbilities = (JSONArray) clazz.get("PlayerAbilities");
+			JsonArray playerAbilities = clazz.get("PlayerAbilities").getAsJsonArray();
 			playerAbilities.forEach(e -> {
 				String ability = e.toString();
 				if (!MinecraftMMO.getInstance().getAbilityManager().getAbilities().containsKey(ability)) {
@@ -228,16 +228,16 @@ public class PlayerHandler {
 			});
 
 			// Load all active quests
-			JSONArray active = (JSONArray) clazz.get("Active");
+			JsonArray active = clazz.get("Active").getAsJsonArray();
 			active.forEach(e -> {
-				JSONObject inProg = (JSONObject) e;
+				JsonObject inProg = e.getAsJsonObject();
 				if (mc.getActiveQuests()
-						.contains(MinecraftMMO.getInstance().getQuestManager().getQuest(inProg.get("Name").toString())))
+						.contains(MinecraftMMO.getInstance().getQuestManager().getQuest(inProg.get("Name").getAsString())))
 					return;
-				Object q = MinecraftMMO.getInstance().getQuestManager().getQuest(inProg.get("Name").toString()).clone();
+				Object q = MinecraftMMO.getInstance().getQuestManager().getQuest(inProg.get("Name").getAsString()).clone();
 
-				if (inProg.containsKey("Properties")) {
-					JSONObject questProperties = (JSONObject) inProg.get("Properties");
+				if (inProg.has("Properties")) {
+					JsonObject questProperties = inProg.get("Properties").getAsJsonObject();
 					((Quest) q).loadQuestToPlayer(questProperties);
 				}
 
@@ -245,7 +245,7 @@ public class PlayerHandler {
 			});
 
 			// Load all completable quests
-			JSONArray completable = (JSONArray) clazz.get("Completable");
+			JsonArray completable = clazz.get("Completable").getAsJsonArray();
 			completable.forEach(e -> {
 				if (mc.getCompletedableQuests().contains(e.toString()))
 					return;
@@ -253,7 +253,7 @@ public class PlayerHandler {
 			});
 
 			// Load all completed quests
-			JSONArray completed = (JSONArray) clazz.get("Completed");
+			JsonArray completed = clazz.get("Completed").getAsJsonArray();
 			completed.forEach(e -> {
 				if (mc.getCompletedQuests().contains(e.toString()))
 					return;
@@ -261,21 +261,21 @@ public class PlayerHandler {
 			});
 
 			// Load the MMOClasses inventory back to the state they saved it as
-			JSONObject inv = (JSONObject) clazz.get("Inventory");
+			JsonObject inv = clazz.get("Inventory").getAsJsonObject();
 
-			mc.setHelmet(ItemUtils.JSONToItem((JSONObject) inv.get("Helmet")).getName());
-			mc.setChest(ItemUtils.JSONToItem((JSONObject) inv.get("Chestplate")).getName());
-			mc.setLegs(ItemUtils.JSONToItem((JSONObject) inv.get("Leggings")).getName());
-			mc.setBoots(ItemUtils.JSONToItem((JSONObject) inv.get("Boots")).getName());
-			mc.setMainH(ItemUtils.JSONToItem((JSONObject) inv.get("MainHand")).getName());
-			mc.setOffH(ItemUtils.JSONToItem((JSONObject) inv.get("OffHand")).getName());
+			mc.setHelmet(ItemUtils.JSONToItem(inv.get("Helmet").getAsJsonObject()).getName());
+			mc.setChest(ItemUtils.JSONToItem(inv.get("Chestplate").getAsJsonObject()).getName());
+			mc.setLegs(ItemUtils.JSONToItem(inv.get("Leggings").getAsJsonObject()).getName());
+			mc.setBoots(ItemUtils.JSONToItem(inv.get("Boots").getAsJsonObject()).getName());
+			mc.setMainH(ItemUtils.JSONToItem(inv.get("MainHand").getAsJsonObject()).getName());
+			mc.setOffH(ItemUtils.JSONToItem(inv.get("OffHand").getAsJsonObject()).getName());
 
-			mc.setMaxHealth(Double.parseDouble(clazz.get("MaxHealth").toString()));
-			mc.setHealth(Double.parseDouble(clazz.get("Health").toString()));
-			mc.setMana(Double.parseDouble(clazz.get("Mana").toString()));
+			mc.setMaxHealth(clazz.get("MaxHealth").getAsDouble());
+			mc.setHealth(clazz.get("Health").getAsDouble());
+			mc.setMana(clazz.get("Mana").getAsDouble());
 			
 			mp.getMmoClasses().add(mc);
-		});
+		}
 
 		// Create an NPC that has the same armor and weapons as the MMOClass and look at
 		// the player when they load in to select them for their MMOClass
@@ -340,7 +340,6 @@ public class PlayerHandler {
 	 * 
 	 * @param p Player to save
 	 */
-	@SuppressWarnings("unchecked")
 	public void savePlayerInfo(Player p) {
 		MMOPlayer mp = MinecraftMMO.getInstance().getPlayerHandler().getPlayer(p);
 
@@ -355,26 +354,24 @@ public class PlayerHandler {
 				e.printStackTrace();
 			}
 
-			JSONObject jo = new JSONObject();
-			JSONObject classes = new JSONObject();
+			JsonObject jo = new JsonObject();
+			JsonObject classes = new JsonObject();
 			int i = 1;
 
 			// TODO: Fix this on a per class basis. Since right now all classes with have
 			// the exact same item all the time
 			for (MMOClass mc : mp.getMmoClasses()) {
 				if (mc.equals(mp.getMmoClasses().get(mp.getCurrentCharacter()))) {
-					classes.put("Class" + String.valueOf(i), saveClassInformation(p, mc));
+					classes.add("Class" + String.valueOf(i), saveClassInformation(p, mc));
 				}
 				i++;
 			}
 
 			// Save the classes JSON object and then format it in a nice 4 tabbed space JSON
 			// string
-			jo.put("Classes", classes);
-			TreeMap<String, Object> treeMap = new TreeMap<String, Object>(String.CASE_INSENSITIVE_ORDER);
-			treeMap.putAll(jo);
+			jo.add("Classes", classes);
 			Gson g = new GsonBuilder().setPrettyPrinting().create();
-			String prettyJson = g.toJson(treeMap);
+			String prettyJson = g.toJson(jo);
 			try {
 				FileWriter fw = new FileWriter(f);
 				fw.write(prettyJson);
@@ -423,9 +420,8 @@ public class PlayerHandler {
 		return players.stream().filter(e -> e.getPlayerUUID().equals(p.getUniqueId())).findFirst().orElse(null);
 	}
 
-	@SuppressWarnings("unchecked")
-	private JSONObject saveClassInformation(Player p, MMOClass mc) {
-		JSONObject clazz = new JSONObject();
+	private JsonObject saveClassInformation(Player p, MMOClass mc) {
+		JsonObject clazz = new JsonObject();
 		String s = mc.getName();
 		String loc = LocationUtils.locationSerializer(mc.getClassLocation());
 		int level = mc.getLevel();
@@ -434,74 +430,73 @@ public class PlayerHandler {
 		double damage = mc.getDamage();
 		double defense = mc.getArmor();
 
-		clazz.put("Class", s);
-		clazz.put("Level", level);
-		clazz.put("XP", xp);
-		clazz.put("Currency", mon);
-		clazz.put("Location", loc);
-		clazz.put("Damage", damage);
-		clazz.put("Defense", defense);
+		clazz.addProperty("Class", s);
+		clazz.addProperty("Level", level);
+		clazz.addProperty("XP", xp);
+		clazz.addProperty("Currency", mon);
+		clazz.addProperty("Location", loc);
+		clazz.addProperty("Damage", damage);
+		clazz.addProperty("Defense", defense);
 
 		// Save the players Crafting Skill
 		CraftingSkill ck = mc.getCraftSkill();
-		JSONObject craftSkill = new JSONObject();
-		craftSkill.put("Level", ck.getLevel());
-		craftSkill.put("XP", ck.getXp());
+		JsonObject craftSkill = new JsonObject();
+		craftSkill.addProperty("Level", ck.getLevel());
+		craftSkill.addProperty("XP", ck.getXp());
 
 		// Save all MMORecipes the MMOClass has
-		JSONArray craftingRecipes = StringHelper.stringListToArray(mc.getCraftingRecipes());
+		JsonArray craftingRecipes = StringHelper.stringListToArray(mc.getCraftingRecipes());
 		// Save all Abilities the MMOClass has
-		JSONArray playerAbilities = StringHelper.stringListToArray(mc.getPlayerAbilities());
+		JsonArray playerAbilities = StringHelper.stringListToArray(mc.getPlayerAbilities());
 		// Save all Completed Quests the MMOClass has
-		JSONArray completed = StringHelper.stringListToArray(mc.getCompletedQuests());
+		JsonArray completed = StringHelper.stringListToArray(mc.getCompletedQuests());
 		// Save all Completable Quests the MMOClass has
-		JSONArray completable = StringHelper.stringListToArray(mc.getCompletedableQuests());
+		JsonArray completable = StringHelper.stringListToArray(mc.getCompletedableQuests());
 
 		// Save all Active Quests the MMOClass has
-		JSONArray inProg = new JSONArray();
+		JsonArray inProg = new JsonArray();
 		for (Quest q : mc.getActiveQuests()) {
-			if (inProg.contains(q.getName()))
-				continue;
+			if(StringHelper.hasValue(inProg, q.getName())) continue;
 			// Save the current progress on that Quest into the Quests properties
-			JSONObject questJO = new JSONObject();
-			questJO.put("Name", q.getName());
-			JSONObject questProperties = q.saveQuest();
+			JsonObject questJO = new JsonObject();
+			questJO.addProperty("Name", q.getName());
+			JsonObject questProperties = q.saveQuest();
 			if (questProperties != null)
-				questJO.put("Properties", q.saveQuest());
+				questJO.add("Properties", q.saveQuest());
 			inProg.add(questJO);
 		}
 
-		clazz.put("CraftingSkill", craftSkill);
-		clazz.put("CraftingRecipes", craftingRecipes);
-		clazz.put("PlayerAbilities", playerAbilities);
-		clazz.put("Completed", completed);
-		clazz.put("Completable", completable);
-		clazz.put("Active", inProg);
+		clazz.add("CraftingSkill", craftSkill);
+		clazz.add("CraftingRecipes", craftingRecipes);
+		clazz.add("PlayerAbilities", playerAbilities);
+		clazz.add("Completed", completed);
+		clazz.add("Completable", completable);
+		clazz.add("Active", inProg);
 
 		// Save each slot the player has, if it is null, set it as the default item
 		// MMO_ITEM_EMPTY_SLOT_ITEM
-		JSONObject inv = new JSONObject();
+		JsonObject inv = new JsonObject();
 		CustomItemManager cim = MinecraftMMO.getInstance().getItemManager();
-		inv.put("Helmet", (p.getInventory().getHelmet() != null) ? ItemUtils.itemToJSON(cim.getItem(mc.getHelmet()))
+		inv.add("Helmet", (p.getInventory().getHelmet() != null) ? ItemUtils.itemToJSON(cim.getItem(mc.getHelmet()))
 				: ItemUtils.itemToJSON(cim.getItem("MMO_ITEM_EMPTY_SLOT_ITEM")));
-		inv.put("Chestplate",
+		inv.add("Chestplate",
 				(p.getInventory().getChestplate() != null) ? ItemUtils.itemToJSON(cim.getItem(mc.getChest()))
 						: ItemUtils.itemToJSON(cim.getItem("MMO_ITEM_EMPTY_SLOT_ITEM")));
-		inv.put("Leggings", (p.getInventory().getLeggings() != null) ? ItemUtils.itemToJSON(cim.getItem(mc.getLegs()))
+		inv.add("Leggings", (p.getInventory().getLeggings() != null) ? ItemUtils.itemToJSON(cim.getItem(mc.getLegs()))
 				: ItemUtils.itemToJSON(cim.getItem("MMO_ITEM_EMPTY_SLOT_ITEM")));
-		inv.put("Boots", (p.getInventory().getBoots() != null) ? ItemUtils.itemToJSON(cim.getItem(mc.getBoots()))
+		inv.add("Boots", (p.getInventory().getBoots() != null) ? ItemUtils.itemToJSON(cim.getItem(mc.getBoots()))
 				: ItemUtils.itemToJSON(cim.getItem("MMO_ITEM_EMPTY_SLOT_ITEM")));
-		inv.put("MainHand", (p.getInventory().getItem(0) != null) ? ItemUtils.itemToJSON(cim.getItem(mc.getMainH()))
+		inv.add("MainHand", (p.getInventory().getItem(0) != null) ? ItemUtils.itemToJSON(cim.getItem(mc.getMainH()))
 				: ItemUtils.itemToJSON(cim.getItem("MMO_ITEM_EMPTY_SLOT_ITEM")));
-		inv.put("OffHand", (p.getInventory().getItem(1) != null) ? ItemUtils.itemToJSON(cim.getItem(mc.getOffH()))
+		inv.add("OffHand", (p.getInventory().getItem(1) != null) ? ItemUtils.itemToJSON(cim.getItem(mc.getOffH()))
 				: ItemUtils.itemToJSON(cim.getItem("MMO_ITEM_EMPTY_SLOT_ITEM")));
-		clazz.put("Inventory", inv);
+		clazz.add("Inventory", inv);
 
-		clazz.put("MaxHealth", mc.getMaxHealth());
-		clazz.put("Health", p.getHealth());
-		clazz.put("Mana", mc.getMana());
-		clazz.put("Defense", mc.getArmor());
-		clazz.put("Damage", mc.getDamage());
+		clazz.addProperty("MaxHealth", mc.getMaxHealth());
+		clazz.addProperty("Health", p.getHealth());
+		clazz.addProperty("Mana", mc.getMana());
+		clazz.addProperty("Defense", mc.getArmor());
+		clazz.addProperty("Damage", mc.getDamage());
 		
 		return clazz;
 	}

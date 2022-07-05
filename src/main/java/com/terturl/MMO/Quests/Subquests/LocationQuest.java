@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.json.simple.JSONObject;
 
+import com.google.gson.JsonObject;
 import com.terturl.MMO.Quests.Quest;
 import com.terturl.MMO.Util.JSONHelpers.LocationUtils;
 
@@ -58,18 +58,18 @@ public class LocationQuest extends Quest {
 	}
 
 	@Override
-	public JSONObject saveQuest() {
+	public JsonObject saveQuest() {
 		return null;
 	}
 
 	@Override
-	public void loadQuestToPlayer(JSONObject jo) {
+	public void loadQuestToPlayer(JsonObject jo) {
 		return;
 	}
 
 	@Override
-	public void loadQuest(JSONObject jo) {
-		setLoc(LocationUtils.locationDeSerializer(jo.get("Location").toString()));
+	public void loadQuest(JsonObject jo) {
+		setLoc(LocationUtils.locationDeSerializer(jo.get("Location").getAsString()));
 	}
 	
 }

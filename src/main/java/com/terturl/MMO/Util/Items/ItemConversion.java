@@ -2,12 +2,10 @@ package com.terturl.MMO.Util.Items;
 
 import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.terturl.MMO.MinecraftMMO;
-import com.terturl.MMO.Util.JsonFileInterpretter;
 import com.terturl.MMO.Util.Items.ItemEnums.SlotType;
 
 import net.minecraft.nbt.NBTTagCompound;
@@ -16,25 +14,23 @@ public class ItemConversion {
 	
 	public static CustomItem SpigotToMMOItem(ItemStack is) {
 		if(!isCustomItem(is)) return null;
-		JSONObject json = getCustomItemJSON(is);
-		if(json == null) return null;
-		JsonFileInterpretter itemInformation = new JsonFileInterpretter(json);
-		if(!itemInformation.contains("name")) return null;
-		return MinecraftMMO.getInstance().getItemManager().getItem(itemInformation.getString("name"));
+		JsonObject itemInformation = getCustomItemJSON(is);
+		if(itemInformation == null) return null;
+		if(!itemInformation.has("name")) return null;
+		return MinecraftMMO.getInstance().getItemManager().getItem(itemInformation.get("name").getAsString());
 	}
 	
 	public static MMOEquipable SpigotToMMOEquipable(ItemStack is) {
 		if(!isCustomItem(is)) return null;
-		JSONObject json = getCustomItemJSON(is);
-		if(json == null) return null;
-		JsonFileInterpretter itemInformation = new JsonFileInterpretter(json);
-		if(!itemInformation.contains("name")) return null;
-		if(!itemInformation.contains("slotType")) return null;
+		JsonObject itemInformation = getCustomItemJSON(is);
+		if(itemInformation == null) return null;
+		if(!itemInformation.has("name")) return null;
+		if(!itemInformation.has("slotType")) return null;
 		
-		SlotType st = SlotType.valueOf(itemInformation.getString("slotType"));
+		SlotType st = SlotType.valueOf(itemInformation.get("slotType").getAsString().toUpperCase());
 		if(st == SlotType.DROP || st == SlotType.ITEM || st == SlotType.TRINKET) return null;
 		
-		MMOEquipable equip = (MMOEquipable) MinecraftMMO.getInstance().getItemManager().getItem(itemInformation.getString("name"));
+		MMOEquipable equip = (MMOEquipable) MinecraftMMO.getInstance().getItemManager().getItem(itemInformation.get("name").getAsString());
 		
 		return equip;
 	}
@@ -50,23 +46,17 @@ public class ItemConversion {
 		return true;
 	}
 	
-	public static JSONObject getCustomItemJSON(ItemStack is) {
+	public static JsonObject getCustomItemJSON(ItemStack is) {
 		if(!isCustomItem(is)) return null;
 		net.minecraft.world.item.ItemStack stack = CraftItemStack.asNMSCopy(is);
 		NBTTagCompound tag = stack.getTag();
 		// Make sure it has values and read them
 		if(!tag.hasKey("CustomItemValues")) return null;
-		JSONParser js = new JSONParser();
-		JSONObject json = null;
-		try {
-			json = (JSONObject) js.parse(tag.getString("CustomItemValues"));
-		} catch (ParseException e1) {
-			e1.printStackTrace();
-		}
+		JsonObject itemInformation = new Gson().fromJson(tag.getString("CustomItemValues"), JsonObject.class);
 		
 		// Make sure the name and slotType values are present
-		if(json == null) return null;
-		return json;
+		if(itemInformation == null) return null;
+		return itemInformation;
 	}
 	
 }

@@ -11,6 +11,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
 import com.google.common.base.Objects;
+import com.google.gson.JsonObject;
 import com.terturl.MMO.MinecraftMMO;
 import com.terturl.MMO.Util.JsonFileInterpretter;
 import com.terturl.MMO.Util.JSONHelpers.LocationUtils;
@@ -45,12 +46,19 @@ public class NPCManager {
 			npcDir.mkdir();
 		for (File f : npcDir.listFiles()) {
 			if (f.getName().endsWith(".json")) {
-				JsonFileInterpretter config = new JsonFileInterpretter(f);
-				String name = config.getString("Name");
-				UUID skin = config.contains("SkinUUID") ? UUID.fromString(config.getString("SkinUUID")) : null;
-				Location loc = LocationUtils.locationDeSerializer(config.getString("Location"));
-				String idleString = config.contains("IdleString") ? config.getString("IdleString") : "Hello Player";
-				List<String> quests = config.contains("Quests") ? config.getStringList("Quests") : new ArrayList<>();
+				JsonObject config = new JsonFileInterpretter(f).getJson();
+				String name = config.get("Name").getAsString();
+				UUID skin = config.has("SkinUUID") ? UUID.fromString(config.get("SkinUUID").getAsString()) : null;
+				Location loc = LocationUtils.locationDeSerializer(config.get("Location").getAsString());
+				String idleString = config.has("IdleString") ? config.get("IdleString").getAsString() : "Hello Player";
+				
+				List<String> quests = new ArrayList<>();
+				if(config.has("Quests") && config.get("Quests").isJsonArray()) {
+					config.get("Quests").getAsJsonArray().forEach(e -> {
+						quests.add(e.getAsString());
+					});
+				}
+				
 				NPC npc = new NPC(loc, name);
 				if (skin != null) {
 					npcSkin.put(name, skin.toString());

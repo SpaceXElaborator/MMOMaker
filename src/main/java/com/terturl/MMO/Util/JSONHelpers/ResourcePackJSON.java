@@ -1,8 +1,7 @@
 package com.terturl.MMO.Util.JSONHelpers;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.terturl.MMO.MMOEntity.ResourcePack.Elements.Cube;
 import com.terturl.MMO.MMOEntity.ResourcePack.Elements.Display;
 import com.terturl.MMO.MMOEntity.ResourcePack.Elements.Face;
@@ -20,86 +19,83 @@ import com.terturl.MMO.MMOEntity.ResourcePack.Elements.Rotation;
  */
 public class ResourcePackJSON {
 
-	@SuppressWarnings("unchecked")
-	public static JSONObject cubeToJSON(Cube c) {
-		JSONObject jo = new JSONObject();
-		jo.put("name", c.getName());
+	public static JsonObject cubeToJSON(Cube c) {
+		JsonObject jo = new JsonObject();
+		jo.addProperty("name", c.getName());
 		
-		JSONArray from = new JSONArray();
-		for(Double d : c.getFrom()) {
+		JsonArray from = new JsonArray();
+		for(double d : c.getFrom()) {
 			from.add(d);
 		}
-		jo.put("from", from);
+		jo.add("from", from);
 		
-		JSONArray to = new JSONArray();
-		for(Double d : c.getTo()) {
+		JsonArray to = new JsonArray();
+		for(double d : c.getTo()) {
 			to.add(d);
 		}
-		jo.put("to", to);
+		jo.add("to", to);
 		
-		jo.put("rotation", rotationToJSON(c.getRotation()));
+		jo.add("rotation", rotationToJSON(c.getRotation()));
 		
-		JSONObject faces = new JSONObject();
+		JsonObject faces = new JsonObject();
+		
 		c.getFaces().forEach((k, v)-> {
-			faces.put(k, faceToJSON(v));
+			faces.add(k, faceToJSON(v));
 		});
-		jo.put("faces", faces);
+		jo.add("faces", faces);
 		
 		return jo;
 	}
 	
-	@SuppressWarnings("unchecked")
-	public static JSONObject faceToJSON(Face face) {
-		JSONObject jo = new JSONObject();
+	public static JsonObject faceToJSON(Face face) {
+		JsonObject jo = new JsonObject();
 		
-		JSONArray uv = new JSONArray();
-		for(Double d : face.getUv()) {
+		JsonArray uv = new JsonArray();
+		for(double d : face.getUv()) {
 			uv.add(d);
 		}
-		jo.put("uv", uv);
-		jo.put("rotation", face.getRotation());
-		jo.put("texture", face.getTexture());
-		jo.put("tintindex", face.getTintindex());
+		jo.add("uv", uv);
+		jo.addProperty("rotation", face.getRotation());
+		jo.addProperty("texture", face.getTexture());
+		jo.addProperty("tintindex", face.getTintindex());
 		
 		return jo;
 	}
 	
-	@SuppressWarnings("unchecked")
-	public static JSONObject displayToJSON(Display dis) {
-		JSONObject jo = new JSONObject();
+	public static JsonObject displayToJSON(Display dis) {
+		JsonObject jo = new JsonObject();
 		
-		JSONArray translation = new JSONArray();
+		JsonArray translation = new JsonArray();
 		for(double d : dis.getTranslation()) {
 			translation.add(d);
 		}
-		jo.put("translation", translation);
+		jo.add("translation", translation);
 		
-		JSONArray rotation = new JSONArray();
+		JsonArray rotation = new JsonArray();
 		for(double d : dis.getRotation()) {
 			rotation.add(d);
 		}
-		jo.put("rotation", rotation);
+		jo.add("rotation", rotation);
 		
-		JSONArray scale = new JSONArray();
+		JsonArray scale = new JsonArray();
 		for(double d : dis.getScale()) {
 			scale.add(d);
 		}
-		jo.put("scale", scale);
+		jo.add("scale", scale);
 		
 		return jo;
 	}
 	
-	@SuppressWarnings("unchecked")
-	public static JSONObject rotationToJSON(Rotation rot) {
-		JSONObject jo = new JSONObject();
+	public static JsonObject rotationToJSON(Rotation rot) {
+		JsonObject jo = new JsonObject();
 		
-		jo.put("angle", rot.getAngle());
-		jo.put("axis", rot.getAxis());
-		JSONArray origin = new JSONArray();
+		jo.addProperty("angle", rot.getAngle());
+		jo.addProperty("axis", rot.getAxis());
+		JsonArray origin = new JsonArray();
 		for(double d : rot.getOrigin()) {
 			origin.add(d);
 		}
-		jo.put("origin", origin);
+		jo.add("origin", origin);
 		
 		return jo;
 	}

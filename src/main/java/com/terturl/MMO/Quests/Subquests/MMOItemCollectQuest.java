@@ -6,9 +6,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.bukkit.entity.Player;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.terturl.MMO.Quests.Quest;
 
 import lombok.Getter;
@@ -96,12 +98,15 @@ public class MMOItemCollectQuest extends Quest {
 	 * @see Quest#loadQuest(JSONObject)
 	 */
 	@Override
-	public void loadQuest(JSONObject jo) {
-		JSONArray ja = (JSONArray) jo.get("MMOItemInformation");
-		for (Object o : ja) {
-			JSONObject entry = (JSONObject) o;
-			String ci = entry.get("Item").toString();
-			Integer amount = Integer.parseInt(entry.get("Amount").toString());
+	public void loadQuest(JsonObject jo) {
+		if(!jo.has("MMOItemInformation") || !jo.get("MMOItemInformation").isJsonArray()) return;
+		
+		JsonArray ja = jo.get("MMOItemInformation").getAsJsonArray();
+		for (JsonElement o : ja) {
+			if(!o.isJsonObject()) continue;
+			JsonObject entry = o.getAsJsonObject();
+			String ci = entry.get("Item").getAsString();
+			int amount = entry.get("Amount").getAsInt();
 			addItemToCollect(ci, amount);
 		}
 	}
@@ -109,18 +114,17 @@ public class MMOItemCollectQuest extends Quest {
 	/**
 	 * @see Quest#saveQuest()
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
-	public JSONObject saveQuest() {
-		JSONObject jo = new JSONObject();
-		JSONArray hasCollected = new JSONArray();
+	public JsonObject saveQuest() {
+		JsonObject jo = new JsonObject();
+		JsonArray hasCollected = new JsonArray();
 		for (String ci : getHasCollected().keySet()) {
-			JSONObject entry = new JSONObject();
-			entry.put("Item", ci);
-			entry.put("Amount", getHasCollected().get(ci));
+			JsonObject entry = new JsonObject();
+			entry.addProperty("Item", ci);
+			entry.addProperty("Amount", getHasCollected().get(ci));
 			hasCollected.add(entry);
 		}
-		jo.put("MMOItems", hasCollected);
+		jo.add("MMOItems", hasCollected);
 		return jo;
 	}
 
@@ -128,15 +132,16 @@ public class MMOItemCollectQuest extends Quest {
 	 * @see Quest#loadQuestToPlayer(JSONObject)
 	 */
 	@Override
-	public void loadQuestToPlayer(JSONObject jo) {
-		if (jo.containsKey("MMOItems")) {
-			JSONArray entries = (JSONArray) jo.get("MMOItems");
-			for (Object o : entries) {
-				JSONObject item = (JSONObject) o;
-				String ci = item.get("Item").toString();
-				Integer amount = Integer.parseInt(item.get("Amount").toString());
-				getHasCollected().put(ci, amount);
-			}
+	public void loadQuestToPlayer(JsonObject jo) {
+		if(!jo.has("MMOItems") || !jo.get("MMOItems").isJsonObject()) return;
+		
+		JsonArray entries = jo.get("MMOItems").getAsJsonArray();
+		for (JsonElement o : entries) {
+			if(!o.isJsonObject()) continue;
+			JsonObject item = o.getAsJsonObject();
+			String ci = item.get("Item").getAsString();
+			int amount = item.get("Amount").getAsInt();
+			getHasCollected().put(ci, amount);
 		}
 	}
 

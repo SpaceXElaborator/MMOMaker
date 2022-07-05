@@ -7,9 +7,11 @@ import java.util.Map;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.terturl.MMO.Quests.Quest;
 
 import lombok.Getter;
@@ -144,15 +146,14 @@ public class NPCTalkQuest extends Quest {
 	/**
 	 * @see Quest#saveQuest()
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
-	public JSONObject saveQuest() {
-		JSONObject jo = new JSONObject();
-		JSONArray hasTalkedTo = new JSONArray();
+	public JsonObject saveQuest() {
+		JsonObject jo = new JsonObject();
+		JsonArray hasTalkedTo = new JsonArray();
 		for (String talkedTo : getHasTalkedTo()) {
 			hasTalkedTo.add(talkedTo);
 		}
-		jo.put("TalkedTo", hasTalkedTo);
+		jo.add("TalkedTo", hasTalkedTo);
 		return jo;
 	}
 
@@ -160,13 +161,13 @@ public class NPCTalkQuest extends Quest {
 	 * @see Quest#loadQuestToPlayer(JSONObject)
 	 */
 	@Override
-	public void loadQuestToPlayer(JSONObject jo) {
-		if (jo.containsKey("TalkedTo")) {
-			JSONArray talkedTo = (JSONArray) jo.get("TalkedTo");
-			for (Object o : talkedTo) {
-				String s = o.toString();
-				getHasTalkedTo().add(s);
-			}
+	public void loadQuestToPlayer(JsonObject jo) {
+		if(!jo.has("TalkedTo") || !jo.get("TalkedTo").isJsonArray()) return;
+		
+		JsonArray talkedTo = jo.get("TalkedTo").getAsJsonArray();
+		for (JsonElement o : talkedTo) {
+			String s = o.getAsString();
+			getHasTalkedTo().add(s);
 		}
 	}
 
@@ -174,16 +175,19 @@ public class NPCTalkQuest extends Quest {
 	 * @see Quest#loadQuest(JSONObject)
 	 */
 	@Override
-	public void loadQuest(JSONObject jo) {
-		JSONArray dialog = (JSONArray) jo.get("NPCS");
-		for (Object o : dialog) {
-			JSONObject npc = (JSONObject) o;
+	public void loadQuest(JsonObject jo) {
+		if(!jo.has("NPCS") || !jo.get("NPCS").isJsonArray()) return;
+		
+		JsonArray dialog = jo.get("NPCS").getAsJsonArray();
+		for (JsonElement o : dialog) {
+			if(!o.isJsonObject()) continue;
+			JsonObject npc = o.getAsJsonObject();
 			String npcName = npc.get("Name").toString();
 			addNPC(npcName);
-			if (npc.containsKey("Dialog")) {
-				JSONArray dialogStrings = (JSONArray) npc.get("Dialog");
-				for (Object dialogString : dialogStrings) {
-					String s = dialogString.toString();
+			if (npc.has("Dialog") && npc.get("Dialog").isJsonArray()) {
+				JsonArray dialogStrings = npc.get("Dialog").getAsJsonArray();
+				for (JsonElement dialogString : dialogStrings) {
+					String s = dialogString.getAsString();
 					addDialog(npcName, s);
 				}
 			}

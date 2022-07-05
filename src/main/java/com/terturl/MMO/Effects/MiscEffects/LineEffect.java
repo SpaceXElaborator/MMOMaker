@@ -9,8 +9,8 @@ import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
-import org.json.simple.JSONObject;
 
+import com.google.gson.JsonObject;
 import com.terturl.MMO.Effects.Effect;
 
 import lombok.Getter;
@@ -94,16 +94,16 @@ public class LineEffect extends Effect {
 		}
 	}
 
-	public void load(JSONObject jo) {
-		particle = Particle.valueOf(jo.get("Particle").toString().toUpperCase());
-		range = Integer.parseInt(jo.get("Range").toString());
-		particleAmount = Double.parseDouble(jo.get("ParticleAmount").toString());
-		damage = Double.parseDouble(jo.get("Damage").toString());
-		penetratable = Boolean.parseBoolean(jo.get("Penetrate").toString());
+	public void load(JsonObject jo) {
+		particle = Particle.valueOf(jo.get("Particle").getAsString().toUpperCase());
+		range = jo.get("Range").getAsInt();
+		particleAmount =jo.get("ParticleAmount").getAsDouble();
+		damage = jo.get("Damage").getAsDouble();
+		penetratable = jo.get("Penetrate").getAsBoolean();
 		
-		YOffset = jo.containsKey("YOffset") ? Double.parseDouble(jo.get("YOffset").toString()) : 0.0;
-		XOffset = jo.containsKey("XOffset") ? Double.parseDouble(jo.get("XOffset").toString()) : 0.0;
-		ZOffset = jo.containsKey("ZOffset") ? Double.parseDouble(jo.get("ZOffset").toString()) : 0.0;
+		YOffset = jo.has("YOffset") ? jo.get("YOffset").getAsDouble() : 0.0;
+		XOffset = jo.has("XOffset") ? jo.get("XOffset").getAsDouble() : 0.0;
+		ZOffset = jo.has("ZOffset") ? jo.get("ZOffset").getAsDouble() : 0.0;
 	}
 
 }
